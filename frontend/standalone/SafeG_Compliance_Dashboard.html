@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeG AI — Factory Compliance Command Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #05060D;
+    --bg2:     #0A0C18;
+    --bg3:     #0F1222;
+    --card:    #111525;
+    --card2:   #161A2E;
+    --border:  #1E2440;
+    --orange:  #FF5C1A;
+    --orange2: #FF8040;
+    --teal:    #00D4B8;
+    --green:   #22D46A;
+    --red:     #FF3B3B;
+    --amber:   #FFB800;
+    --blue:    #3D8BFF;
+    --purple:  #A855F7;
+    --white:   #F0F4FF;
+    --g1:      #C8D4F0;
+    --g2:      #6878A8;
+    --g3:      #2A3455;
+    --font-head: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Scanline overlay ─────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,184,0.012) 2px, rgba(0,212,184,0.012) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── TOP NAV ──────────────────────────────────────── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 58px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-shield {
+    width: 34px; height: 34px;
+    background: var(--orange);
+    clip-path: polygon(50% 0%, 100% 20%, 100% 60%, 50% 100%, 0% 60%, 0% 20%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff;
+    animation: pulse-shield 3s ease-in-out infinite;
+  }
+  @keyframes pulse-shield {
+    0%,100%{box-shadow:0 0 0 0 rgba(255,92,26,0)}
+    50%{box-shadow:0 0 0 8px rgba(255,92,26,0.15)}
+  }
+  .logo-text { font-family: var(--font-head); font-size: 22px; letter-spacing: 2px; color: var(--white); }
+  .logo-sub { font-size: 10px; color: var(--g2); letter-spacing: 3px; font-family: var(--font-mono); }
+
+  .topbar-status {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(34,212,106,0.08);
+    border: 1px solid rgba(34,212,106,0.25);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 11px; color: var(--green); font-family: var(--font-mono);
+  }
+  .dot-live {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .nav-tab {
+    padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+    color: var(--g2); cursor: pointer; transition: all .2s; border: 1px solid transparent;
+    font-family: var(--font-mono); letter-spacing: 1px;
+  }
+  .nav-tab:hover, .nav-tab.active {
+    color: var(--white); background: var(--card2); border-color: var(--border);
+  }
+  .nav-tab.active { color: var(--orange); border-color: var(--orange); }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .main { display: flex; min-height: calc(100vh - 58px); }
+
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--bg2); border-right: 1px solid var(--border);
+    padding: 20px 0;
+    position: sticky; top: 58px; height: calc(100vh - 58px); overflow-y: auto;
+  }
+  .sidebar-section { padding: 0 16px 10px; }
+  .sidebar-label {
+    font-size: 9px; color: var(--g3); letter-spacing: 3px;
+    font-family: var(--font-mono); padding: 8px 4px 4px; text-transform: uppercase;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 13px; color: var(--g1); transition: all .2s; margin-bottom: 2px;
+  }
+  .sidebar-item:hover { background: var(--card); color: var(--white); }
+  .sidebar-item.active { background: rgba(255,92,26,0.1); color: var(--orange); border: 1px solid rgba(255,92,26,0.2); }
+  .sidebar-icon { font-size: 15px; width: 20px; text-align: center; }
+  .badge {
+    margin-left: auto; background: var(--red); color: #fff;
+    font-size: 9px; padding: 2px 6px; border-radius: 10px;
+    font-family: var(--font-mono);
+  }
+
+  .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* ── SECTION PAGES ──────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── PAGE HEADER ──────────────────────────────── */
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .page-title { font-family: var(--font-head); font-size: 36px; letter-spacing: 2px; color: var(--white); }
+  .page-sub { font-size: 12px; color: var(--g2); margin-top: 2px; font-family: var(--font-mono); }
+
+  /* ── KPI CARDS ────────────────────────────────── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 22px; }
+  .kpi-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 16px; position: relative; overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--c, var(--orange));
+  }
+  .kpi-label { font-size: 10px; color: var(--g2); text-transform: uppercase; letter-spacing: 2px; font-family: var(--font-mono); margin-bottom: 8px; }
+  .kpi-value { font-family: var(--font-head); font-size: 38px; color: var(--white); line-height: 1; }
+  .kpi-unit { font-size: 12px; color: var(--g2); margin-top: 4px; }
+  .kpi-trend {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; margin-top: 6px; padding: 2px 8px; border-radius: 20px;
+    font-family: var(--font-mono);
+  }
+  .kpi-trend.up { background: rgba(34,212,106,0.1); color: var(--green); }
+  .kpi-trend.down { background: rgba(255,59,59,0.1); color: var(--red); }
+  .kpi-trend.warn { background: rgba(255,184,0,0.1); color: var(--amber); }
+
+  /* ── TWO-COL GRID ─────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .span-2 { grid-column: span 2; }
+
+  /* ── CARD ─────────────────────────────────────── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; position: relative;
+  }
+  .card-title {
+    font-size: 11px; color: var(--g2); text-transform: uppercase;
+    letter-spacing: 2.5px; font-family: var(--font-mono); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+
+  /* ── COMPLIANCE RING ─────────────────────────── */
+  .ring-wrap { display: flex; align-items: center; justify-content: center; padding: 16px 0; }
+  .ring-container { position: relative; width: 160px; height: 160px; }
+  .ring-svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 12; }
+  .ring-fill {
+    fill: none; stroke-width: 12; stroke-linecap: round;
+    stroke-dasharray: 440; stroke-dashoffset: 440;
+    transition: stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1);
+  }
+  .ring-center {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring-pct { font-family: var(--font-head); font-size: 38px; color: var(--white); }
+  .ring-lbl { font-size: 9px; color: var(--g2); font-family: var(--font-mono); letter-spacing: 2px; }
+
+  /* ── BAR CHART ───────────────────────────────── */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 130px; padding: 0 4px; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar-inner { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; flex: 1; gap: 2px; }
+  .bar {
+    width: 100%; border-radius: 4px 4px 0 0;
+    background: var(--c, var(--orange));
+    transition: height 1s cubic-bezier(.4,0,.2,1);
+    min-height: 4px; position: relative; cursor: pointer;
+    animation: barGrow 1s ease backwards;
+  }
+  @keyframes barGrow { from{transform:scaleY(0);transform-origin:bottom} to{transform:scaleY(1)} }
+  .bar:hover::after {
+    content: attr(data-val);
+    position: absolute; top: -24px; left: 50%; transform: translateX(-50%);
+    background: var(--card2); border: 1px solid var(--border);
+    color: var(--white); font-size: 10px; padding: 2px 6px; border-radius: 4px;
+    white-space: nowrap; font-family: var(--font-mono);
+  }
+  .bar-lbl { font-size: 9px; color: var(--g2); font-family: var(--font-mono); text-align: center; }
+
+  /* ── VIOLATION TABLE ─────────────────────────── */
+  .vtable { width: 100%; border-collapse: collapse; }
+  .vtable th {
+    font-size: 9px; color: var(--g2); text-transform: uppercase; letter-spacing: 2px;
+    padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+  }
+  .vtable td {
+    padding: 11px 12px; font-size: 12px; color: var(--g1);
+    border-bottom: 1px solid rgba(30,36,64,0.5);
+  }
+  .vtable tr:last-child td { border: none; }
+  .vtable tr:hover td { background: rgba(255,255,255,0.02); }
+  .sev-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 9px; font-family: var(--font-mono); font-weight: 700; text-transform: uppercase;
+  }
+  .sev-high { background: rgba(255,59,59,0.15); color: var(--red); border: 1px solid rgba(255,59,59,0.3); }
+  .sev-med  { background: rgba(255,184,0,0.15); color: var(--amber); border: 1px solid rgba(255,184,0,0.3); }
+  .sev-low  { background: rgba(34,212,106,0.15); color: var(--green); border: 1px solid rgba(34,212,106,0.3); }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 10px; font-size: 10px; font-family: var(--font-mono);
+  }
+  .status-open   { background: rgba(255,59,59,0.1); color: var(--red); }
+  .status-closed { background: rgba(34,212,106,0.1); color: var(--green); }
+  .status-pending{ background: rgba(255,184,0,0.1); color: var(--amber); }
+
+  /* ── CAMERA GRID ──────────────────────────────── */
+  .camera-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .cam-feed {
+    background: #000; border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border); position: relative; aspect-ratio: 16/9;
+    cursor: pointer; transition: border-color .2s;
+  }
+  .cam-feed:hover { border-color: var(--orange); }
+  .cam-feed.alert { border-color: var(--red); animation: alertPulse 1s ease-in-out infinite; }
+  @keyframes alertPulse { 0%,100%{border-color:var(--red)} 50%{border-color:rgba(255,59,59,0.3)} }
+  .cam-canvas { width: 100%; height: 100%; display: block; }
+  .cam-overlay {
+    position: absolute; inset: 0; padding: 8px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: none;
+  }
+  .cam-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .cam-id {
+    background: rgba(0,0,0,0.7); color: var(--white);
+    font-size: 9px; font-family: var(--font-mono); padding: 2px 6px; border-radius: 4px;
+  }
+  .cam-rec {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 4px;
+    font-size: 9px; color: var(--red); font-family: var(--font-mono);
+  }
+  .cam-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+  .cam-location {
+    background: rgba(0,0,0,0.7); color: var(--g1);
+    font-size: 9px; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);
+  }
+  .cam-alert-box {
+    background: rgba(255,59,59,0.85); color: #fff;
+    font-size: 9px; padding: 3px 8px; border-radius: 4px;
+    font-family: var(--font-mono); font-weight: 700;
+    display: none;
+  }
+  .cam-feed.alert .cam-alert-box { display: block; animation: blink 0.8s infinite; }
+  .detection-box {
+    position: absolute; border: 2px solid var(--red);
+    border-radius: 3px; pointer-events: none;
+    animation: detectionAnim 2s ease-in-out infinite;
+  }
+  @keyframes detectionAnim { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .detection-label {
+    position: absolute; top: -18px; left: 0;
+    background: var(--red); color: #fff; font-size: 8px;
+    padding: 1px 5px; font-family: var(--font-mono); white-space: nowrap;
+  }
+
+  /* ── TIMELINE ─────────────────────────────────── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 14px; padding-bottom: 16px; position: relative; }
+  .tl-item:not(:last-child)::before {
+    content: ''; position: absolute; left: 17px; top: 32px;
+    width: 2px; bottom: 0; background: var(--border);
+  }
+  .tl-dot {
+    width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; background: var(--card2); border: 2px solid var(--border);
+  }
+  .tl-dot.red { border-color: var(--red); background: rgba(255,59,59,0.1); }
+  .tl-dot.amber { border-color: var(--amber); background: rgba(255,184,0,0.1); }
+  .tl-dot.green { border-color: var(--green); background: rgba(34,212,106,0.1); }
+  .tl-dot.blue { border-color: var(--blue); background: rgba(61,139,255,0.1); }
+  .tl-body { flex: 1; }
+  .tl-title { font-size: 13px; color: var(--white); font-weight: 600; }
+  .tl-meta { font-size: 10px; color: var(--g2); font-family: var(--font-mono); margin-top: 2px; }
+
+  /* ── MINI PROGRESS ────────────────────────────── */
+  .mini-progress { margin-bottom: 12px; }
+  .mp-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; color: var(--g1); }
+  .mp-bar { height: 6px; background: var(--border); border-radius: 10px; overflow: hidden; }
+  .mp-fill {
+    height: 100%; border-radius: 10px; background: var(--c, var(--orange));
+    width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── FORM 18 ──────────────────────────────────── */
+  .form18-container {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .form18-header {
+    background: var(--card); padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .form18-title { font-family: var(--font-head); font-size: 28px; letter-spacing: 2px; }
+  .form18-subtitle { font-size: 12px; color: var(--g2); margin-top: 2px; font-family: var(--font-mono); }
+  .form18-stamp {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 20px; border: 2px solid var(--orange);
+    border-radius: 8px; text-align: center;
+  }
+  .stamp-num { font-family: var(--font-head); font-size: 22px; color: var(--orange); }
+  .stamp-lbl { font-size: 9px; color: var(--g2); font-family: var(--font-mono); letter-spacing: 2px; }
+
+  .form18-body { padding: 28px 32px; }
+  .form18-section { margin-bottom: 28px; }
+  .form18-sec-title {
+    font-family: var(--font-head); font-size: 16px; color: var(--orange);
+    letter-spacing: 2px; margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  .form-row.two { grid-template-columns: 1fr 1fr; }
+  .form-row.one { grid-template-columns: 1fr; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 10px; color: var(--g2); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--font-mono); }
+  .form-input {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; font-size: 13px; color: var(--white); font-family: var(--font-body);
+    outline: none; transition: border-color .2s;
+  }
+  .form-input:focus { border-color: var(--orange); }
+  .form-input.auto { background: rgba(0,212,184,0.05); border-color: rgba(0,212,184,0.3); color: var(--teal); }
+  textarea.form-input { resize: vertical; min-height: 80px; }
+  select.form-input { cursor: pointer; }
+
+  .form18-table { width: 100%; border-collapse: collapse; }
+  .form18-table th {
+    background: var(--card2); padding: 10px 14px; text-align: left;
+    font-size: 10px; color: var(--g2); text-transform: uppercase; letter-spacing: 1.5px;
+    font-family: var(--font-mono); border: 1px solid var(--border);
+  }
+  .form18-table td {
+    padding: 10px 14px; font-size: 12px; color: var(--g1);
+    border: 1px solid var(--border); vertical-align: top;
+  }
+  .form18-table td input, .form18-table td select {
+    background: transparent; border: none; color: var(--white);
+    font-size: 12px; width: 100%; outline: none; font-family: var(--font-body);
+  }
+  .form18-table td.auto-fill { background: rgba(0,212,184,0.04); color: var(--teal); }
+
+  .form-actions {
+    display: flex; gap: 12px; justify-content: flex-end;
+    padding: 20px 32px; border-top: 1px solid var(--border); background: var(--card);
+  }
+  .btn {
+    padding: 10px 24px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .2s; font-family: var(--font-body);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: var(--orange); color: #fff; }
+  .btn-primary:hover { background: var(--orange2); transform: translateY(-1px); }
+  .btn-secondary { background: var(--card2); color: var(--g1); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--card); color: var(--white); }
+  .btn-success { background: rgba(34,212,106,0.15); color: var(--green); border: 1px solid rgba(34,212,106,0.3); }
+  .btn-success:hover { background: rgba(34,212,106,0.25); }
+
+  /* ── PPE COMPLIANCE ──────────────────────────── */
+  .ppe-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ppe-card {
+    background: var(--card2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; display: flex; align-items: center; gap: 14px;
+  }
+  .ppe-icon { font-size: 28px; }
+  .ppe-info { flex: 1; }
+  .ppe-name { font-size: 12px; color: var(--g1); font-weight: 600; margin-bottom: 4px; }
+  .ppe-compliance { font-family: var(--font-head); font-size: 24px; color: var(--white); }
+  .ppe-bar-wrap { height: 4px; background: var(--border); border-radius: 4px; margin-top: 6px; }
+  .ppe-bar-fill { height: 100%; border-radius: 4px; background: var(--c, var(--green)); width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+  /* ── HEAT MAP ─────────────────────────────────── */
+  .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .hm-cell {
+    aspect-ratio: 1; border-radius: 3px;
+    background: var(--c, #1a2040);
+    cursor: pointer; position: relative; transition: transform .15s;
+  }
+  .hm-cell:hover { transform: scale(1.2); z-index: 10; }
+  .hm-cell:hover::after {
+    content: attr(data-tip); position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+    background: var(--card2); border: 1px solid var(--border); color: var(--white);
+    font-size: 9px; padding: 3px 7px; border-radius: 4px; white-space: nowrap;
+    font-family: var(--font-mono);
+  }
+
+  /* ── ALERTS TICKER ──────────────────────────── */
+  .ticker-wrap { overflow: hidden; background: rgba(255,59,59,0.08); border: 1px solid rgba(255,59,59,0.2); border-radius: 8px; padding: 8px 0; margin-bottom: 16px; }
+  .ticker-inner { display: flex; gap: 48px; animation: ticker 30s linear infinite; white-space: nowrap; }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .ticker-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--red); font-family: var(--font-mono); }
+  .ticker-sep { color: var(--g3); }
+
+  /* ── INSPECTION CHECKLIST ────────────────────── */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    background: var(--card2); border: 1px solid var(--border); border-radius: 8px;
+    cursor: pointer; transition: all .2s;
+  }
+  .check-item:hover { border-color: var(--orange); }
+  .check-box {
+    width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--g3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all .2s; font-size: 12px;
+  }
+  .check-item.checked .check-box { background: var(--green); border-color: var(--green); color: #fff; }
+  .check-item.failed .check-box { background: var(--red); border-color: var(--red); color: #fff; }
+  .check-text { font-size: 13px; color: var(--g1); flex: 1; }
+  .check-item.checked .check-text { color: var(--g2); text-decoration: line-through; }
+  .check-cat { font-size: 10px; color: var(--g2); font-family: var(--font-mono); }
+
+  /* ── NOTIFICATION DOT ─────────────────────────── */
+  .notif { position: relative; }
+  .notif-dot {
+    position: absolute; top: -3px; right: -3px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--red);
+    border: 1.5px solid var(--bg2);
+  }
+
+  /* ── SCROLL ───────────────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* ── TOAST ────────────────────────────────────── */
+  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9998; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 18px; font-size: 13px; color: var(--white); min-width: 280px;
+    display: flex; align-items: center; gap: 10px;
+    animation: toastIn .3s ease; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+  @keyframes toastIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+  .toast.success { border-color: rgba(34,212,106,0.4); }
+  .toast.warning { border-color: rgba(255,184,0,0.4); }
+  .toast.error   { border-color: rgba(255,59,59,0.4); }
+
+  /* ── MODAL ────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    z-index: 1000; display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+  .modal {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 16px;
+    width: 600px; max-width: 95vw; max-height: 85vh; overflow-y: auto;
+    padding: 28px;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .modal-title { font-family: var(--font-head); font-size: 24px; letter-spacing: 1px; }
+  .modal-close { cursor: pointer; color: var(--g2); font-size: 20px; transition: color .2s; }
+  .modal-close:hover { color: var(--white); }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-shield">✓</div>
+    <div>
+      <div class="logo-text">SAFEG AI</div>
+      <div class="logo-sub">Compliance Command Centre</div>
+    </div>
+  </div>
+  <div class="topbar-status">
+    <div class="dot-live"></div>
+    MONITORING ACTIVE · 16 CAMERAS
+  </div>
+  <div class="topbar-right">
+    <div class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</div>
+    <div class="nav-tab" onclick="showPage('cameras',this)">Live Cameras</div>
+    <div class="nav-tab" onclick="showPage('ppe',this)">PPE Compliance</div>
+    <div class="nav-tab" onclick="showPage('violations',this)">Violations</div>
+    <div class="nav-tab notif" onclick="showPage('form18',this)">Form 18<div class="notif-dot"></div></div>
+    <div class="nav-tab" onclick="showPage('inspection',this)">Inspection</div>
+    <div class="nav-tab" onclick="showPage('reports',this)">Reports</div>
+  </div>
+</nav>
+
+<div class="main">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Factory</div>
+    <div class="sidebar-item active">🏭 Pune Auto Plant</div>
+    <div class="sidebar-item">🏭 Chennai Unit 2</div>
+    <div class="sidebar-item">🏭 Ahmedabad Plant</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Compliance</div>
+    <div class="sidebar-item" onclick="showPage('dashboard')">📊 Overview</div>
+    <div class="sidebar-item" onclick="showPage('cameras')">📹 Camera Feeds</div>
+    <div class="sidebar-item" onclick="showPage('ppe')">🦺 PPE Tracking</div>
+    <div class="sidebar-item" onclick="showPage('violations')">⚠️ Violations <span class="badge">7</span></div>
+    <div class="sidebar-item" onclick="showPage('form18')">📋 Form 18 <span class="badge">2</span></div>
+    <div class="sidebar-item" onclick="showPage('inspection')">✅ Inspection</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Reports</div>
+    <div class="sidebar-item" onclick="showPage('reports')">📄 ISO 45001</div>
+    <div class="sidebar-item">📄 ESIC Returns</div>
+    <div class="sidebar-item">📄 BRSR Safety</div>
+    <div class="sidebar-item">📄 OSH Code</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Settings</div>
+    <div class="sidebar-item">⚙️ Alert Thresholds</div>
+    <div class="sidebar-item">👥 Shift Roster</div>
+    <div class="sidebar-item">🔔 Notifications</div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+<!-- ─────── PAGE: DASHBOARD ─────── -->
+<div id="page-dashboard" class="page active">
+  <!-- Alert Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="ticker-item">🔴 ALERT: No helmet detected — Zone B Welding · 14:23:07</span>
+      <span class="ticker-sep">///</span>
+      <span class="ticker-item">⚠️ Danger zone breach — Forklift area · 14:19:44</span>
+      <span class="ticker-sep">///</span>
+      <span class="ticker-item">🔴 Safety vest missing — Paint Shop · 14:15:02</span>
+      <span class="ticker-sep">///</span>
+      <span class="ticker-item">✅ PPE compliance rate restored — Assembly Line A · 14:10:55</span>
+      <span class="ticker-sep">///</span>
+      <span class="ticker-item">🔴 ALERT: No helmet detected — Zone B Welding · 14:23:07</span>
+      <span class="ticker-sep">///</span>
+      <span class="ticker-item">⚠️ Danger zone breach — Forklift area · 14:19:44</span>
+      <span class="ticker-sep">///</span>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">COMPLIANCE COMMAND CENTRE</div>
+      <div class="page-sub">Pune Auto Plant · Unit 1 · Today, <span id="live-date"></span></div>
+    </div>
+    <button class="btn btn-secondary" onclick="showPage('form18')">📋 File Form 18</button>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">PPE Compliance</div>
+      <div class="kpi-value" id="kpi-ppe">97</div>
+      <div class="kpi-unit">% today</div>
+      <div class="kpi-trend up">↑ +4.2% vs last week</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--red)">
+      <div class="kpi-label">Active Violations</div>
+      <div class="kpi-value" style="color:var(--red)" id="kpi-viol">7</div>
+      <div class="kpi-unit">open cases</div>
+      <div class="kpi-trend down">↑ 2 new this hour</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--teal)">
+      <div class="kpi-label">Cameras Online</div>
+      <div class="kpi-value">16</div>
+      <div class="kpi-unit">/ 16 active</div>
+      <div class="kpi-trend up">● All operational</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--amber)">
+      <div class="kpi-label">Near-Miss Events</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-unit">this week</div>
+      <div class="kpi-trend warn">↓ -2 vs last week</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--blue)">
+      <div class="kpi-label">Compliance Score</div>
+      <div class="kpi-value">92</div>
+      <div class="kpi-unit">/ 100</div>
+      <div class="kpi-trend up">↑ A grade · Factories Act</div>
+    </div>
+  </div>
+
+  <!-- Row 1: Chart + Ring + Timeline -->
+  <div class="grid-3" style="grid-template-columns:1.6fr 1fr 1.2fr">
+    <!-- Violations by zone bar chart -->
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot"></div>Violations by Zone — This Week</div>
+      <div class="bar-chart" id="zone-chart"></div>
+      <div id="zone-labels" style="display:flex;gap:8px;margin-top:6px;padding:0 4px"></div>
+    </div>
+
+    <!-- PPE Ring -->
+    <div class="card" style="display:flex;flex-direction:column;align-items:center">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--green)"></div>PPE Compliance Today</div>
+      <div class="ring-container">
+        <svg class="ring-svg" width="160" height="160" viewBox="0 0 160 160">
+          <circle class="ring-bg" cx="80" cy="80" r="70"/>
+          <circle class="ring-fill" id="main-ring" cx="80" cy="80" r="70" stroke="var(--green)"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-pct">97%</div>
+          <div class="ring-lbl">COMPLIANT</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;font-family:var(--font-mono)">
+        <span style="color:var(--green)">● Pass: 1,247</span>
+        <span style="color:var(--red)">● Fail: 38</span>
+      </div>
+    </div>
+
+    <!-- Today's Events Timeline -->
+    <div class="card" style="overflow-y:auto;max-height:260px">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--teal)"></div>Today's Events</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot red">🚨</div>
+          <div class="tl-body">
+            <div class="tl-title">No Helmet — Zone B</div>
+            <div class="tl-meta">14:23:07 · CAM-04 · Auto-alerted</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot amber">⚠️</div>
+          <div class="tl-body">
+            <div class="tl-title">Danger zone breach — Forklift</div>
+            <div class="tl-meta">14:19:44 · CAM-11 · Pending</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green">✅</div>
+          <div class="tl-body">
+            <div class="tl-title">Morning inspection passed</div>
+            <div class="tl-meta">08:00:00 · All zones clear</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot blue">📋</div>
+          <div class="tl-body">
+            <div class="tl-title">Form 18 filed — Incident #234</div>
+            <div class="tl-meta">09:45:00 · Auto-generated</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot red">🚨</div>
+          <div class="tl-body">
+            <div class="tl-title">Safety vest missing — Paint Shop</div>
+            <div class="tl-meta">13:15:02 · CAM-07 · Resolved</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: PPE by type + Heatmap -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--orange)"></div>PPE Compliance by Type</div>
+      <div id="ppe-mini-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--purple)"></div>Violation Heatmap — Last 7 Weeks</div>
+      <div style="font-size:9px;color:var(--g2);font-family:var(--font-mono);margin-bottom:8px;display:flex;gap:10px">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div class="heatmap-grid" id="heatmap"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:12px;font-size:9px;color:var(--g2);font-family:var(--font-mono)">
+        Less <div style="width:8px;height:8px;border-radius:2px;background:#1a2040"></div>
+        <div style="width:8px;height:8px;border-radius:2px;background:#4a1a1a"></div>
+        <div style="width:8px;height:8px;border-radius:2px;background:#8b2020"></div>
+        <div style="width:8px;height:8px;border-radius:2px;background:var(--red)"></div> More
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────── PAGE: CAMERAS ─────── -->
+<div id="page-cameras" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">LIVE CAMERA FEEDS</div>
+      <div class="page-sub">16 cameras · Real-time AI detection · <span style="color:var(--green)">All online</span></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-secondary">⬛ Grid View</button>
+      <button class="btn btn-secondary">📥 Download Clip</button>
+    </div>
+  </div>
+  <div class="camera-grid" id="camera-grid"></div>
+</div>
+
+<!-- ─────── PAGE: PPE COMPLIANCE ─────── -->
+<div id="page-ppe" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">PPE COMPLIANCE TRACKER</div>
+      <div class="page-sub">Real-time personal protective equipment monitoring across all zones</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Hard Hats</div><div class="kpi-value">98%</div><div class="kpi-trend up">↑ Excellent</div></div>
+    <div class="kpi-card" style="--c:var(--amber)"><div class="kpi-label">Safety Vests</div><div class="kpi-value">94%</div><div class="kpi-trend warn">⚠ Watch</div></div>
+    <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Safety Boots</div><div class="kpi-value">99%</div><div class="kpi-trend up">↑ Excellent</div></div>
+    <div class="kpi-card" style="--c:var(--red)"><div class="kpi-label">Eye Protection</div><div class="kpi-value">86%</div><div class="kpi-trend down">↓ Action Needed</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot"></div>PPE Compliance by Zone</div>
+      <div class="ppe-grid" id="zone-ppe"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--teal)"></div>Non-Compliance Trend — 30 Days</div>
+      <div class="bar-chart" id="ppe-trend-chart"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-dot" style="background:var(--red)"></div>PPE Violation Log — Today</div>
+    <table class="vtable">
+      <thead><tr>
+        <th>Time</th><th>Worker ID</th><th>Violation</th><th>Zone</th><th>Camera</th><th>Severity</th><th>Status</th>
+      </tr></thead>
+      <tbody id="ppe-log"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─────── PAGE: VIOLATIONS ─────── -->
+<div id="page-violations" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">VIOLATION REGISTER</div>
+      <div class="page-sub">All safety incidents · Factories Act Section 7A compliant</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('add-violation')">+ Log Violation</button>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card" style="--c:var(--red)"><div class="kpi-label">Open</div><div class="kpi-value" style="color:var(--red)">7</div><div class="kpi-unit">require action</div></div>
+    <div class="kpi-card" style="--c:var(--amber)"><div class="kpi-label">Pending Review</div><div class="kpi-value" style="color:var(--amber)">4</div><div class="kpi-unit">awaiting sign-off</div></div>
+    <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Closed Today</div><div class="kpi-value" style="color:var(--green)">12</div><div class="kpi-unit">resolved</div></div>
+    <div class="kpi-card" style="--c:var(--blue)"><div class="kpi-label">This Month</div><div class="kpi-value">47</div><div class="kpi-unit">total</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-dot"></div>All Violations</div>
+    <table class="vtable">
+      <thead><tr>
+        <th>ID</th><th>Date/Time</th><th>Type</th><th>Zone</th><th>Worker</th><th>Severity</th><th>Corrective Action</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody id="violations-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─────── PAGE: FORM 18 ─────── -->
+<div id="page-form18" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">FORM 18 — ACCIDENT REPORT</div>
+      <div class="page-sub">Under The Factories Act, 1948 — Section 88 · AI Auto-populated fields shown in teal</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-success" onclick="autoFillForm()">🤖 AI Auto-Fill</button>
+      <button class="btn btn-secondary">📋 History</button>
+    </div>
+  </div>
+
+  <div class="form18-container">
+    <!-- Form 18 Header -->
+    <div class="form18-header">
+      <div>
+        <div class="form18-title">FORM 18</div>
+        <div class="form18-subtitle">Notice of Accident / Dangerous Occurrence · The Factories Act, 1948</div>
+        <div style="font-size:11px;color:var(--g2);margin-top:6px;font-family:var(--font-mono)">
+          Under Sections 88 & 88A | Rules 106 & 107 of the Factories Act
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="form18-stamp">
+          <div class="stamp-num">#F18-2024-235</div>
+          <div class="stamp-lbl">Report Number</div>
+        </div>
+        <div class="form18-stamp" style="border-color:var(--teal)">
+          <div class="stamp-num" style="color:var(--teal)" id="form-date-stamp">–</div>
+          <div class="stamp-lbl">Filed Date</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form18-body">
+
+      <!-- PART A: Factory Details -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART A — FACTORY & REGISTRATION DETAILS</div>
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Name of Factory</div>
+            <input class="form-input auto" type="text" value="Pune Auto Components Pvt Ltd" id="f-factory-name">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Factory Registration Number</div>
+            <input class="form-input auto" type="text" value="MH/PUN/F/2019/00423" id="f-reg-no">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Type of Industry</div>
+            <select class="form-input auto" id="f-industry">
+              <option selected>Automobile Components Manufacturing</option>
+              <option>Chemical Processing</option>
+              <option>Textile</option>
+              <option>Food Processing</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Factory Address</div>
+            <input class="form-input auto" type="text" value="Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune – 411018">
+          </div>
+          <div class="form-field">
+            <div class="form-label">District</div>
+            <input class="form-input auto" type="text" value="Pune">
+          </div>
+          <div class="form-field">
+            <div class="form-label">State</div>
+            <input class="form-input auto" type="text" value="Maharashtra">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Occupier / Owner Name</div>
+            <input class="form-input" type="text" placeholder="Enter name" id="f-occupier">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Manager Name</div>
+            <input class="form-input" type="text" placeholder="Enter name" id="f-manager">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Contact Number</div>
+            <input class="form-input" type="text" placeholder="+91 XXXXX XXXXX" id="f-contact">
+          </div>
+        </div>
+      </div>
+
+      <!-- PART B: Accident Details -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART B — ACCIDENT / DANGEROUS OCCURRENCE DETAILS</div>
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Date of Accident</div>
+            <input class="form-input" type="date" id="f-acc-date">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Time of Accident</div>
+            <input class="form-input auto" type="time" value="14:23" id="f-acc-time">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Department / Section</div>
+            <input class="form-input auto" type="text" value="Welding Zone B — Bay 3" id="f-department">
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="form-field">
+            <div class="form-label">Nature of Accident</div>
+            <select class="form-input" id="f-nature">
+              <option>Select type...</option>
+              <option selected>Fall from height</option>
+              <option>Struck by moving object</option>
+              <option>Caught in/between machinery</option>
+              <option>Burns/Scalds</option>
+              <option>Electrical shock</option>
+              <option>Chemical exposure</option>
+              <option>Dangerous occurrence (no injury)</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-label">Process/Operation being performed</div>
+            <input class="form-input auto" type="text" value="MIG Welding — Chassis subframe assembly" id="f-operation">
+          </div>
+        </div>
+        <div class="form-row one">
+          <div class="form-field">
+            <div class="form-label">Description of Accident / Occurrence</div>
+            <textarea class="form-input" id="f-description" placeholder="Describe how the accident occurred...">Worker slipped on oil spill near welding bay. Safety footwear was being worn but area hazard marking was absent. SafeG AI camera CAM-04 detected the fall at 14:23:07 IST and triggered immediate supervisor alert. Worker sustained minor abrasion on left knee. No loss of consciousness.</textarea>
+          </div>
+        </div>
+        <div class="form-row one">
+          <div class="form-field">
+            <div class="form-label">Immediate Cause of Accident</div>
+            <input class="form-input" type="text" placeholder="What directly caused the accident?" id="f-cause" value="Oil spill on floor not cleaned for over 45 minutes — housekeeping protocol violation">
+          </div>
+        </div>
+        <div class="form-row one">
+          <div class="form-field">
+            <div class="form-label">Root Cause / Underlying Factor</div>
+            <input class="form-input" type="text" placeholder="Underlying systemic cause..." id="f-root-cause" value="Inadequate housekeeping schedule and absence of spill containment kit in Welding Zone B">
+          </div>
+        </div>
+      </div>
+
+      <!-- PART C: Injured Person Details -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART C — INJURED PERSON(S) DETAILS</div>
+        <table class="form18-table">
+          <thead>
+            <tr>
+              <th>Sr.</th><th>Name of Worker</th><th>Sex</th><th>Age</th>
+              <th>Employment Status</th><th>Department</th><th>Nature of Injury</th>
+              <th>Body Part Injured</th><th>Likely Absence (Days)</th>
+            </tr>
+          </thead>
+          <tbody id="injured-table">
+            <tr>
+              <td>1</td>
+              <td><input type="text" placeholder="Full Name" value="Ramesh Kumar Singh"></td>
+              <td>
+                <select><option>Male</option><option>Female</option><option>Other</option></select>
+              </td>
+              <td><input type="number" value="34" style="width:45px"></td>
+              <td>
+                <select>
+                  <option selected>Permanent – Factory Worker</option>
+                  <option>Contract Worker</option>
+                  <option>Trainee</option>
+                </select>
+              </td>
+              <td><input type="text" value="Welding" style="width:80px"></td>
+              <td>
+                <select>
+                  <option selected>Minor Injury</option>
+                  <option>Serious Injury</option>
+                  <option>Fatal</option>
+                  <option>Dangerous Occurrence</option>
+                </select>
+              </td>
+              <td><input type="text" value="Left knee — abrasion"></td>
+              <td><input type="number" value="2" style="width:50px"></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-secondary" style="margin-top:10px;font-size:11px" onclick="addInjuredRow()">+ Add Person</button>
+      </div>
+
+      <!-- PART D: Medical Treatment -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART D — MEDICAL TREATMENT & FIRST AID</div>
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">First Aid Given?</div>
+            <select class="form-input" id="f-first-aid">
+              <option selected>Yes — On-site first aid</option><option>No</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-label">Referred to Hospital?</div>
+            <select class="form-input" id="f-hospital">
+              <option selected>No — Treated on-site</option>
+              <option>Yes — Government Hospital</option>
+              <option>Yes — Private Hospital</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-label">ESIC Member?</div>
+            <select class="form-input" id="f-esic">
+              <option selected>Yes — ESIC IP No. MH48920234</option>
+              <option>No — Not covered</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="form-field">
+            <div class="form-label">Medical Officer Name</div>
+            <input class="form-input" type="text" value="Dr. Priya Mehta — On-site MBBS" id="f-doctor">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Date of Medical Examination</div>
+            <input class="form-input" type="date" id="f-med-date">
+          </div>
+        </div>
+      </div>
+
+      <!-- PART E: SafeG AI Evidence -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART E — SAFEG AI EVIDENCE LOG <span style="color:var(--teal);font-size:12px">● Auto-captured</span></div>
+        <div class="card" style="background:rgba(0,212,184,0.04);border-color:rgba(0,212,184,0.2)">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+            <div>
+              <div class="form-label" style="color:var(--teal)">Camera ID</div>
+              <div style="font-size:14px;color:var(--white);margin-top:4px;font-family:var(--font-mono)">CAM-04 · Zone B Welding</div>
+            </div>
+            <div>
+              <div class="form-label" style="color:var(--teal)">Detection Timestamp</div>
+              <div style="font-size:14px;color:var(--white);margin-top:4px;font-family:var(--font-mono)" id="ai-timestamp">2024-01-15 14:23:07 IST</div>
+            </div>
+            <div>
+              <div class="form-label" style="color:var(--teal)">AI Confidence Score</div>
+              <div style="font-size:14px;color:var(--white);margin-top:4px;font-family:var(--font-mono)">98.7%</div>
+            </div>
+            <div>
+              <div class="form-label" style="color:var(--teal)">Alert Triggered To</div>
+              <div style="font-size:14px;color:var(--white);margin-top:4px;font-family:var(--font-mono)">Zone B Supervisor · Plant Manager</div>
+            </div>
+            <div>
+              <div class="form-label" style="color:var(--teal)">Response Time</div>
+              <div style="font-size:14px;color:var(--white);margin-top:4px;font-family:var(--font-mono)">28 seconds</div>
+            </div>
+            <div>
+              <div class="form-label" style="color:var(--teal)">Video Clip</div>
+              <div style="font-size:14px;color:var(--teal);margin-top:4px;font-family:var(--font-mono);cursor:pointer">📹 View Clip →</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:rgba(0,212,184,0.05);border-radius:8px;border:1px solid rgba(0,212,184,0.15)">
+            <div class="form-label" style="color:var(--teal);margin-bottom:6px">AI Violation Analysis</div>
+            <div style="font-size:12px;color:var(--g1);line-height:1.6">
+              SafeG AI detected: <strong style="color:var(--white)">Floor Hazard — Liquid spill (unattended 47 min)</strong> at 13:36:09. 
+              Alert sent to housekeeping at 13:36:15. No corrective action recorded within 30-minute SLA. 
+              Subsequent fall event recorded at 14:23:07. Causal chain: Unresolved hazard → Fall → Minor injury.
+              <br><strong style="color:var(--teal)">Preventability Assessment: HIGH — Corrective action available 47 min prior to incident.</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART F: Corrective Actions -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART F — CORRECTIVE & PREVENTIVE ACTIONS (CAPA)</div>
+        <table class="form18-table">
+          <thead>
+            <tr><th>Action No.</th><th>Corrective Action</th><th>Responsible Person</th><th>Target Date</th><th>Status</th></tr>
+          </thead>
+          <tbody id="capa-table">
+            <tr>
+              <td>CA-01</td>
+              <td><input type="text" value="Immediate housekeeping of Welding Zone B — Oil spill removed" style="width:100%"></td>
+              <td><input type="text" value="Rajesh Patil — Housekeeping Supervisor" style="width:100%"></td>
+              <td><input type="date" style="width:100%"></td>
+              <td><select><option selected>Completed</option><option>In Progress</option><option>Pending</option></select></td>
+            </tr>
+            <tr>
+              <td>CA-02</td>
+              <td><input type="text" value="Install spill containment kit and hazard markers in Welding Zone B" style="width:100%"></td>
+              <td><input type="text" value="Maintenance Manager" style="width:100%"></td>
+              <td><input type="date" style="width:100%"></td>
+              <td><select><option>Completed</option><option selected>In Progress</option><option>Pending</option></select></td>
+            </tr>
+            <tr>
+              <td>CA-03</td>
+              <td><input type="text" value="Revise housekeeping SOP — reduce alert response SLA from 30 min to 10 min" style="width:100%"></td>
+              <td><input type="text" value="HSE Manager" style="width:100%"></td>
+              <td><input type="date" style="width:100%"></td>
+              <td><select><option>Completed</option><option>In Progress</option><option selected>Pending</option></select></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-secondary" style="margin-top:10px;font-size:11px" onclick="addCapaRow()">+ Add Action</button>
+      </div>
+
+      <!-- PART G: Declaration -->
+      <div class="form18-section">
+        <div class="form18-sec-title">PART G — DECLARATION BY MANAGER / OCCUPIER</div>
+        <div class="form-row two">
+          <div class="form-field">
+            <div class="form-label">Name of Manager / Occupier (Declarant)</div>
+            <input class="form-input" type="text" placeholder="Full name" id="f-declarant">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Designation</div>
+            <input class="form-input" type="text" placeholder="Manager / Occupier" id="f-designation">
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="form-field">
+            <div class="form-label">Date of Filing</div>
+            <input class="form-input" type="date" id="f-filing-date">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Submitted To (Inspector of Factories)</div>
+            <input class="form-input" type="text" value="Office of Inspector of Factories, Pune District" id="f-inspector">
+          </div>
+        </div>
+        <div style="background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:8px;padding:14px;margin-top:8px;font-size:12px;color:var(--g1);line-height:1.6">
+          ⚠️ <strong style="color:var(--amber)">Statutory Deadline:</strong> This form must be filed with the Inspector of Factories within 
+          <strong style="color:var(--white)">24 hours</strong> of the accident (Section 88, Factories Act 1948). For dangerous occurrences, report immediately by telephone and follow up with written Form 18 within 12 hours.
+        </div>
+      </div>
+
+    </div><!-- /form18-body -->
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button class="btn btn-secondary">💾 Save Draft</button>
+      <button class="btn btn-secondary">🖨️ Print Form</button>
+      <button class="btn btn-success">📤 Submit to Portal</button>
+      <button class="btn btn-primary" onclick="submitForm18()">✅ File Report</button>
+    </div>
+  </div><!-- /form18-container -->
+</div>
+
+<!-- ─────── PAGE: INSPECTION ─────── -->
+<div id="page-inspection" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">DAILY INSPECTION CHECKLIST</div>
+      <div class="page-sub">Factories Act — Schedule checklist · <span id="insp-date"></span></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div style="font-size:13px;color:var(--g2)">Completed: <strong style="color:var(--green)" id="insp-count">0</strong> / 24</div>
+      <button class="btn btn-primary" onclick="signOffInspection()">Sign Off Inspection</button>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot"></div>Safety Equipment</div>
+      <div class="checklist" id="checklist-eq"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--teal)"></div>Machinery & Electrical</div>
+      <div class="checklist" id="checklist-mach"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--amber)"></div>Fire Safety</div>
+      <div class="checklist" id="checklist-fire"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-dot" style="background:var(--green)"></div>Housekeeping & Environment</div>
+      <div class="checklist" id="checklist-hk"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────── PAGE: REPORTS ─────── -->
+<div id="page-reports" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">COMPLIANCE REPORTS</div>
+      <div class="page-sub">Auto-generated statutory reports — ISO 45001 · ESIC · BRSR · Factories Act</div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card" style="cursor:pointer" onclick="showToast('ISO 45001 report generated','success')">
+      <div style="font-size:32px;margin-bottom:12px">📋</div>
+      <div style="font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px">ISO 45001 Monthly Report</div>
+      <div style="font-size:12px;color:var(--g2)">OHS Management System — January 2024</div>
+      <div style="margin-top:14px"><span class="status-badge status-closed">● Ready to export</span></div>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="showToast('ESIC return filed','success')">
+      <div style="font-size:32px;margin-bottom:12px">🏥</div>
+      <div style="font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px">ESIC Half-Yearly Return</div>
+      <div style="font-size:12px;color:var(--g2)">Employee State Insurance — H1 2024</div>
+      <div style="margin-top:14px"><span class="status-badge status-pending">● Due in 12 days</span></div>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="showToast('BRSR report downloaded','success')">
+      <div style="font-size:32px;margin-bottom:12px">📊</div>
+      <div style="font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px">SEBI BRSR Safety Data</div>
+      <div style="font-size:12px;color:var(--g2)">Business Responsibility & Sustainability — FY 2024</div>
+      <div style="margin-top:14px"><span class="status-badge status-closed">● Ready to export</span></div>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="showToast('Accident summary downloaded','success')">
+      <div style="font-size:32px;margin-bottom:12px">⚠️</div>
+      <div style="font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px">Accident Summary Report</div>
+      <div style="font-size:12px;color:var(--g2)">Form 18 & 19 Register — 2024</div>
+      <div style="margin-top:14px"><span class="status-badge status-closed">● 3 incidents filed</span></div>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="showToast('Shram Suvidha data synced','success')">
+      <div style="font-size:32px;margin-bottom:12px">🏛️</div>
+      <div style="font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px">Shram Suvidha Portal Sync</div>
+      <div style="font-size:12px;color:var(--g2)">Labour compliance upload — Ministry of Labour</div>
+      <div style="margin-top:14px"><span class="status-badge status-pending">● Sync pending</span></div>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="showToast('OSH Code report ready','success')">
+      <div style="font-size:32px;margin-bottom:12px">📜</div>
+      <div style="font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px">OSH Code 2020 Compliance</div>
+      <div style="font-size:12px;color:var(--g2)">Occupational Safety Health — Quarterly</div>
+      <div style="margin-top:14px"><span class="status-badge status-closed">● Compliant</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-dot"></div>Annual Compliance Summary</div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:0">
+      <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Total Violations</div><div class="kpi-value">47</div><div class="kpi-trend up">↓ -23% vs last year</div></div>
+      <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Near-Misses</div><div class="kpi-value">12</div><div class="kpi-trend up">↓ -40%</div></div>
+      <div class="kpi-card" style="--c:var(--amber)"><div class="kpi-label">Lost Work Days</div><div class="kpi-value">18</div><div class="kpi-trend warn">→ No change</div></div>
+      <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Fatalities</div><div class="kpi-value">0</div><div class="kpi-trend up">● Zero record</div></div>
+      <div class="kpi-card" style="--c:var(--green)"><div class="kpi-label">Compliance Rate</div><div class="kpi-value">97%</div><div class="kpi-trend up">↑ +4% YoY</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- MODAL: Add Violation -->
+<div class="modal-overlay" id="modal-add-violation">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Log New Violation</div>
+      <div class="modal-close" onclick="closeModal('add-violation')">✕</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-field"><div class="form-label">Violation Type</div>
+        <select class="form-input">
+          <option>PPE Non-Compliance</option><option>Danger Zone Breach</option><option>Machine Guard Missing</option>
+          <option>Housekeeping Failure</option><option>Fire Safety Violation</option>
+        </select>
+      </div>
+      <div class="form-field"><div class="form-label">Zone / Location</div>
+        <select class="form-input">
+          <option>Assembly Line A</option><option>Welding Zone B</option><option>Paint Shop</option>
+          <option>Forklift Area</option><option>Electrical Room</option>
+        </select>
+      </div>
+      <div class="form-field"><div class="form-label">Severity</div>
+        <select class="form-input">
+          <option>High — Immediate action required</option><option>Medium — Correct within 24hrs</option><option>Low — Monitor</option>
+        </select>
+      </div>
+      <div class="form-field"><div class="form-label">Description</div>
+        <textarea class="form-input" rows="3" placeholder="Describe the violation..."></textarea>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="closeModal('add-violation')">Cancel</button>
+        <button class="btn btn-primary" onclick="logViolation()">Log Violation</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const today = new Date();
+document.getElementById('live-date').textContent = today.toLocaleDateString('en-IN', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+document.getElementById('insp-date').textContent = today.toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'});
+document.getElementById('form-date-stamp').textContent = today.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+document.getElementById('ai-timestamp').textContent = today.toISOString().slice(0,10) + ' 14:23:07 IST';
+
+// Set date defaults
+document.querySelectorAll('input[type=date]').forEach(el => el.value = today.toISOString().slice(0,10));
+
+// ── NAV ────────────────────────────────────────────────────────
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id)?.classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'cameras') renderCameras();
+}
+
+// ── TOAST ──────────────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const icons = {success:'✅',warning:'⚠️',error:'🔴',info:'ℹ️'};
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  tc.appendChild(t);
+  setTimeout(() => t.style.animation = 'toastIn .3s ease reverse', 2700);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ── MODAL ──────────────────────────────────────────────────────
+function openModal(id)  { document.getElementById('modal-'+id)?.classList.add('open'); }
+function closeModal(id) { document.getElementById('modal-'+id)?.classList.remove('open'); }
+
+// ── ZONE BAR CHART ─────────────────────────────────────────────
+const zoneData = [
+  {label:'Weld B', val:12, c:'var(--red)'},
+  {label:'Paint', val:8, c:'var(--orange)'},
+  {label:'Assembly', val:5, c:'var(--amber)'},
+  {label:'Forklift', val:9, c:'var(--red)'},
+  {label:'Electr.', val:3, c:'var(--teal)'},
+  {label:'Press', val:6, c:'var(--orange)'},
+  {label:'Store', val:2, c:'var(--green)'},
+];
+const maxZ = Math.max(...zoneData.map(d=>d.val));
+const zc = document.getElementById('zone-chart');
+const zl = document.getElementById('zone-labels');
+zoneData.forEach((d,i) => {
+  const g = document.createElement('div');
+  g.className = 'bar-group';
+  const pct = (d.val/maxZ*100);
+  g.innerHTML = `<div class="bar-inner"><div class="bar" style="--c:${d.c};height:${pct}%;animation-delay:${i*0.08}s" data-val="${d.val}"></div></div><div class="bar-lbl">${d.label}</div>`;
+  zc.appendChild(g);
+});
+
+// ── PPE MINI BARS ──────────────────────────────────────────────
+const ppeData = [
+  {name:'Hard Hat', pct:98, c:'var(--green)'},
+  {name:'Safety Vest', pct:94, c:'var(--amber)'},
+  {name:'Safety Boots', pct:99, c:'var(--green)'},
+  {name:'Eye Protection', pct:86, c:'var(--red)'},
+  {name:'Gloves', pct:91, c:'var(--teal)'},
+  {name:'Ear Protection', pct:88, c:'var(--orange)'},
+];
+const mb = document.getElementById('ppe-mini-bars');
+ppeData.forEach(p => {
+  const d = document.createElement('div');
+  d.className = 'mini-progress';
+  d.innerHTML = `<div class="mp-header"><span>${p.name}</span><strong>${p.pct}%</strong></div>
+    <div class="mp-bar"><div class="mp-fill" style="--c:${p.c}" data-w="${p.pct}"></div></div>`;
+  mb.appendChild(d);
+});
+setTimeout(() => document.querySelectorAll('.mp-fill').forEach(f => f.style.width = f.dataset.w+'%'), 300);
+
+// ── HEATMAP ────────────────────────────────────────────────────
+const hmColors = ['#1a2040','#3a1a2a','#5c1a1a','#8b2020','var(--red)'];
+const hm = document.getElementById('heatmap');
+for(let i=0;i<49;i++){
+  const v = Math.floor(Math.random()*5);
+  const n = Math.floor(Math.random()*8);
+  const c = document.createElement('div');
+  c.className='hm-cell';
+  c.style.setProperty('--c',hmColors[v]);
+  c.dataset.tip=`${n} violations`;
+  hm.appendChild(c);
+}
+
+// ── MAIN RING ─────────────────────────────────────────────────
+setTimeout(() => {
+  const r = document.getElementById('main-ring');
+  const circ = 2*Math.PI*70;
+  r.style.strokeDasharray = circ;
+  r.style.strokeDashoffset = circ * (1-0.97);
+}, 400);
+
+// ── PPE ZONE GRID ─────────────────────────────────────────────
+const zonesPPE = [
+  {z:'Assembly A', p:98, c:'var(--green)',icon:'🔩'},
+  {z:'Welding B', p:89, c:'var(--amber)',icon:'⚡'},
+  {z:'Paint Shop', p:84, c:'var(--red)',icon:'🎨'},
+  {z:'Forklift', p:92, c:'var(--teal)',icon:'🚜'},
+  {z:'Press Room', p:96, c:'var(--green)',icon:'🔧'},
+  {z:'Electrical', p:99, c:'var(--green)',icon:'⚙️'},
+];
+const zg = document.getElementById('zone-ppe');
+if(zg) zonesPPE.forEach(z => {
+  const d = document.createElement('div');
+  d.className='ppe-card';
+  d.innerHTML=`<div class="ppe-icon">${z.icon}</div><div class="ppe-info">
+    <div class="ppe-name">${z.z}</div>
+    <div class="ppe-compliance">${z.p}%</div>
+    <div class="ppe-bar-wrap"><div class="ppe-bar-fill" style="--c:${z.c}" data-w="${z.p}"></div></div>
+  </div>`;
+  zg.appendChild(d);
+});
+setTimeout(() => document.querySelectorAll('.ppe-bar-fill').forEach(f=>f.style.width=f.dataset.w+'%'), 400);
+
+// PPE Trend Chart
+const trendC = document.getElementById('ppe-trend-chart');
+if(trendC){
+  const td=[18,22,15,28,12,19,25,16,20,8,14,11,24,9,17,22,15,8,19,12,16,11,20,14,9,18,13,22,15,11];
+  const tmx=Math.max(...td);
+  td.forEach((v,i)=>{
+    const g=document.createElement('div');g.className='bar-group';
+    g.innerHTML=`<div class="bar-inner"><div class="bar" style="--c:var(--orange);height:${v/tmx*100}%;animation-delay:${i*0.03}s" data-val="${v}"></div></div>`;
+    trendC.appendChild(g);
+  });
+}
+
+// ── PPE LOG ────────────────────────────────────────────────────
+const ppeLogs = [
+  ['14:23','W-4821','No Hard Hat','Zone B Welding','CAM-04','High','Open'],
+  ['14:19','W-2341','Danger Zone Breach','Forklift Area','CAM-11','High','Pending'],
+  ['13:55','W-8823','No Safety Vest','Paint Shop','CAM-07','Medium','Closed'],
+  ['12:30','W-3301','No Eye Protection','Assembly A','CAM-02','Medium','Closed'],
+  ['11:18','W-5512','Gloves Missing','Press Room','CAM-09','Low','Closed'],
+  ['10:45','W-6678','No Ear Protection','Welding Zone','CAM-03','Low','Closed'],
+  ['09:20','W-1290','Safety Boot Violation','Paint Shop','CAM-06','Medium','Pending'],
+];
+const pl = document.getElementById('ppe-log');
+if(pl) ppeLogs.forEach(r=>{
+  const sev = r[5]==='High'?'sev-high':r[5]==='Medium'?'sev-med':'sev-low';
+  const st = r[6]==='Open'?'status-open':r[6]==='Closed'?'status-closed':'status-pending';
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${r[0]}</td><td style="font-family:var(--font-mono)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td style="font-family:var(--font-mono)">${r[4]}</td>
+    <td><span class="sev-badge ${sev}">${r[5]}</span></td>
+    <td><span class="status-badge ${st}">● ${r[6]}</span></td>`;
+  pl.appendChild(tr);
+});
+
+// ── VIOLATIONS TABLE ───────────────────────────────────────────
+const violations = [
+  ['VIO-235','Today 14:23','PPE — No Helmet','Welding B','W-4821','High','Supervisor notified, helmet issued','Open'],
+  ['VIO-234','Today 14:19','Danger Zone Breach','Forklift Area','W-2341','High','Forklift ops suspended pending review','Pending'],
+  ['VIO-233','Today 13:15','PPE — No Vest','Paint Shop','W-8823','Medium','Vest sourced, worker re-inducted','Closed'],
+  ['VIO-232','Yesterday','Machine Guard Missing','Press Room','–','High','Guard reinstalled, machinery inspected','Closed'],
+  ['VIO-231','Yesterday','Spill — Housekeeping','Welding B','–','Medium','Spill cleaned, SOP revised','Closed'],
+  ['VIO-230','2 days ago','Fire Exit Blocked','Store Room','–','High','Exit cleared, disciplinary action','Closed'],
+  ['VIO-229','2 days ago','Electrical Cable Exposed','Electr. Room','–','High','Cable repaired by certified electrician','Closed'],
+];
+const vt = document.getElementById('violations-table');
+if(vt) violations.forEach(r=>{
+  const sev=r[5]==='High'?'sev-high':r[5]==='Medium'?'sev-med':'sev-low';
+  const st=r[7]==='Open'?'status-open':r[7]==='Closed'?'status-closed':'status-pending';
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td style="font-family:var(--font-mono);color:var(--orange)">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>
+    <td style="font-family:var(--font-mono)">${r[4]}</td>
+    <td><span class="sev-badge ${sev}">${r[5]}</span></td>
+    <td style="font-size:11px">${r[6]}</td>
+    <td><span class="status-badge ${st}">● ${r[7]}</span></td>
+    <td><button class="btn btn-secondary" style="font-size:10px;padding:4px 10px" onclick="showToast('${r[0]} updated','success')">Update</button></td>`;
+  vt.appendChild(tr);
+});
+
+// ── CAMERAS ───────────────────────────────────────────────────
+const cams = [
+  {id:'CAM-01',loc:'Assembly A — Gate',alert:false},
+  {id:'CAM-02',loc:'Assembly A — Mid',alert:false},
+  {id:'CAM-03',loc:'Welding B — Entry',alert:false},
+  {id:'CAM-04',loc:'Welding B — Bay 3',alert:true},
+  {id:'CAM-05',loc:'Paint Shop — Inlet',alert:false},
+  {id:'CAM-06',loc:'Paint Shop — Exit',alert:false},
+  {id:'CAM-07',loc:'Paint Shop — Spray',alert:true},
+  {id:'CAM-08',loc:'Forklift Bay N',alert:false},
+  {id:'CAM-09',loc:'Forklift Bay S',alert:true},
+  {id:'CAM-10',loc:'Press Room — A',alert:false},
+  {id:'CAM-11',loc:'Press Room — B',alert:false},
+  {id:'CAM-12',loc:'Electrical Room',alert:false},
+  {id:'CAM-13',loc:'Store — Gate',alert:false},
+  {id:'CAM-14',loc:'Store — Internal',alert:false},
+  {id:'CAM-15',loc:'Main Entrance',alert:false},
+  {id:'CAM-16',loc:'Emergency Exit',alert:false},
+];
+
+function renderCameras() {
+  const grid = document.getElementById('camera-grid');
+  if(grid.children.length) return;
+  cams.forEach(cam => {
+    const div = document.createElement('div');
+    div.className = 'cam-feed' + (cam.alert?' alert':'');
+    const canvas = document.createElement('canvas');
+    canvas.className = 'cam-canvas';
+    canvas.width = 320; canvas.height = 180;
+    div.appendChild(canvas);
+    div.innerHTML += `<div class="cam-overlay">
+      <div class="cam-top">
+        <div class="cam-id">${cam.id}</div>
+        <div class="cam-rec"><span class="dot-live" style="width:5px;height:5px"></span>REC</div>
+      </div>
+      <div class="cam-bottom">
+        <div class="cam-location">${cam.loc}</div>
+        <div class="cam-alert-box">⚠ VIOLATION</div>
+      </div>
+    </div>`;
+    if(cam.alert){
+      const box = document.createElement('div');
+      box.className='detection-box';
+      const x=30+Math.random()*40, y=20+Math.random()*30;
+      box.style.cssText=`left:${x}%;top:${y}%;width:22%;height:35%`;
+      box.innerHTML='<div class="detection-label">NO HELMET</div>';
+      div.appendChild(box);
+    }
+    grid.appendChild(div);
+    drawCamCanvas(canvas, cam.id, cam.alert);
+  });
+}
+
+function drawCamCanvas(canvas, id, alert) {
+  const ctx = canvas.getContext('2d');
+  const w=canvas.width, h=canvas.height;
+  const hue = parseInt(id.split('-')[1])*22%360;
+  ctx.fillStyle=`hsl(${hue},20%,8%)`;
+  ctx.fillRect(0,0,w,h);
+  // Simulate factory floor grid
+  ctx.strokeStyle=`rgba(255,255,255,0.04)`;
+  ctx.lineWidth=1;
+  for(let x=0;x<w;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let y=0;y<h;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  // Ground plane
+  ctx.fillStyle=`rgba(255,255,255,0.03)`;
+  ctx.fillRect(0,h*0.6,w,h*0.4);
+  // Silhouettes
+  const workers = alert?3:2;
+  for(let i=0;i<workers;i++){
+    const wx=w*(0.2+i*0.3), wy=h*0.5;
+    ctx.fillStyle=`rgba(200,220,255,0.25)`;
+    ctx.beginPath();ctx.ellipse(wx,wy-20,10,14,0,0,Math.PI*2);ctx.fill();
+    ctx.fillRect(wx-8,wy-10,16,28);
+  }
+  // Machinery silhouette
+  ctx.fillStyle=`rgba(255,255,255,0.06)`;
+  ctx.fillRect(w*0.6,h*0.3,w*0.35,h*0.5);
+  ctx.fillRect(w*0.65,h*0.2,w*0.05,h*0.15);
+  // Timestamp
+  ctx.fillStyle='rgba(0,0,0,0.6)';
+  ctx.fillRect(0,h-18,w,18);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.font='9px monospace';
+  ctx.fillText(new Date().toTimeString().slice(0,8), 5, h-5);
+  ctx.textAlign='right';
+  ctx.fillText('SAFEG AI', w-5, h-5);
+  ctx.textAlign='left';
+  // Animate
+  setInterval(()=>{
+    ctx.fillStyle=`rgba(0,0,0,0.1)`;
+    ctx.fillRect(0,0,w,h);
+    const t=Date.now()/1000;
+    if(alert){
+      ctx.fillStyle=`rgba(255,59,59,${0.03+Math.sin(t*2)*0.02})`;
+      ctx.fillRect(0,0,w,h);
+    }
+    ctx.fillStyle='rgba(0,0,0,0.6)';
+    ctx.fillRect(0,h-18,w,18);
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    ctx.font='9px monospace';
+    ctx.fillText(new Date().toTimeString().slice(0,8), 5, h-5);
+    ctx.textAlign='right';
+    ctx.fillText('SAFEG AI', w-5, h-5);
+    ctx.textAlign='left';
+  }, 1000);
+}
+
+// ── INSPECTION CHECKLIST ──────────────────────────────────────
+const checklists = {
+  'checklist-eq': [
+    'All PPE stations stocked and accessible',
+    'Hard hat condition checked — no cracks',
+    'Safety harnesses inspected and logged',
+    'Eye wash stations operational — flow tested',
+    'Emergency showers functional',
+    'First aid boxes restocked and sealed',
+  ],
+  'checklist-mach': [
+    'Machine guards in place on all presses',
+    'Electrical panel covers secured',
+    'Earthing/grounding connections checked',
+    'Lockout-Tagout (LOTO) tags current',
+    'Conveyor belt guards intact',
+    'Hydraulic system pressure nominal',
+  ],
+  'checklist-fire': [
+    'Fire extinguishers in correct locations',
+    'All fire extinguishers within service date',
+    'Sprinkler heads unobstructed',
+    'Fire alarm test conducted — all zones',
+    'Emergency exits clear — no blockage',
+    'Fire evacuation route maps visible',
+  ],
+  'checklist-hk': [
+    'Floors dry — no spills or puddles',
+    'Chemical storage correctly labelled',
+    'Waste bins not overflowing',
+    'Walkways clear of obstacles',
+    'Ventilation units operating — no blockage',
+    'Lighting functional in all zones',
+  ],
+};
+let checkedCount = 0;
+Object.entries(checklists).forEach(([cid, items]) => {
+  const el = document.getElementById(cid);
+  if(!el) return;
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className='check-item';
+    div.innerHTML=`<div class="check-box"></div>
+      <div><div class="check-text">${item}</div></div>`;
+    div.onclick = () => {
+      if(div.classList.contains('checked')){ div.classList.remove('checked'); checkedCount--; }
+      else { div.classList.add('checked'); div.querySelector('.check-box').textContent='✓'; checkedCount++; }
+      document.getElementById('insp-count').textContent = checkedCount;
+    };
+    el.appendChild(div);
+  });
+});
+
+// ── FORM 18 ACTIONS ────────────────────────────────────────────
+function autoFillForm() {
+  document.getElementById('f-declarant').value = 'Suresh Nair';
+  document.getElementById('f-designation').value = 'Plant Manager';
+  document.getElementById('f-contact').value = '+91 98765 43210';
+  document.getElementById('f-occupier').value = 'Rajiv Kapoor';
+  document.getElementById('f-manager').value = 'Suresh Nair';
+  showToast('AI auto-filled all available fields from plant profile', 'success');
+}
+
+function submitForm18() {
+  const declarant = document.getElementById('f-declarant').value;
+  if(!declarant) { showToast('Please fill declarant name before filing','error'); return; }
+  showToast('Form 18 #F18-2024-235 successfully filed — Inspector notified', 'success');
+  setTimeout(()=>showToast('PDF copy saved to compliance folder', 'info'), 1000);
+}
+
+function addInjuredRow() {
+  const tb = document.getElementById('injured-table');
+  const n = tb.rows.length+1;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${n}</td>
+    <td><input type="text" placeholder="Full Name"></td>
+    <td><select><option>Male</option><option>Female</option></select></td>
+    <td><input type="number" style="width:45px"></td>
+    <td><select><option>Permanent – Factory Worker</option><option>Contract Worker</option></select></td>
+    <td><input type="text" style="width:80px"></td>
+    <td><select><option>Minor Injury</option><option>Serious Injury</option><option>Fatal</option></select></td>
+    <td><input type="text"></td>
+    <td><input type="number" style="width:50px"></td>`;
+  tb.appendChild(tr);
+}
+
+function addCapaRow() {
+  const tb = document.getElementById('capa-table');
+  const n = tb.rows.length+1;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>CA-0${n}</td>
+    <td><input type="text" placeholder="Describe corrective action" style="width:100%"></td>
+    <td><input type="text" placeholder="Responsible person" style="width:100%"></td>
+    <td><input type="date" style="width:100%"></td>
+    <td><select><option>Pending</option><option>In Progress</option><option>Completed</option></select></td>`;
+  tb.appendChild(tr);
+}
+
+function logViolation() {
+  closeModal('add-violation');
+  showToast('Violation logged — VIO-236 created and assigned', 'success');
+}
+
+function signOffInspection() {
+  if(checkedCount < 5) { showToast('Complete at least 5 checks before signing off','warning'); return; }
+  showToast(`Inspection signed off — ${checkedCount}/24 items cleared`, 'success');
+}
+
+// ── LIVE KPI PULSE ────────────────────────────────────────────
+setInterval(() => {
+  const v = document.getElementById('kpi-viol');
+  if(v && Math.random()<0.1) {
+    v.style.color='var(--red)';
+    v.style.transform='scale(1.2)';
+    setTimeout(()=>{v.style.transform='scale(1)'},300);
+  }
+}, 5000);
+
+// ── SIDEBAR ACTIVE ─────────────────────────────────────────────
+document.querySelectorAll('.sidebar-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

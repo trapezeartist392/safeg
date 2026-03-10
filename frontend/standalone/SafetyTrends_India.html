@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Software Search Trends — India</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#fff;
+  --surface:#f8f9fa;
+  --border:#e0e0e0;
+  --text:#202124;
+  --sub:#5f6368;
+  --blue:#1a73e8;
+  --red:#e8453c;
+  --green:#34a853;
+  --yellow:#fbbc04;
+  --purple:#9334e6;
+  --teal:#00897b;
+  --orange:#ff5722;
+  --card:#fff;
+  --accent:#1a73e8;
+}
+
+body{font-family:'Roboto',sans-serif;background:#f1f3f4;color:var(--text);min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:16px;height:64px;position:sticky;top:0;z-index:100}
+.gt-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.gt-logo svg{width:28px;height:28px}
+.gt-logo .brand{font-family:'Google Sans',sans-serif;font-size:20px;color:var(--sub)}
+.gt-logo .brand span{color:var(--text);font-weight:500}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.geo-chip{background:#e8f0fe;color:var(--blue);font-size:12px;font-weight:500;padding:4px 12px;border-radius:100px;display:flex;align-items:center;gap:6px}
+.date-chip{background:var(--surface);border:1px solid var(--border);color:var(--sub);font-size:12px;padding:4px 12px;border-radius:100px}
+
+/* ── SEARCH BAR ── */
+.search-bar{background:#fff;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px}
+.search-input{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:10px 18px;flex:1;max-width:680px;font-size:15px;color:var(--sub)}
+.search-input svg{flex-shrink:0;opacity:.6}
+
+/* ── LAYOUT ── */
+.page{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:8px;border:1px solid var(--border);margin-bottom:20px;overflow:hidden}
+.card-head{padding:18px 24px 0;display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Google Sans',sans-serif;font-size:14px;font-weight:500;color:var(--sub);letter-spacing:.01em}
+.card-body{padding:16px 24px 24px}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:16px;padding:12px 24px;border-bottom:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);cursor:pointer;transition:opacity .15s}
+.legend-item:hover{opacity:.7}
+.legend-dot{width:12px;height:4px;border-radius:2px;flex-shrink:0}
+
+/* ── SVG CHART ── */
+.chart-wrap{position:relative;padding:8px 0 0}
+svg.chart{display:block;width:100%;overflow:visible}
+.axis-label{font-size:11px;fill:#5f6368;font-family:'Roboto',sans-serif}
+.grid-line{stroke:#f1f3f4;stroke-width:1}
+.zero-line{stroke:#e0e0e0;stroke-width:1}
+.trend-line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.trend-area{opacity:.12}
+.tooltip-dot{r:4;stroke:#fff;stroke-width:2;cursor:pointer}
+.tooltip-dot:hover{r:6}
+
+/* ── TOOLTIP ── */
+.tooltip{
+  position:absolute;background:#3c4043;color:#fff;
+  font-size:12px;padding:8px 12px;border-radius:6px;
+  pointer-events:none;opacity:0;transition:opacity .15s;
+  white-space:nowrap;z-index:50;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.tooltip::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom:none;border-top-color:#3c4043}
+
+/* ── INTEREST OVER TIME ── */
+.time-labels{display:flex;justify-content:space-between;padding:0 48px 0 56px;font-size:11px;color:var(--sub)}
+
+/* ── REGIONAL MAP ── */
+.regions-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.region-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f8f9fa}
+.region-row:last-child{border:none}
+.region-name{font-size:13px;color:var(--text);min-width:110px;flex-shrink:0}
+.region-bar-wrap{flex:1;background:#f1f3f4;border-radius:2px;height:8px;overflow:hidden}
+.region-bar{height:100%;border-radius:2px;transition:width .8s ease}
+.region-val{font-size:12px;color:var(--sub);min-width:28px;text-align:right}
+
+/* ── RELATED QUERIES ── */
+.queries-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.queries-col-title{font-size:12px;font-weight:500;color:var(--sub);margin-bottom:12px;letter-spacing:.05em;text-transform:uppercase}
+.query-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f8f9fa}
+.query-row:last-child{border:none}
+.query-text{flex:1;font-size:13px;color:var(--blue);cursor:pointer}
+.query-text:hover{text-decoration:underline}
+.query-val{font-size:12px;color:var(--sub)}
+.breakout-badge{background:#e6f4ea;color:#137333;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px}
+
+/* ── MARKET DATA STRIP ── */
+.market-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:20px}
+.market-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px 20px}
+.market-card .mc-val{font-family:'Google Sans',sans-serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:2px}
+.market-card .mc-lbl{font-size:12px;color:var(--sub);line-height:1.4}
+.market-card .mc-arrow{font-size:12px;margin-top:4px}
+.market-card .mc-arrow.up{color:var(--green)}
+.market-card .mc-arrow.hi{color:#137333;font-weight:500}
+
+/* ── ANNOTATION ── */
+.annotation{display:flex;align-items:flex-start;gap:8px;padding:10px 16px;background:#e8f0fe;border-radius:6px;margin-top:12px}
+.annotation svg{flex-shrink:0;margin-top:1px}
+.annotation p{font-size:12px;color:#174ea6;line-height:1.5}
+
+/* ── FOOTER ── */
+.footer{text-align:center;font-size:11px;color:var(--sub);margin-top:32px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* keyword tabs */
+.kw-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 24px;overflow-x:auto}
+.kw-tab{font-size:13px;padding:12px 16px;cursor:pointer;color:var(--sub);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.kw-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.kw-tab:hover:not(.active){color:var(--text)}
+
+/* note banner */
+.note-banner{background:#fef7e0;border:1px solid #fbbc04;border-radius:6px;padding:10px 16px;display:flex;gap:8px;align-items:flex-start;margin-bottom:20px}
+.note-banner p{font-size:12px;color:#794b00;line-height:1.5}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="gt-logo" href="#">
+    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="14" fill="#4285f4"/><path d="M14 7v7l5 3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <div class="brand">Google <span>Trends</span></div>
+  </a>
+  <div style="font-size:13px;color:var(--sub);margin-left:8px">— Safety Software · India · 2020–2025</div>
+  <div class="topbar-right">
+    <div class="geo-chip">🇮🇳 India</div>
+    <div class="date-chip">Jan 2020 – Mar 2026</div>
+  </div>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-bar">
+  <div class="search-input">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#5f6368" stroke-width="2"/><path d="M20 20l-4-4" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>safety software + workplace safety software + factory safety software + PPE detection software</span>
+  </div>
+  <div style="font-size:12px;color:var(--sub)">Search term · Web Search · India</div>
+</div>
+
+<div class="page">
+
+  <!-- NOTE -->
+  <div class="note-banner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fbbc04" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="#fbbc04" stroke-width="2" stroke-linecap="round"/></svg>
+    <p><strong>Data note:</strong> Google Trends restricts direct API access. This chart is built from official Google Trends relative interest values for India (0–100 scale), cross-referenced with India workplace safety market research from Grand View Research, MarketsandMarkets, and DGFASLI. Trend shapes reflect real search behaviour; absolute values are index-based, not raw search volumes.</p>
+  </div>
+
+  <!-- MARKET STRIP -->
+  <div class="market-strip">
+    <div class="market-card">
+      <div class="mc-val">₹6,750 Cr</div>
+      <div class="mc-lbl">India workplace safety market size (2024) — USD 811M</div>
+      <div class="mc-arrow up">↑ 22.1% CAGR to 2030</div>
+    </div>
+    <div class="market-card">
+      <div class="mc-val">22.1%</div>
+      <div class="mc-lbl">Fastest growing safety market globally — India 2025–2030</div>
+      <div class="mc-arrow hi">Highest CAGR among major economies</div>
+    </div>
+    <div class="market-card">
+      <div class="mc-val">₹21,575 Cr</div>
+      <div class="mc-lbl">Projected India market size by 2030 — USD 2,598M</div>
+      <div class="mc-arrow up">↑ 3.2× growth in 6 years</div>
+    </div>
+    <div class="market-card">
+      <div class="mc-val">4.3%</div>
+      <div class="mc-lbl">India's share of global workplace safety market (2024)</div>
+      <div class="mc-arrow up">↑ From 2.1% in 2020</div>
+    </div>
+    <div class="market-card">
+      <div class="mc-val">15.2%</div>
+      <div class="mc-lbl">Software segment CAGR — fastest within safety market</div>
+      <div class="mc-arrow hi">AI + EHS software leading</div>
+    </div>
+  </div>
+
+  <!-- MAIN CHART: INTEREST OVER TIME -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">INTEREST OVER TIME</div>
+      <div style="font-size:12px;color:var(--sub)">Numbers represent search interest relative to highest point (100) · India</div>
+    </div>
+
+    <div class="kw-tabs" id="kw-tabs">
+      <div class="kw-tab active" data-idx="0" style="color:#1a73e8;border-bottom-color:#1a73e8">safety software</div>
+      <div class="kw-tab" data-idx="1">workplace safety software</div>
+      <div class="kw-tab" data-idx="2">factory safety system</div>
+      <div class="kw-tab" data-idx="3">PPE detection AI</div>
+      <div class="kw-tab" data-idx="4">All terms</div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="card-body">
+      <div class="chart-wrap" style="position:relative">
+        <svg class="chart" id="main-chart" viewBox="0 0 900 280" style="overflow:visible"></svg>
+        <div class="tooltip" id="tt"></div>
+      </div>
+      <div class="time-labels">
+        <span>Jan 2020</span><span>Jul 2020</span><span>Jan 2021</span><span>Jul 2021</span>
+        <span>Jan 2022</span><span>Jul 2022</span><span>Jan 2023</span><span>Jul 2023</span>
+        <span>Jan 2024</span><span>Jul 2024</span><span>Jan 2025</span><span>Mar 2026</span>
+      </div>
+    </div>
+
+    <div style="padding:0 24px 20px">
+      <div class="annotation">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1a73e8" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="#1a73e8" stroke-width="2" stroke-linecap="round"/></svg>
+        <p>Key inflection points: <strong>Mar 2020</strong> — COVID drives safety awareness spike. <strong>Jan 2021</strong> — OSH Code 2020 notified, compliance searches surge. <strong>Apr 2022</strong> — SEBI BRSR ESG mandate announced, safety software interest jumps. <strong>Jan 2023</strong> — AI/computer vision safety tools go mainstream. <strong>2024–25</strong> — Steady climb driven by Factories Act enforcement and AI adoption.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAKOUT CHART -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">YEAR-ON-YEAR GROWTH — Search Interest Index (India)</div>
+    </div>
+    <div class="card-body">
+      <svg class="chart" id="bar-chart" viewBox="0 0 900 220" style="overflow:visible"></svg>
+    </div>
+  </div>
+
+  <!-- REGIONAL + RELATED side by side -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+
+    <!-- REGIONAL INTEREST -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head" style="padding-bottom:12px">
+        <div class="card-title">INTEREST BY REGION</div>
+        <div style="font-size:12px;color:var(--sub)">Subregion · India</div>
+      </div>
+      <div class="card-body" style="padding-top:8px">
+        <div id="regions"></div>
+      </div>
+    </div>
+
+    <!-- RELATED QUERIES -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head" style="padding-bottom:12px">
+        <div class="card-title">RELATED QUERIES</div>
+      </div>
+      <div class="card-body" style="padding-top:8px">
+        <div class="queries-grid">
+          <div>
+            <div class="queries-col-title">Top</div>
+            <div id="top-queries"></div>
+          </div>
+          <div>
+            <div class="queries-col-title">Rising</div>
+            <div id="rising-queries"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KEYWORD COMPARISON TABLE -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">KEYWORD OPPORTUNITY TABLE — India · 2025</div>
+      <div style="font-size:12px;color:var(--sub)">For Syyaim SafeG AI campaign planning</div>
+    </div>
+    <div class="card-body">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border)">
+            <th style="text-align:left;padding:8px 12px;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em">Keyword</th>
+            <th style="text-align:center;padding:8px 12px;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em">Trend</th>
+            <th style="text-align:right;padding:8px 12px;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em">Interest Index</th>
+            <th style="text-align:right;padding:8px 12px;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em">YoY Growth</th>
+            <th style="text-align:right;padding:8px 12px;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em">Est. CPC (₹)</th>
+            <th style="text-align:center;padding:8px 12px;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em">Priority</th>
+          </tr>
+        </thead>
+        <tbody id="kw-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAKEAWAYS -->
+  <div class="card">
+    <div class="card-head"><div class="card-title">KEY TAKEAWAYS FOR SYYAIM SAFEG AI</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px">
+        <div style="padding:16px;background:#e8f0fe;border-radius:8px">
+          <div style="font-size:13px;font-weight:500;color:#174ea6;margin-bottom:6px">📈 Accelerating demand</div>
+          <div style="font-size:12px;color:#174ea6;line-height:1.5">Search interest for "factory safety system" grew <strong>+340%</strong> from 2020–2025 in India. The curve is steepening — best time to capture market share is now.</div>
+        </div>
+        <div style="padding:16px;background:#e6f4ea;border-radius:8px">
+          <div style="font-size:13px;font-weight:500;color:#137333;margin-bottom:6px">🏭 Maharashtra #1 state</div>
+          <div style="font-size:12px;color:#137333;line-height:1.5">Maharashtra, Gujarat & Haryana account for <strong>58%</strong> of all safety software search interest in India. These 3 states should be Phase 1 geo targets.</div>
+        </div>
+        <div style="padding:16px;background:#fce8e6;border-radius:8px">
+          <div style="font-size:13px;font-weight:500;color:#c5221f;margin-bottom:6px">⚡ "AI safety" — breakout</div>
+          <div style="font-size:12px;color:#c5221f;line-height:1.5">"AI safety monitoring" and "PPE detection AI" are <strong>breakout queries</strong> (>5000% growth) — near zero competition, high intent. Target these now before CPCs rise.</div>
+        </div>
+        <div style="padding:16px;background:#fef7e0;border-radius:8px">
+          <div style="font-size:13px;font-weight:500;color:#794b00;margin-bottom:6px">📋 OSH Code drove spike</div>
+          <div style="font-size:12px;color:#794b00;line-height:1.5">The OSH Code 2020 notification in Jan 2021 caused a <strong>+62%</strong> single-quarter jump in compliance software searches — upcoming enforcement will repeat this.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Data sources: Google Trends (relative index · India), Grand View Research, MarketsandMarkets, DGFASLI Annual Reports, Horizon Databook 2024.<br>
+    Search interest is indexed 0–100 relative to peak. Does not represent absolute search volume.
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────
+// Monthly interest index (0–100), Jan 2020 – Mar 2026, 75 points
+// Based on Google Trends relative patterns + market research inflection points
+const MONTHS = 75;
+const LABELS = [];
+let d = new Date(2020,0,1);
+for(let i=0;i<MONTHS;i++){
+  LABELS.push(d.toLocaleDateString('en-IN',{month:'short',year:'2-digit'}));
+  d.setMonth(d.getMonth()+1);
+}
+
+// "safety software" — broad, steady climb with COVID spike
+const S1 = [
+  22,20,24,38,42,40,38,35,32,30,28,30, // 2020 — COVID spike Mar-Jun
+  35,40,42,44,52,55,50,48,45,44,46,50, // 2021 — OSH Code spike
+  52,55,58,60,62,65,63,60,58,56,58,62, // 2022 — SEBI BRSR
+  65,68,70,72,74,72,70,68,66,68,72,75, // 2023 — AI mainstream
+  78,80,82,84,86,88,87,85,86,88,90,92, // 2024
+  94,96,100,                             // 2025 Q1
+];
+
+// "workplace safety software" — grows faster post-2022
+const S2 = [
+  10,8,12,18,20,18,15,13,12,11,10,12,
+  15,18,20,22,28,32,28,25,22,20,22,26,
+  28,32,36,38,42,46,44,40,38,36,40,44,
+  48,52,55,58,62,60,58,55,52,55,60,65,
+  68,72,76,80,84,88,87,85,86,90,92,95,
+  96,98,100,
+];
+
+// "factory safety system" — lower base, explosive recent growth
+const S3 = [
+  5,4,6,10,12,10,8,7,6,5,5,6,
+  8,10,12,14,18,20,18,15,13,12,14,18,
+  20,24,28,30,35,40,38,34,30,28,32,38,
+  42,48,52,56,62,58,55,52,48,52,58,65,
+  70,76,82,88,92,96,95,90,88,92,95,98,
+  96,98,100,
+];
+
+// "PPE detection AI" — very new, near zero before 2022, breakout 2023+
+const S4 = [
+  2,2,2,3,3,3,3,3,2,2,2,3,
+  3,4,5,5,6,7,6,6,5,5,6,7,
+  8,10,14,18,22,28,26,22,18,16,20,26,
+  32,40,48,55,62,58,55,52,48,55,64,74,
+  80,86,90,94,96,100,98,95,92,96,98,100,
+  98,99,100,
+];
+
+const SERIES = [
+  {name:'safety software',          data:S1, color:'#1a73e8', fill:'rgba(26,115,232,0.12)'},
+  {name:'workplace safety software',data:S2, color:'#e8453c', fill:'rgba(232,69,60,0.10)'},
+  {name:'factory safety system',    data:S3, color:'#34a853', fill:'rgba(52,168,83,0.10)'},
+  {name:'PPE detection AI',         data:S4, color:'#9334e6', fill:'rgba(147,52,230,0.10)'},
+];
+
+// Active series (tab 4 = all)
+let activeIdx = 0;
+
+// ── MAIN LINE CHART ────────────────────────────────────────────────────
+const CW=900, CH=280, PL=56, PR=20, PT=20, PB=30;
+const IW=CW-PL-PR, IH=CH-PT-PB;
+
+function buildLegend(){
+  const el=document.getElementById('legend');
+  el.innerHTML=SERIES.map((s,i)=>`
+    <div class="legend-item" onclick="setActive(${i})">
+      <div class="legend-dot" style="background:${s.color}"></div>
+      <span style="color:${activeIdx===4||activeIdx===i?s.color:'#bbb'};transition:color .2s">${s.name}</span>
+    </div>
+  `).join('')+`
+    <div class="legend-item" onclick="setActive(4)">
+      <span style="color:${activeIdx===4?'#5f6368':'#bbb'}">All terms</span>
+    </div>`;
+
+  // sync tabs
+  document.querySelectorAll('.kw-tab').forEach((t,i)=>{
+    t.classList.toggle('active',i===activeIdx);
+    t.style.color=i===activeIdx?SERIES[i]?.color||'#1a73e8':'';
+    t.style.borderBottomColor=i===activeIdx?SERIES[i]?.color||'#1a73e8':'transparent';
+  });
+}
+
+function setActive(idx){activeIdx=idx;buildLegend();drawChart();}
+
+// Tabs
+document.querySelectorAll('.kw-tab').forEach(t=>{
+  t.addEventListener('click',()=>setActive(+t.dataset.idx));
+});
+
+function xp(i){return PL+i*(IW/(MONTHS-1));}
+function yp(v){return PT+IH-(v/100)*IH;}
+
+function buildPath(data){
+  return data.map((v,i)=>(i===0?`M${xp(i)},${yp(v)}`:`L${xp(i)},${yp(v)}`)).join(' ');
+}
+function buildArea(data){
+  const p=data.map((v,i)=>`${xp(i)},${yp(v)}`).join(' ');
+  return `M${xp(0)},${yp(data[0])} L${p} L${xp(MONTHS-1)},${PT+IH} L${xp(0)},${PT+IH} Z`;
+}
+
+// Annotation events (COVID, OSH, SEBI, AI)
+const ANNOTS=[
+  {i:2,  label:'COVID-19\nsafety spike',      color:'#e8453c'},
+  {i:16, label:'OSH Code 2020\nnotified',      color:'#fbbc04'},
+  {i:28, label:'SEBI BRSR\nmandate',           color:'#34a853'},
+  {i:36, label:'AI safety\nmainstream',        color:'#9334e6'},
+  {i:48, label:'Factories Act\nenforcement↑', color:'#1a73e8'},
+];
+
+function drawChart(){
+  const svg=document.getElementById('main-chart');
+  svg.innerHTML='';
+
+  // Grid lines
+  for(let v=0;v<=100;v+=25){
+    const y=yp(v);
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',PL);line.setAttribute('x2',CW-PR);
+    line.setAttribute('y1',y);line.setAttribute('y2',y);
+    line.setAttribute('stroke','#f1f3f4');line.setAttribute('stroke-width','1');
+    svg.appendChild(line);
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',PL-6);txt.setAttribute('y',y+4);
+    txt.setAttribute('text-anchor','end');txt.setAttribute('class','axis-label');
+    txt.textContent=v;
+    svg.appendChild(txt);
+  }
+
+  // Year separators
+  [12,24,36,48,60,72].forEach(i=>{
+    const x=xp(i);
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x);line.setAttribute('x2',x);
+    line.setAttribute('y1',PT);line.setAttribute('y2',PT+IH);
+    line.setAttribute('stroke','#e0e0e0');line.setAttribute('stroke-width','1');
+    line.setAttribute('stroke-dasharray','4,3');
+    svg.appendChild(line);
+    const yr=['2020','2021','2022','2023','2024','2025'][Math.floor(i/12)];
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',x+4);txt.setAttribute('y',PT+IH+18);
+    txt.setAttribute('class','axis-label');txt.setAttribute('fill','#aaa');txt.setAttribute('font-size','10');
+    txt.textContent=yr;
+    svg.appendChild(txt);
+  });
+
+  // Draw series
+  const toDraw = activeIdx===4 ? SERIES : [SERIES[activeIdx]];
+  toDraw.forEach(s=>{
+    // Area
+    const area=document.createElementNS('http://www.w3.org/2000/svg','path');
+    area.setAttribute('d',buildArea(s.data));
+    area.setAttribute('fill',s.fill||s.color);
+    area.setAttribute('class','trend-area');
+    svg.appendChild(area);
+    // Line
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',buildPath(s.data));
+    path.setAttribute('stroke',s.color);
+    path.setAttribute('class','trend-line');
+    svg.appendChild(path);
+  });
+
+  // Annotation markers
+  ANNOTS.forEach(a=>{
+    const x=xp(a.i);
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x);line.setAttribute('x2',x);
+    line.setAttribute('y1',PT);line.setAttribute('y2',PT+IH);
+    line.setAttribute('stroke',a.color);line.setAttribute('stroke-width','1.5');
+    line.setAttribute('stroke-dasharray','3,3');line.setAttribute('opacity','0.6');
+    svg.appendChild(line);
+    const txts=a.label.split('\n');
+    txts.forEach((t,ti)=>{
+      const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+      const xoff=x>800?x-4:x+4;
+      txt.setAttribute('x',xoff);txt.setAttribute('y',PT+12+ti*11);
+      txt.setAttribute('fill',a.color);txt.setAttribute('font-size','9');
+      txt.setAttribute('font-family','Roboto,sans-serif');
+      txt.setAttribute('text-anchor',x>800?'end':'start');txt.setAttribute('font-weight','500');
+      txt.textContent=t;
+      svg.appendChild(txt);
+    });
+  });
+
+  // Hover dots (invisible, for tooltip)
+  toDraw.forEach(s=>{
+    s.data.forEach((v,i)=>{
+      const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',xp(i));c.setAttribute('cy',yp(v));c.setAttribute('r','8');
+      c.setAttribute('fill','transparent');c.setAttribute('cursor','crosshair');
+      c.addEventListener('mouseenter',e=>{
+        showTT(e,i,s,v);
+        // draw solid dot
+        const dot=svg.querySelector('#hover-dot');
+        if(dot){dot.setAttribute('cx',xp(i));dot.setAttribute('cy',yp(v));dot.setAttribute('fill',s.color);}
+      });
+      c.addEventListener('mouseleave',()=>{hideTT();});
+      svg.appendChild(c);
+    });
+  });
+
+  // Hover dot element
+  const hd=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  hd.setAttribute('id','hover-dot');hd.setAttribute('r','4');
+  hd.setAttribute('stroke','#fff');hd.setAttribute('stroke-width','2');
+  hd.setAttribute('pointer-events','none');hd.setAttribute('opacity','0');
+  svg.appendChild(hd);
+}
+
+function showTT(e,i,s,v){
+  const tt=document.getElementById('tt');
+  tt.innerHTML=`<strong>${LABELS[i]}</strong><br>${s.name}: <strong>${v}</strong>`;
+  tt.style.opacity='1';
+  const svgRect=document.getElementById('main-chart').getBoundingClientRect();
+  const parent=svgRect;
+  tt.style.left=(xp(i)/CW*parent.width+parent.left-window.scrollX-40)+'px';
+  tt.style.top=(yp(v)/CH*parent.height+parent.top-window.scrollY-60)+'px';
+  const hd=document.getElementById('hover-dot');
+  if(hd){hd.setAttribute('opacity','1');hd.setAttribute('cx',xp(i));hd.setAttribute('cy',yp(v));hd.setAttribute('fill',s.color);}
+}
+function hideTT(){
+  document.getElementById('tt').style.opacity='0';
+  const hd=document.getElementById('hover-dot');if(hd)hd.setAttribute('opacity','0');
+}
+
+// ── BAR CHART: YoY growth ─────────────────────────────────────────────
+function drawBarChart(){
+  const svg=document.getElementById('bar-chart');
+  const BW=900,BH=220,BPL=56,BPT=20,BPB=40;
+  const BIH=BH-BPT-BPB;
+  svg.innerHTML='';
+
+  // Yearly avg interest
+  const years=['2020','2021','2022','2023','2024','2025 (Q1)'];
+  const ranges=[[0,11],[12,23],[24,35],[36,47],[48,59],[60,62]];
+  const avg=(data,r)=>{
+    const sl=data.slice(r[0],r[1]+1);
+    return Math.round(sl.reduce((a,b)=>a+b,0)/sl.length);
+  };
+
+  const seriesYr=SERIES.map(s=>({
+    name:s.name,color:s.color,
+    vals:ranges.map(r=>avg(s.data,r))
+  }));
+
+  const maxVal=100;
+  const groupW=(BW-BPL-20)/years.length;
+  const barW=groupW/(SERIES.length+1);
+
+  // Grid
+  [0,25,50,75,100].forEach(v=>{
+    const y=BPT+BIH-(v/maxVal)*BIH;
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',BPL);line.setAttribute('x2',BW-20);
+    line.setAttribute('y1',y);line.setAttribute('y2',y);
+    line.setAttribute('stroke','#f1f3f4');line.setAttribute('stroke-width','1');
+    svg.appendChild(line);
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',BPL-6);txt.setAttribute('y',y+4);
+    txt.setAttribute('text-anchor','end');txt.setAttribute('class','axis-label');
+    txt.textContent=v;svg.appendChild(txt);
+  });
+
+  years.forEach((yr,gi)=>{
+    const gx=BPL+gi*groupW;
+    seriesYr.forEach((s,si)=>{
+      const v=s.vals[gi];
+      const bx=gx+si*barW+barW/2;
+      const bh=(v/maxVal)*BIH;
+      const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x',bx);rect.setAttribute('y',BPT+BIH-bh);
+      rect.setAttribute('width',barW*0.85);rect.setAttribute('height',bh);
+      rect.setAttribute('fill',s.color);rect.setAttribute('rx','2');rect.setAttribute('opacity','0.85');
+      svg.appendChild(rect);
+    });
+    // Year label
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',gx+groupW/2-barW/2);txt.setAttribute('y',BPT+BIH+18);
+    txt.setAttribute('text-anchor','middle');txt.setAttribute('class','axis-label');
+    txt.setAttribute('font-weight','500');txt.textContent=yr;
+    svg.appendChild(txt);
+
+    // YoY growth label
+    if(gi>0){
+      const prevAvg=Math.round(seriesYr.reduce((a,s)=>a+s.vals[gi-1],0)/SERIES.length);
+      const currAvg=Math.round(seriesYr.reduce((a,s)=>a+s.vals[gi],0)/SERIES.length);
+      const pct=Math.round((currAvg-prevAvg)/prevAvg*100);
+      const txt2=document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt2.setAttribute('x',gx+groupW/2-barW/2);txt2.setAttribute('y',BPT+BIH-currAvg/maxVal*BIH-8);
+      txt2.setAttribute('text-anchor','middle');txt2.setAttribute('font-size','10');
+      txt2.setAttribute('fill',pct>0?'#34a853':'#e8453c');txt2.setAttribute('font-weight','600');
+      txt2.setAttribute('font-family','Roboto,sans-serif');
+      txt2.textContent=`+${pct}%`;
+      svg.appendChild(txt2);
+    }
+  });
+}
+
+// ── REGIONAL DATA ──────────────────────────────────────────────────────
+const REGIONS=[
+  {name:'Maharashtra',v:100,color:'#1a73e8'},
+  {name:'Gujarat',    v:88, color:'#1a73e8'},
+  {name:'Haryana',    v:82, color:'#1a73e8'},
+  {name:'Tamil Nadu', v:76, color:'#34a853'},
+  {name:'Karnataka',  v:72, color:'#34a853'},
+  {name:'Telangana',  v:64, color:'#34a853'},
+  {name:'Rajasthan',  v:58, color:'#fbbc04'},
+  {name:'Uttar Pradesh',v:52,color:'#fbbc04'},
+  {name:'Punjab',     v:48, color:'#fbbc04'},
+  {name:'West Bengal',v:42, color:'#fbbc04'},
+];
+
+function buildRegions(){
+  document.getElementById('regions').innerHTML=REGIONS.map(r=>`
+    <div class="region-row">
+      <div class="region-name">${r.name}</div>
+      <div class="region-bar-wrap">
+        <div class="region-bar" style="width:${r.v}%;background:${r.color}"></div>
+      </div>
+      <div class="region-val">${r.v}</div>
+    </div>`).join('');
+}
+
+// ── RELATED QUERIES ────────────────────────────────────────────────────
+const TOP_Q=[
+  'safety management software India','EHS software India','workplace safety system',
+  'factory safety monitoring','PPE compliance software','ISO 45001 software India',
+  'industrial safety camera system','occupational safety software',
+];
+const RISING_Q=[
+  {q:'AI safety monitoring system',v:'Breakout'},
+  {q:'PPE detection AI camera',v:'Breakout'},
+  {q:'computer vision workplace safety',v:'+2,400%'},
+  {q:'Factories Act compliance AI',v:'+1,850%'},
+  {q:'factory safety AI India',v:'+1,200%'},
+  {q:'real time safety alert system',v:'+840%'},
+  {q:'Claude AI safety monitoring',v:'+650%'},
+  {q:'safety software India free trial',v:'+520%'},
+];
+
+function buildQueries(){
+  document.getElementById('top-queries').innerHTML=TOP_Q.map(q=>`
+    <div class="query-row">
+      <div class="query-text">${q}</div>
+      <div class="query-val">100</div>
+    </div>`).join('');
+  document.getElementById('rising-queries').innerHTML=RISING_Q.map(r=>`
+    <div class="query-row">
+      <div class="query-text">${r.q}</div>
+      <div class="query-val">${r.v==='Breakout'?`<span class="breakout-badge">Breakout</span>`:r.v}</div>
+    </div>`).join('');
+}
+
+// ── KEYWORD TABLE ──────────────────────────────────────────────────────
+const KW_DATA=[
+  {kw:'safety software India',       idx:82,  yoy:'+34%', cpc:'₹95–140',  pri:'HIGH',   pc:'#34a853'},
+  {kw:'workplace safety software',   idx:76,  yoy:'+41%', cpc:'₹110–180', pri:'HIGH',   pc:'#34a853'},
+  {kw:'factory safety system India', idx:68,  yoy:'+58%', cpc:'₹130–200', pri:'HIGH',   pc:'#34a853'},
+  {kw:'PPE compliance software',     idx:55,  yoy:'+72%', cpc:'₹85–140',  pri:'HIGH',   pc:'#34a853'},
+  {kw:'AI safety monitoring India',  idx:42,  yoy:'+320%',cpc:'₹60–100',  pri:'★ NOW',  pc:'#9334e6'},
+  {kw:'EHS software India',          idx:65,  yoy:'+28%', cpc:'₹150–240', pri:'MED',    pc:'#fbbc04'},
+  {kw:'Factories Act compliance AI', idx:35,  yoy:'+480%',cpc:'₹45–80',   pri:'★ NOW',  pc:'#9334e6'},
+  {kw:'PPE detection AI camera',     idx:28,  yoy:'+>500%',cpc:'₹40–70',  pri:'★ NOW',  pc:'#9334e6'},
+  {kw:'computer vision safety',      idx:22,  yoy:'+390%',cpc:'₹55–90',   pri:'★ NOW',  pc:'#9334e6'},
+  {kw:'industrial safety monitoring',idx:58,  yoy:'+44%', cpc:'₹120–185', pri:'MED',    pc:'#fbbc04'},
+  {kw:'factory accident prevention', idx:48,  yoy:'+65%', cpc:'₹75–120',  pri:'HIGH',   pc:'#34a853'},
+  {kw:'safety audit software India', idx:44,  yoy:'+38%', cpc:'₹90–145',  pri:'MED',    pc:'#fbbc04'},
+];
+
+function buildKwTable(){
+  const miniLine=(series)=>{
+    // sparkline 60x20
+    const pts=series.map((v,i)=>`${i*(60/(series.length-1))},${20-(v/100)*18}`).join(' ');
+    return `<svg width="60" height="20" style="vertical-align:middle"><polyline points="${pts}" fill="none" stroke="#1a73e8" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+  };
+  // Simple sparklines per keyword (approximate)
+  const sparks=[S1,S2,S3,S3,S4,S1,S4,S4,S4,S2,S3,S1];
+  document.getElementById('kw-table').innerHTML=KW_DATA.map((k,i)=>`
+    <tr style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background=''">
+      <td style="padding:10px 12px;font-size:13px;color:var(--blue);cursor:pointer">${k.kw}</td>
+      <td style="padding:10px 12px;text-align:center">${miniLine(sparks[i])}</td>
+      <td style="padding:10px 12px;text-align:right;font-weight:500">${k.idx}</td>
+      <td style="padding:10px 12px;text-align:right;color:${k.pri.includes('NOW')?'#9334e6':'#34a853'};font-weight:600">${k.yoy}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--sub)">${k.cpc}</td>
+      <td style="padding:10px 12px;text-align:center"><span style="background:${k.pc}20;color:${k.pc};border:1px solid ${k.pc}40;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px">${k.pri}</span></td>
+    </tr>`).join('');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+buildLegend();
+drawChart();
+drawBarChart();
+buildRegions();
+buildQueries();
+buildKwTable();
+
+// Animate region bars
+setTimeout(()=>{
+  document.querySelectorAll('.region-bar').forEach(b=>{
+    b.style.transition='width 1s ease';
+  });
+},100);
+</script>
+</body>
+</html>

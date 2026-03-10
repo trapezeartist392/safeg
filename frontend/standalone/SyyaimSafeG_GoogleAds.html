@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syyaim SafeG AI — Google Ads Package</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080A12;
+    --surface:  #0E1220;
+    --card:     #141826;
+    --orange:   #FF6418;
+    --orange2:  #FF8C3C;
+    --teal:     #00D4B4;
+    --blue:     #3C78FF;
+    --red:      #FF4141;
+    --green:    #28D264;
+    --amber:    #FFB900;
+    --white:    #F0F4FF;
+    --grey1:    #C8D4F0;
+    --grey2:    #7888A8;
+    --grey3:    #3A4460;
+    --line:     #1E2848;
+  }
+
+  body {
+    background: #05060F;
+    font-family: 'Poppins', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .page-header .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;
+    font-size: 13px; font-weight: 600; color: var(--orange); letter-spacing: 0.05em;
+  }
+  .page-header h1 { font-size: clamp(28px,4vw,44px); font-weight: 800; line-height: 1.1; }
+  .page-header h1 span { color: var(--orange); }
+  .page-header p { margin-top: 12px; color: var(--grey2); font-size: 15px; }
+
+  /* ── SECTION LABELS ── */
+  .section { max-width: 960px; margin: 0 auto 64px; }
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .section-label .tag {
+    background: var(--orange); color: #fff;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    padding: 4px 12px; border-radius: 100px; text-transform: uppercase;
+  }
+  .section-label h2 { font-size: 20px; font-weight: 700; }
+  .section-label .note { margin-left: auto; font-size: 12px; color: var(--grey2); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── SEARCH AD CARDS ── */
+  .search-ads { display: flex; flex-direction: column; gap: 20px; }
+
+  .search-ad-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .search-ad-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+
+  .ad-card-header {
+    background: var(--surface);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .ad-type-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 3px 10px; border-radius: 100px; text-transform: uppercase;
+  }
+  .badge-search  { background: rgba(60,120,255,0.15); color: var(--blue); border: 1px solid rgba(60,120,255,0.3); }
+  .badge-rsa     { background: rgba(255,100,24,0.15); color: var(--orange); border: 1px solid rgba(255,100,24,0.3); }
+  .ad-card-header .audience { margin-left: auto; font-size: 11px; color: var(--grey2); }
+
+  .ad-preview {
+    padding: 20px 24px;
+    background: #fff;
+    color: #202124;
+  }
+  .ad-preview .ad-label {
+    font-size: 11px; color: #188038;
+    font-family: Arial, sans-serif; margin-bottom: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ad-preview .ad-label::before {
+    content: 'Sponsored';
+    background: #e8f0fe;
+    color: #1a73e8;
+    font-size: 10px; padding: 1px 5px; border-radius: 3px;
+    font-weight: 500;
+  }
+  .ad-preview .ad-url {
+    font-size: 14px; color: #202124; font-family: Arial, sans-serif;
+    margin-bottom: 4px;
+  }
+  .ad-preview .ad-title {
+    font-size: 20px; color: #1a0dab;
+    font-family: Arial, sans-serif; font-weight: 400;
+    line-height: 1.3; margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .ad-preview .ad-title:hover { text-decoration: underline; }
+  .ad-preview .ad-desc {
+    font-size: 14px; color: #4d5156;
+    font-family: Arial, sans-serif; line-height: 1.5;
+  }
+  .ad-preview .sitelinks {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+  }
+  .ad-preview .sitelink {
+    font-size: 13px; color: #1a0dab;
+    font-family: Arial, sans-serif; cursor: pointer;
+    text-decoration: none; border-bottom: 1px solid transparent;
+  }
+  .ad-preview .sitelink:hover { border-bottom-color: #1a0dab; }
+
+  /* ── AD COPY BREAKDOWN ── */
+  .copy-breakdown {
+    padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .copy-group { }
+  .copy-group-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--grey2); margin-bottom: 8px;
+  }
+  .copy-items { display: flex; flex-direction: column; gap: 6px; }
+  .copy-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--surface); border-radius: 8px; padding: 10px 14px;
+    border: 1px solid var(--line);
+  }
+  .copy-item .num {
+    min-width: 20px; height: 20px; border-radius: 50%;
+    background: var(--orange); color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .copy-item .text { font-size: 13px; color: var(--white); line-height: 1.4; flex: 1; }
+  .copy-item .char-count {
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--grey3); flex-shrink: 0; margin-top: 2px;
+  }
+  .copy-item .char-count.ok  { color: var(--green); }
+  .copy-item .char-count.warn { color: var(--amber); }
+
+  .copy-divider { height: 1px; background: var(--line); }
+
+  /* ── KEYWORD TABLE ── */
+  .keyword-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .keyword-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .keyword-card:hover { border-color: var(--teal); }
+  .kw-group-name {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 10px;
+  }
+  .kw-list { display: flex; flex-direction: column; gap: 6px; }
+  .kw-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--grey1);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .kw-match {
+    font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700;
+    letter-spacing: 0.08em; flex-shrink: 0;
+  }
+  .match-exact  { background: rgba(40,210,100,0.15); color: var(--green);  border: 1px solid rgba(40,210,100,0.3); }
+  .match-phrase { background: rgba(60,120,255,0.15); color: var(--blue);   border: 1px solid rgba(60,120,255,0.3); }
+  .match-broad  { background: rgba(255,185,0,0.15);  color: var(--amber);  border: 1px solid rgba(255,185,0,0.3); }
+
+  /* ── DISPLAY AD BANNER ── */
+  .display-ad-wrap {
+    display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;
+  }
+
+  /* Leaderboard 728×90 */
+  .banner-leaderboard {
+    width: 728px; height: 90px;
+    background: linear-gradient(135deg, #080A12 0%, #0E1528 100%);
+    border-radius: 8px; overflow: hidden; position: relative;
+    display: flex; align-items: center;
+    border: 1px solid rgba(255,100,24,0.3);
+    box-shadow: 0 0 40px rgba(255,100,24,0.08);
+    flex-shrink: 0;
+  }
+  .banner-leaderboard .lb-accent {
+    width: 5px; height: 100%; background: var(--orange); flex-shrink: 0;
+  }
+  .banner-leaderboard .lb-shield {
+    width: 56px; height: 56px; margin: 0 16px;
+    flex-shrink: 0; position: relative;
+  }
+  .banner-leaderboard .lb-shield svg { width: 100%; height: 100%; }
+  .banner-leaderboard .lb-content { flex: 1; padding-right: 12px; }
+  .banner-leaderboard .lb-headline {
+    font-size: 17px; font-weight: 800; color: #fff; line-height: 1.1;
+    white-space: nowrap;
+  }
+  .banner-leaderboard .lb-headline span { color: var(--orange); }
+  .banner-leaderboard .lb-sub {
+    font-size: 11px; color: var(--grey1); margin-top: 2px;
+    white-space: nowrap;
+  }
+  .banner-leaderboard .lb-stats {
+    display: flex; gap: 16px; margin-left: auto; padding: 0 16px;
+    flex-shrink: 0;
+  }
+  .lb-stat { text-align: center; }
+  .lb-stat .val { font-size: 18px; font-weight: 800; color: var(--orange); line-height: 1; }
+  .lb-stat .lbl { font-size: 9px; color: var(--grey2); margin-top: 2px; white-space: nowrap; }
+  .banner-leaderboard .lb-cta {
+    background: var(--orange); color: #fff; font-weight: 700;
+    font-size: 12px; padding: 10px 18px; margin-right: 12px;
+    border-radius: 6px; white-space: nowrap; cursor: pointer;
+    transition: background 0.2s; flex-shrink: 0;
+    border: none; font-family: 'Poppins', sans-serif;
+  }
+  .banner-leaderboard .lb-cta:hover { background: var(--orange2); }
+
+  /* Medium Rectangle 300×250 */
+  .banner-mrec {
+    width: 300px; height: 250px;
+    background: linear-gradient(160deg, #080A12 0%, #0E1528 60%, #12182E 100%);
+    border-radius: 12px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+    border: 1px solid rgba(255,100,24,0.25);
+    box-shadow: 0 0 60px rgba(255,100,24,0.07);
+    padding: 20px;
+    flex-shrink: 0;
+  }
+  .banner-mrec::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--orange), var(--orange2), var(--teal));
+  }
+  .mrec-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,100,24,0.12); border: 1px solid rgba(255,100,24,0.3);
+    border-radius: 100px; padding: 3px 10px;
+    font-size: 9px; font-weight: 700; color: var(--orange);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+    width: fit-content;
+  }
+  .mrec-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--orange); animation: blink 1.2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  .mrec-headline {
+    font-size: 20px; font-weight: 800; line-height: 1.15; color: #fff;
+    margin-bottom: 8px;
+  }
+  .mrec-headline span { color: var(--orange); }
+  .mrec-sub {
+    font-size: 11px; color: var(--grey1); line-height: 1.4; margin-bottom: 14px; flex: 1;
+  }
+  .mrec-stats {
+    display: flex; gap: 10px; margin-bottom: 14px;
+  }
+  .mrec-stat {
+    flex: 1; background: rgba(255,255,255,0.04); border-radius: 6px;
+    padding: 6px 8px; border: 1px solid var(--line);
+  }
+  .mrec-stat .v { font-size: 15px; font-weight: 800; color: var(--orange); }
+  .mrec-stat .l { font-size: 8px; color: var(--grey2); margin-top: 1px; line-height: 1.2; }
+  .mrec-cta {
+    background: var(--orange);
+    color: #fff; font-weight: 700; font-size: 13px;
+    padding: 11px 0; border-radius: 8px; text-align: center;
+    cursor: pointer; transition: background 0.2s;
+    border: none; width: 100%; font-family: 'Poppins', sans-serif;
+  }
+  .mrec-cta:hover { background: var(--orange2); }
+  .mrec-grid {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden; opacity: 0.04;
+  }
+
+  /* Half Page 300×600 */
+  .banner-halfpage {
+    width: 300px; height: 600px;
+    background: linear-gradient(160deg, #080A12 0%, #0D1220 40%, #111828 100%);
+    border-radius: 12px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+    border: 1px solid rgba(255,100,24,0.2);
+    padding: 28px 24px 24px;
+    flex-shrink: 0;
+  }
+  .banner-halfpage::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--orange), var(--orange2), var(--teal));
+  }
+  .hp-logo {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  }
+  .hp-logo svg { width: 28px; height: 28px; }
+  .hp-logo .name { font-size: 13px; font-weight: 700; }
+  .hp-logo .name span { color: var(--orange); }
+  .hp-tagline {
+    font-size: 24px; font-weight: 800; line-height: 1.15; margin-bottom: 10px;
+  }
+  .hp-tagline span { color: var(--orange); }
+  .hp-sub { font-size: 12px; color: var(--grey1); line-height: 1.5; margin-bottom: 20px; }
+  .hp-divider { height: 1px; background: var(--line); margin-bottom: 18px; }
+  .hp-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .hp-feature {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: rgba(255,255,255,0.03); border-radius: 8px;
+    padding: 10px 12px; border: 1px solid var(--line);
+  }
+  .hp-feature .icon {
+    width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .hp-feature .icon.o { background: rgba(255,100,24,0.15); }
+  .hp-feature .icon.t { background: rgba(0,212,180,0.12); }
+  .hp-feature .icon.g { background: rgba(40,210,100,0.12); }
+  .hp-feature .content .title { font-size: 12px; font-weight: 700; color: var(--white); }
+  .hp-feature .content .desc  { font-size: 10px; color: var(--grey2); margin-top: 1px; }
+  .hp-roi {
+    background: rgba(255,100,24,0.07);
+    border: 1px solid rgba(255,100,24,0.2);
+    border-radius: 10px; padding: 14px; margin-bottom: 16px;
+  }
+  .hp-roi .roi-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+  .hp-roi .roi-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 3px 0; }
+  .hp-roi .roi-row .k { color: var(--grey2); }
+  .hp-roi .roi-row .v { font-weight: 700; color: var(--white); }
+  .hp-roi .roi-row .v.good { color: var(--green); }
+  .hp-cta {
+    background: var(--orange); color: #fff;
+    font-weight: 700; font-size: 14px; padding: 14px;
+    border-radius: 9px; text-align: center; cursor: pointer;
+    transition: background 0.2s; border: none; width: 100%;
+    font-family: 'Poppins', sans-serif; margin-bottom: 10px;
+  }
+  .hp-cta:hover { background: var(--orange2); }
+  .hp-fine { font-size: 9px; color: var(--grey3); text-align: center; }
+
+  /* ── TIPS ── */
+  .tips-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px;
+  }
+  .tip-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+  }
+  .tip-card .tip-icon { font-size: 20px; margin-bottom: 8px; }
+  .tip-card .tip-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .tip-card .tip-body  { font-size: 12px; color: var(--grey2); line-height: 1.5; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--grey3); border-radius: 3px; }
+
+  /* ── ANIMATED BG GRID ── */
+  .bg-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    opacity: 0.03;
+  }
+  .bg-grid svg { width: 100%; height: 100%; }
+  body > *:not(.bg-grid) { position: relative; z-index: 1; }
+
+  /* ── COPY BUTTON ── */
+  .copy-btn {
+    background: var(--surface); border: 1px solid var(--line);
+    color: var(--grey2); font-size: 10px; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    font-family: 'Poppins', sans-serif; transition: all 0.2s;
+    margin-left: auto;
+  }
+  .copy-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  @media (max-width: 800px) {
+    .banner-leaderboard { width: 100%; max-width: 600px; }
+    .display-ad-wrap { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Animated BG -->
+<div class="bg-grid">
+  <svg><defs><pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse">
+    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#00D4B4" stroke-width="0.5"/>
+  </pattern></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="brand">🛡️ Syyaim SafeG AI — Google Ads Package</div>
+  <h1>Complete Ad Copy &amp; Creative<br><span>Ready to Launch</span></h1>
+  <p>Search Ads · Responsive Search Ads · Display Banners · Keywords · Bidding Tips</p>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 1: SEARCH ADS                     -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">
+    <div class="tag">01</div>
+    <h2>Google Search Ads — Responsive (RSA)</h2>
+    <div class="note">Max 15 headlines · 4 descriptions</div>
+  </div>
+
+  <div class="search-ads">
+
+    <!-- AD 1: HSE Manager -->
+    <div class="search-ad-card">
+      <div class="ad-card-header">
+        <div class="ad-type-badge badge-rsa">RSA · Variant A</div>
+        <span style="font-size:12px;color:var(--grey2);">Audience: HSE &amp; Safety Managers</span>
+        <span class="audience">Search intent: "factory safety monitoring system"</span>
+      </div>
+
+      <!-- Live preview -->
+      <div class="ad-preview">
+        <div class="ad-label"></div>
+        <div class="ad-url">syyaimsafeg.ai › factory-safety › india</div>
+        <div class="ad-title">Stop Accidents Before They Happen | AI Safety Monitoring India</div>
+        <div class="ad-desc">
+          Syyaim SafeG AI monitors 16 cameras 24/7 — detecting missing helmets, vest violations &amp; danger zone breaches in under 30 seconds. Factories Act compliant. Free 4-week pilot for India plants. Book your demo today.
+        </div>
+        <div class="sitelinks">
+          <a class="sitelink">Free 4-Week Pilot</a> ·&nbsp;
+          <a class="sitelink">PPE Compliance Demo</a> ·&nbsp;
+          <a class="sitelink">Pricing &amp; ROI</a> ·&nbsp;
+          <a class="sitelink">Book a Demo</a>
+        </div>
+      </div>
+
+      <!-- Headlines -->
+      <div class="copy-breakdown">
+        <div class="copy-group">
+          <div class="copy-group-label">📌 Headlines (use all 15 — Google auto-combines best performers)</div>
+          <div class="copy-items" id="headlines-a">
+            <!-- populated by JS -->
+          </div>
+        </div>
+        <div class="copy-divider"></div>
+        <div class="copy-group">
+          <div class="copy-group-label">📝 Descriptions (max 4, 90 chars each)</div>
+          <div class="copy-items" id="descriptions-a"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AD 2: Factory Owner / ROI focused -->
+    <div class="search-ad-card">
+      <div class="ad-card-header">
+        <div class="ad-type-badge badge-rsa">RSA · Variant B</div>
+        <span style="font-size:12px;color:var(--grey2);">Audience: Plant Owners / Operations Head</span>
+        <span class="audience">Search intent: "reduce factory accidents India"</span>
+      </div>
+      <div class="ad-preview">
+        <div class="ad-label"></div>
+        <div class="ad-url">syyaimsafeg.ai › roi-calculator › pilot</div>
+        <div class="ad-title">1 Accident Costs ₹11 Lakh+ | SafeG AI Costs ₹2,500/Cam/Mo</div>
+        <div class="ad-desc">
+          Most Indian plants lose ₹40–60 Lakh per year to preventable accidents. SafeG AI cuts incidents by 40% — ROI in under 6 months. Claude Vision AI · India-first · Factories Act auto-reports.
+        </div>
+        <div class="sitelinks">
+          <a class="sitelink">Calculate Your ROI</a> ·&nbsp;
+          <a class="sitelink">See Live Dashboard</a> ·&nbsp;
+          <a class="sitelink">Implementation Plan</a> ·&nbsp;
+          <a class="sitelink">Start Free Trial</a>
+        </div>
+      </div>
+      <div class="copy-breakdown">
+        <div class="copy-group">
+          <div class="copy-group-label">📌 Headlines</div>
+          <div class="copy-items" id="headlines-b"></div>
+        </div>
+        <div class="copy-divider"></div>
+        <div class="copy-group">
+          <div class="copy-group-label">📝 Descriptions</div>
+          <div class="copy-items" id="descriptions-b"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AD 3: Compliance focused -->
+    <div class="search-ad-card">
+      <div class="ad-card-header">
+        <div class="ad-type-badge badge-rsa">RSA · Variant C</div>
+        <span style="font-size:12px;color:var(--grey2);">Audience: HR &amp; Compliance Officers</span>
+        <span class="audience">Search intent: "Factories Act compliance software India"</span>
+      </div>
+      <div class="ad-preview">
+        <div class="ad-label"></div>
+        <div class="ad-url">syyaimsafeg.ai › compliance › factories-act</div>
+        <div class="ad-title">Auto-Generate Form 18 &amp; OSH Reports | Factories Act Compliant AI</div>
+        <div class="ad-desc">
+          Stay compliant with Factories Act 1948, ISO 45001 &amp; SEBI BRSR automatically. SafeG AI logs every incident, near-miss &amp; PPE violation — 24/7 — so your audit is always ready. Free pilot · ISO 45001 certified stack.
+        </div>
+        <div class="sitelinks">
+          <a class="sitelink">Compliance Features</a> ·&nbsp;
+          <a class="sitelink">ISO 45001 Coverage</a> ·&nbsp;
+          <a class="sitelink">Audit-Ready Reports</a> ·&nbsp;
+          <a class="sitelink">Book a Call</a>
+        </div>
+      </div>
+      <div class="copy-breakdown">
+        <div class="copy-group">
+          <div class="copy-group-label">📌 Headlines</div>
+          <div class="copy-items" id="headlines-c"></div>
+        </div>
+        <div class="copy-divider"></div>
+        <div class="copy-group">
+          <div class="copy-group-label">📝 Descriptions</div>
+          <div class="copy-items" id="descriptions-c"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /search-ads -->
+</div><!-- /section 1 -->
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 2: KEYWORDS                       -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">
+    <div class="tag">02</div>
+    <h2>Recommended Keywords by Ad Group</h2>
+    <div class="note">E = Exact · P = Phrase · B = Broad Match Modifier</div>
+  </div>
+  <div class="keyword-grid" id="keyword-grid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 3: DISPLAY BANNERS                -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">
+    <div class="tag">03</div>
+    <h2>Display Ad Banners — Production Ready</h2>
+    <div class="note">Leaderboard 728×90 · Medium Rectangle 300×250 · Half Page 300×600</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:24px;">
+
+    <!-- LEADERBOARD -->
+    <div>
+      <div style="font-size:11px;color:var(--grey2);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">728 × 90 — Leaderboard</div>
+      <div class="banner-leaderboard">
+        <div class="lb-accent"></div>
+        <div class="lb-shield">
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 4L52 14V28C52 40 40 50 28 52C16 50 4 40 4 28V14L28 4Z" fill="url(#sg)" stroke="rgba(255,100,24,0.4)" stroke-width="1"/>
+            <path d="M18 28L24 34L38 22" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="sg" x1="4" y1="4" x2="52" y2="52">
+                <stop offset="0%" stop-color="#FF6418"/>
+                <stop offset="100%" stop-color="#C83A00"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="lb-content">
+          <div class="lb-headline">Stop factory accidents <span>before they happen</span></div>
+          <div class="lb-sub">AI-powered PPE &amp; hazard detection · Factories Act compliant · India-first · Free 4-week pilot</div>
+        </div>
+        <div class="lb-stats">
+          <div class="lb-stat"><div class="val">40%</div><div class="lbl">Fewer<br>Accidents</div></div>
+          <div class="lb-stat"><div class="val">&lt;30s</div><div class="lbl">Alert<br>Time</div></div>
+          <div class="lb-stat"><div class="val">97%</div><div class="lbl">PPE<br>Compliance</div></div>
+        </div>
+        <button class="lb-cta">Book Free Demo →</button>
+      </div>
+    </div>
+
+    <!-- MREC + HALFPAGE side by side -->
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;">
+
+      <!-- 300×250 -->
+      <div>
+        <div style="font-size:11px;color:var(--grey2);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">300 × 250 — Medium Rectangle</div>
+        <div class="banner-mrec">
+          <div class="mrec-badge">🔴 Live AI Monitoring</div>
+          <div class="mrec-headline">Your factory,<br><span>safer in 2 hrs</span></div>
+          <div class="mrec-sub">AI detects missing helmets, restricted zone breaches &amp; PPE violations before they become accidents.</div>
+          <div class="mrec-stats">
+            <div class="mrec-stat"><div class="v">40%</div><div class="l">Fewer<br>Incidents</div></div>
+            <div class="mrec-stat"><div class="v">&lt;6mo</div><div class="l">ROI<br>Payback</div></div>
+            <div class="mrec-stat"><div class="v">₹2,500</div><div class="l">Per Cam<br>/Month</div></div>
+          </div>
+          <button class="mrec-cta">Start Free 4-Week Pilot →</button>
+          <!-- grid overlay -->
+          <div class="mrec-grid">
+            <svg width="300" height="250"><defs><pattern id="g2" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M 30 0 L 0 0 0 30" fill="none" stroke="#00D4B4" stroke-width="0.5"/></pattern></defs><rect width="300" height="250" fill="url(#g2)"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 300×600 -->
+      <div>
+        <div style="font-size:11px;color:var(--grey2);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">300 × 600 — Half Page</div>
+        <div class="banner-halfpage">
+          <div class="hp-logo">
+            <svg width="28" height="28" viewBox="0 0 56 56" fill="none">
+              <path d="M28 4L52 14V28C52 40 40 50 28 52C16 50 4 40 4 28V14L28 4Z" fill="url(#sg2)" stroke="rgba(255,100,24,0.4)" stroke-width="1"/>
+              <path d="M18 28L24 34L38 22" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs><linearGradient id="sg2" x1="4" y1="4" x2="52" y2="52"><stop offset="0%" stop-color="#FF6418"/><stop offset="100%" stop-color="#C83A00"/></linearGradient></defs>
+            </svg>
+            <div class="name">Syyaim <span>SafeG AI</span></div>
+          </div>
+          <div class="hp-tagline">3 workers die<br>every day in<br>Indian factories.<br><span>Not on your watch.</span></div>
+          <div class="hp-sub">AI-powered shopfloor safety monitoring — detects PPE violations, restricted zone breaches &amp; hazards in real time.</div>
+          <div class="hp-divider"></div>
+          <div class="hp-features">
+            <div class="hp-feature">
+              <div class="icon o">🎥</div>
+              <div class="content">
+                <div class="title">16-Camera AI Monitoring</div>
+                <div class="desc">Continuous 24/7 shopfloor coverage</div>
+              </div>
+            </div>
+            <div class="hp-feature">
+              <div class="icon t">⚡</div>
+              <div class="content">
+                <div class="title">Alert in &lt; 30 Seconds</div>
+                <div class="desc">SMS + dashboard notification instantly</div>
+              </div>
+            </div>
+            <div class="hp-feature">
+              <div class="icon g">📋</div>
+              <div class="content">
+                <div class="title">Factories Act Auto-Reports</div>
+                <div class="desc">Form 18, ISO 45001 &amp; SEBI BRSR ready</div>
+              </div>
+            </div>
+          </div>
+          <div class="hp-roi">
+            <div class="roi-label">ROI at a Glance</div>
+            <div class="roi-row"><span class="k">1 accident cost</span><span class="v">₹11 Lakh+</span></div>
+            <div class="roi-row"><span class="k">SafeG AI · Year 1</span><span class="v">₹13 Lakh</span></div>
+            <div class="roi-row"><span class="k">Incidents prevented</span><span class="v good">4 / year</span></div>
+            <div class="roi-row"><span class="k">Net annual saving</span><span class="v good">₹40 Lakh+</span></div>
+          </div>
+          <button class="hp-cta">Book Free Demo Today →</button>
+          <div class="hp-fine">Free 4-week pilot · No hardware cost · No commitment</div>
+        </div>
+      </div>
+
+    </div><!-- /mrec + half -->
+  </div>
+</div><!-- /section 3 -->
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 4: CAMPAIGN TIPS                  -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">
+    <div class="tag">04</div>
+    <h2>Campaign Setup &amp; Bidding Tips</h2>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🎯</div>
+      <div class="tip-title">Bidding Strategy</div>
+      <div class="tip-body">Start with <strong>Maximize Clicks</strong> (budget ₹500–800/day) for 2 weeks to gather data, then switch to <strong>Target CPA</strong> once you have 30+ conversions.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📍</div>
+      <div class="tip-title">Geo Targeting</div>
+      <div class="tip-body">Start with <strong>Maharashtra, Gujarat, Haryana, Tamil Nadu, Karnataka</strong> — highest density of registered factories. Expand to UP &amp; Rajasthan in Phase 2.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🕐</div>
+      <div class="tip-title">Ad Scheduling</div>
+      <div class="tip-body">Set higher bids Mon–Fri 9AM–6PM IST (when HSE managers are at desks). Reduce bids 40% on weekends. Use <strong>bid adjustments by device</strong> — desktop +20%.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔁</div>
+      <div class="tip-title">Audience Layering</div>
+      <div class="tip-body">Add <strong>In-Market audiences</strong>: "Business Services &gt; EHS Software", "Manufacturing &gt; Industrial Equipment". Use <strong>Customer Match</strong> to upload existing lead list.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📊</div>
+      <div class="tip-title">Conversion Tracking</div>
+      <div class="tip-body">Track: Demo form submit (primary), Pricing page visit (secondary), Video watched 30s+. Set <strong>conversion value</strong> = ₹50,000 (avg pilot deal value) for smart bidding.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🚫</div>
+      <div class="tip-title">Negative Keywords</div>
+      <div class="tip-body">Add: <em>free, diy, training course, certification exam, jobs, career, salary, pdf, ppt, wikipedia, meaning, definition</em>. Protects budget from informational queries.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <div class="tip-title">Landing Page Match</div>
+      <div class="tip-body">Each ad variant needs its own landing page. Variant A → PPE detection demo. Variant B → ROI calculator. Variant C → Compliance checklist. Match headline to LP hero text exactly.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📈</div>
+      <div class="tip-title">Estimated Performance</div>
+      <div class="tip-body">Expected CPC: ₹80–180 for safety software keywords. CTR target: 6–10% (high-intent B2B). Budget: ₹25,000–40,000/month to generate 15–20 demo bookings.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Ad copy data ──────────────────────────────────────────────────────────
+const ads = {
+  a: {
+    headlines: [
+      ["Stop Accidents Before They Happen",36],
+      ["AI Safety Monitoring — India-First",34],
+      ["16 Cameras · 24/7 AI Surveillance",33],
+      ["PPE Violation Detected in 30 Secs",34],
+      ["Free 4-Week Pilot for Your Plant",31],
+      ["Factories Act Compliant AI System",32],
+      ["Reduce Workplace Injuries by 40%",31],
+      ["Real-Time Hazard Zone Monitoring",31],
+      ["Claude AI Vision · India Servers",31],
+      ["No Helmet? AI Alerts in 30 Secs",31],
+      ["India's Smartest Safety Platform",31],
+      ["ISO 45001 · CERT-In · PDPB Ready",30],
+      ["₹2,500/Camera/Month — Try Free",29],
+      ["Zero Commitment 4-Week Pilot",27],
+      ["Book a Demo — Set Up in 2 Hours",31],
+    ],
+    descriptions: [
+      ["Syyaim SafeG AI monitors your shopfloor 24/7 using Claude Vision — detecting PPE violations, danger zone breaches & hazards instantly. Factories Act compliant. India-first.", 168],
+      ["One reportable accident costs ₹11 Lakh+. SafeG AI costs ₹2,500/camera/month. Free 4-week pilot with full setup included. No commitment. Book your demo today.", 156],
+      ["Trusted by auto, chemical & pharma plants across India. Real-time SMS alerts, audit-ready reports & Form 18 auto-generation. Get compliant while cutting accidents by 40%.", 168],
+      ["Setup takes 2 hours. AI goes live immediately. PPE compliance, forklift tracking, restricted zone alerts — all on one dashboard. Start your free pilot now.", 153],
+    ]
+  },
+  b: {
+    headlines: [
+      ["1 Accident = ₹11 Lakh Loss",25],
+      ["SafeG AI = ₹2,500/Camera/Month",29],
+      ["Cut Factory Accidents by 40%",27],
+      ["ROI Payback in Under 6 Months",29],
+      ["Save ₹40 Lakh+ Per Year",21],
+      ["400–800% 3-Year ROI Guaranteed",30],
+      ["Prevent Accidents, Not Report Them",33],
+      ["AI Stops Incidents Before They Cost",34],
+      ["Free Pilot — Full Setup Included",31],
+      ["₹13 Lakh/Year · All-In SafeG AI",29],
+      ["Your Plant, Safer in 2 Hours",27],
+      ["ESIC & Penalty Risk Eliminated",29],
+      ["Insurance Premium Cut 15–25%",28],
+      ["Forklift & Pedestrian Conflict Alert",35],
+      ["See Your ROI — Book a Free Demo",31],
+    ],
+    descriptions: [
+      ["Most Indian plants lose ₹40–60 Lakh per year to preventable workplace accidents. SafeG AI reduces incidents by 40% — full ROI in under 6 months. Calculate yours free.", 161],
+      ["1 ESIC compensation + factory penalty + downtime = ₹11 Lakh minimum. SafeG AI full year costs ₹13 Lakh — and prevents 4+ accidents annually. The math is simple.", 160],
+      ["From ₹7 Lakh CapEx to ₹2,500/camera/month OpEx — SafeG AI is designed for India's plant budgets. No expensive hardware swap. Works with your existing IP cameras.", 158],
+      ["Auto Components, Chemical, Pharma, Logistics — SafeG AI is deployed across India's highest-risk sectors. Free 4-week pilot with dedicated onboarding. No commitment.", 161],
+    ]
+  },
+  c: {
+    headlines: [
+      ["Factories Act 1948 Compliance AI",31],
+      ["Form 18 Auto-Generated Daily",27],
+      ["ISO 45001 Documentation — Auto",29],
+      ["SEBI BRSR ESG Data — Automated",30],
+      ["OSH Code 2020 · CERT-In Secured",30],
+      ["Audit-Ready Reports in One Click",30],
+      ["Never Miss a Statutory Deadline",29],
+      ["Safety Incidents Logged — Always",30],
+      ["PDPB 2023 Compliant Data Storage",30],
+      ["Near-Miss Reports Auto-Generated",30],
+      ["AWS Mumbai · Data Stays in India",30],
+      ["Shram Suvidha Portal Integration",30],
+      ["Compliance Without Extra Headcount",32],
+      ["Free Compliance Audit Checklist",30],
+      ["Book a Compliance Demo Today",28],
+    ],
+    descriptions: [
+      ["SafeG AI automatically generates Form 18 incident registers, ISO 45001 OHS documentation & SEBI BRSR ESG safety data — eliminating manual compliance work entirely.", 162],
+      ["Factories Act 1948, OSH Code 2020, CERT-In cybersecurity, PDPB 2023 — all covered. Your safety compliance is continuous, automated & audit-ready 24/7.", 158],
+      ["Stop scrambling before audits. SafeG AI logs every PPE violation, near-miss & hazard in real time — with timestamps, camera footage & AI classification. Always ready.", 163],
+      ["All incident data encrypted at rest. Stored on AWS ap-south-1 Mumbai. No data leaves India. 90-day video retention per PDPB 2023. CERT-In guidelines met. Book a demo.", 162],
+    ]
+  }
+};
+
+// ── Keyword data ───────────────────────────────────────────────────────────
+const keywords = [
+  {
+    group: "Safety Software — Core",
+    color: "var(--teal)",
+    items: [
+      {kw:"factory safety monitoring system",match:"exact"},
+      {kw:"workplace safety AI software India",match:"phrase"},
+      {kw:"industrial safety camera system",match:"phrase"},
+      {kw:"PPE compliance monitoring",match:"exact"},
+      {kw:"safety management software India",match:"broad"},
+    ]
+  },
+  {
+    group: "Compliance — Factories Act",
+    color: "var(--orange)",
+    items: [
+      {kw:"Factories Act compliance software",match:"exact"},
+      {kw:"Form 18 accident register software",match:"phrase"},
+      {kw:"ISO 45001 documentation tool",match:"phrase"},
+      {kw:"SEBI BRSR safety reporting",match:"exact"},
+      {kw:"OSH Code 2020 compliance",match:"broad"},
+    ]
+  },
+  {
+    group: "Pain Points — ROI",
+    color: "var(--amber)",
+    items: [
+      {kw:"reduce workplace accidents India",match:"phrase"},
+      {kw:"prevent factory accidents",match:"phrase"},
+      {kw:"industrial accident prevention system",match:"broad"},
+      {kw:"factory safety ROI",match:"broad"},
+      {kw:"ESIC accident penalty India",match:"phrase"},
+    ]
+  },
+  {
+    group: "Technology — AI Vision",
+    color: "var(--blue)",
+    items: [
+      {kw:"AI safety camera system",match:"phrase"},
+      {kw:"computer vision workplace safety",match:"broad"},
+      {kw:"PPE detection AI camera",match:"phrase"},
+      {kw:"real time safety monitoring AI",match:"broad"},
+      {kw:"Claude AI vision safety",match:"exact"},
+    ]
+  },
+  {
+    group: "Industry Verticals",
+    color: "var(--green)",
+    items: [
+      {kw:"auto parts factory safety India",match:"phrase"},
+      {kw:"chemical plant safety monitoring",match:"phrase"},
+      {kw:"pharma factory compliance system",match:"broad"},
+      {kw:"logistics warehouse safety AI",match:"broad"},
+      {kw:"steel plant safety camera",match:"phrase"},
+    ]
+  },
+  {
+    group: "Competitor Intent",
+    color: "var(--red)",
+    items: [
+      {kw:"Wobot AI alternative India",match:"phrase"},
+      {kw:"Intenseye competitor India",match:"phrase"},
+      {kw:"safety monitoring software vs CCTV",match:"broad"},
+      {kw:"better than manual safety audit",match:"broad"},
+      {kw:"replace safety guard cameras AI",match:"broad"},
+    ]
+  },
+];
+
+// ── Render headlines & descriptions ───────────────────────────────────────
+function charClass(n, max) {
+  if (n <= max * 0.8) return 'ok';
+  if (n <= max) return 'warn';
+  return '';
+}
+
+function renderCopyItems(containerId, items, maxChars) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = items.map((item, i) => {
+    const text = Array.isArray(item) ? item[0] : item;
+    const len = text.length;
+    const cc = charClass(len, maxChars);
+    return `<div class="copy-item">
+      <div class="num">${i+1}</div>
+      <div class="text">${text}</div>
+      <div class="char-count ${cc}">${len}/${maxChars}</div>
+      <button class="copy-btn" onclick="copyText(this,'${text.replace(/'/g,"\\'")}')">Copy</button>
+    </div>`;
+  }).join('');
+}
+
+renderCopyItems('headlines-a',    ads.a.headlines,    30);
+renderCopyItems('descriptions-a', ads.a.descriptions, 90);
+renderCopyItems('headlines-b',    ads.b.headlines,    30);
+renderCopyItems('descriptions-b', ads.b.descriptions, 90);
+renderCopyItems('headlines-c',    ads.c.headlines,    30);
+renderCopyItems('descriptions-c', ads.c.descriptions, 90);
+
+// ── Render keywords ───────────────────────────────────────────────────────
+const kgEl = document.getElementById('keyword-grid');
+kgEl.innerHTML = keywords.map(g => `
+  <div class="keyword-card">
+    <div class="kw-group-name" style="color:${g.color}">${g.group}</div>
+    <div class="kw-list">
+      ${g.items.map(k => `
+        <div class="kw-item">
+          <span class="kw-match match-${k.match}">${k.match.toUpperCase().slice(0,1)}</span>
+          ${k.kw}
+        </div>
+      `).join('')}
+    </div>
+  </div>
+`).join('');
+
+// ── Copy to clipboard ─────────────────────────────────────────────────────
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+</script>
+</body>
+</html>
