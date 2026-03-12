@@ -58,7 +58,7 @@ export default function LoginPage({ onLogin }) {
             <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 56 }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg,${T.orange},#FF8C52)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue'" }}>S</div>
               <div>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, letterSpacing: 3, color: T.white }}>SYYAIM SAFEG AI</div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, letterSpacing: 3, color: T.white }}>SAFEGUARD SIQ</div>
                 <div style={{ fontSize: 11, color: T.g1, letterSpacing: 2 }}>FACTORY SAFETY INTELLIGENCE</div>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function LoginPage({ onLogin }) {
 
             <div style={{ marginBottom: 32 }}>
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: T.white, letterSpacing: 2, marginBottom: 6 }}>WELCOME BACK</div>
-              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your SafeG AI dashboard</div>
+              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your Safeguard SIQ dashboard</div>
             </div>
 
             {error && (
@@ -157,3 +157,4 @@ export default function LoginPage({ onLogin }) {
     </>
   );
 }
+

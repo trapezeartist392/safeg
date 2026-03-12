@@ -247,7 +247,7 @@ function CamFeed({cam}) {
       ctx.textAlign="left";
       ctx.fillText(new Date().toTimeString().slice(0,8),5,h-5);
       ctx.textAlign="right";
-      ctx.fillText("SAFEG AI",w-5,h-5);
+      ctx.fillText("Safeguard SIQ",w-5,h-5);
     }
     draw();
     const id=setInterval(draw,800);
@@ -269,7 +269,7 @@ function Form18({toast}) {
     accDate:today, accTime:"14:23", department:"Welding Zone B — Bay 3",
     nature:"Fall from height",
     operation:"MIG Welding — Chassis subframe assembly",
-    description:"Worker slipped on oil spill near welding bay. SafeG AI camera CAM-04 detected the incident at 14:23:07 IST and triggered immediate supervisor alert. Worker sustained minor abrasion on left knee. No loss of consciousness.",
+    description:"Worker slipped on oil spill near welding bay. Safeguard SIQ camera CAM-04 detected the incident at 14:23:07 IST and triggered immediate supervisor alert. Worker sustained minor abrasion on left knee. No loss of consciousness.",
     immCause:"Oil spill on floor not cleaned — housekeeping protocol violation",
     rootCause:"Inadequate housekeeping schedule and absence of spill kit in Welding Zone B",
     firstAid:"Yes — On-site", hospital:"No — Treated on-site",
@@ -439,9 +439,9 @@ function Form18({toast}) {
             )}
           </div>
 
-          {/* PART E: SafeG AI Evidence */}
+          {/* PART E: Safeguard SIQ Evidence */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART E — SAFEG AI EVIDENCE LOG","Auto-captured")}
+            {secTitle("PART E — Safeguard SIQ EVIDENCE LOG","Auto-captured")}
             <div style={{background:"rgba(0,212,184,.04)",border:`1px solid rgba(0,212,184,.2)`,borderRadius:10,padding:20}}>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:14}}>
                 {[
@@ -457,7 +457,7 @@ function Form18({toast}) {
                 </div>)}
               </div>
               <div style={{background:"rgba(0,212,184,.06)",borderRadius:8,border:`1px solid rgba(0,212,184,.15)`,padding:"12px 16px",fontSize:12,color:C.g1,lineHeight:1.7}}>
-                SafeG AI detected: <strong style={{color:C.white}}>Floor Hazard — Liquid spill (unattended 47 min)</strong> at 13:36:09. Alert sent to housekeeping at 13:36:15. No corrective action recorded within 30-min SLA. Subsequent fall recorded at 14:23:07.
+                Safeguard SIQ detected: <strong style={{color:C.white}}>Floor Hazard — Liquid spill (unattended 47 min)</strong> at 13:36:09. Alert sent to housekeeping at 13:36:15. No corrective action recorded within 30-min SLA. Subsequent fall recorded at 14:23:07.
                 <br/><strong style={{color:C.teal}}>Preventability Assessment: HIGH — Corrective action available 47 minutes prior to incident.</strong>
               </div>
             </div>
@@ -622,7 +622,7 @@ export default function App() {
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <div style={{width:34,height:34,background:C.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:"#fff",animation:"pulse 3s infinite",flexShrink:0}}>✓</div>
           <div>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,letterSpacing:3,fontWeight:700}}>SAFEG AI</div>
+            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,letterSpacing:3,fontWeight:700}}>Safeguard SIQ</div>
             <div style={{fontSize:9,color:C.g2,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif"}}>COMPLIANCE COMMAND CENTRE</div>
           </div>
         </div>
@@ -961,3 +961,4 @@ export default function App() {
     </>
   );
 }
+

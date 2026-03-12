@@ -1,5 +1,5 @@
 /**
- * SafeG AI — Billing & Invoice Dashboard
+ * Safeguard SIQ — Billing & Invoice Dashboard
  * Shows current plan, payment history, upgrade options
  * Integrates with backend /api/v1/payments/*
  */
@@ -526,3 +526,4 @@ const DEMO_PAYMENTS = [
     razorpay_payment_id:"pay_MABCDEF246810",
   },
 ];
+
