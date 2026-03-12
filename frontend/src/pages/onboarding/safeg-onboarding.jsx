@@ -182,7 +182,7 @@ function CustomerStep({data, setData}) {
     <div style={{animation:"fadeUp .4s ease"}}>
       <div style={{marginBottom:28}}>
         <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,letterSpacing:3,color:T.white}}>CUSTOMER REGISTRATION</div>
-        <div style={{fontSize:13,color:T.g2,marginTop:4}}>Register the company that will use SafeG AI — this becomes the top-level account.</div>
+        <div style={{fontSize:13,color:T.g2,marginTop:4}}>Register the company that will use Safeguard SIQ — this becomes the top-level account.</div>
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:18,marginBottom:18}}>
@@ -549,7 +549,7 @@ function CameraStep({data, setData, areas}) {
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:28}}>
         <div>
           <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,letterSpacing:3,color:T.white}}>CAMERA REGISTRATION</div>
-          <div style={{fontSize:13,color:T.g2,marginTop:4}}>Add cameras to each zone. SafeG AI will connect, test, and begin monitoring automatically.</div>
+          <div style={{fontSize:13,color:T.g2,marginTop:4}}>Add cameras to each zone. Safeguard SIQ will connect, test, and begin monitoring automatically.</div>
         </div>
         <div style={{fontSize:13,color:T.g2,fontFamily:"'DM Mono',monospace"}}>
           Total cameras: <strong style={{color:T.orange}}>{data.cameras.length}</strong>
@@ -751,7 +751,7 @@ function ReviewStep({customer, plant, areas, cameras, onActivate}) {
     <div style={{animation:"fadeUp .4s ease"}}>
       <div style={{marginBottom:28}}>
         <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,letterSpacing:3,color:T.white}}>REVIEW & ACTIVATE</div>
-        <div style={{fontSize:13,color:T.g2,marginTop:4}}>Verify all details before activating the SafeG AI system for this plant.</div>
+        <div style={{fontSize:13,color:T.g2,marginTop:4}}>Verify all details before activating the Safeguard SIQ system for this plant.</div>
       </div>
 
       {/* Summary cards */}
@@ -867,12 +867,12 @@ function ReviewStep({customer, plant, areas, cameras, onActivate}) {
         <div style={{fontSize:32,marginBottom:12}}>🚀</div>
         <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:2,marginBottom:8}}>READY TO ACTIVATE</div>
         <div style={{fontSize:13,color:T.g1,marginBottom:20,maxWidth:480,margin:"0 auto 20px"}}>
-          SafeG AI will connect to all {cameras.length} camera(s) across {areas.length} zone(s), run a connection test, and begin real-time compliance monitoring within minutes.
+          Safeguard SIQ will connect to all {cameras.length} camera(s) across {areas.length} zone(s), run a connection test, and begin real-time compliance monitoring within minutes.
         </div>
         <div style={{display:"flex",gap:12,justifyContent:"center"}}>
           <Btn onClick={()=>onActivate(false)} variant="secondary">💾 Save as Draft</Btn>
           <Btn onClick={()=>onActivate(true)} variant="primary" style={{padding:"13px 32px",fontSize:16}}>
-            ✅ Activate SafeG AI
+            ✅ Activate Safeguard SIQ
           </Btn>
         </div>
       </div>
@@ -891,7 +891,7 @@ function SuccessScreen({customer, plant, areas, cameras, onReset}) {
         ONBOARDING COMPLETE
       </div>
       <div style={{fontSize:15,color:T.g1,marginBottom:32,maxWidth:500,margin:"0 auto 32px"}}>
-        <strong style={{color:T.white}}>{customer.companyName}</strong> is now live on SafeG AI.<br/>
+        <strong style={{color:T.white}}>{customer.companyName}</strong> is now live on Safeguard SIQ.<br/>
         {cameras.length} camera(s) across {areas.length} zone(s) are connecting…
       </div>
 
@@ -969,7 +969,7 @@ export default function App() {
   const prev = () => { if(ci>0) setStep(ORDER[ci-1]); };
 
   const activate = (launch) => {
-    if(launch){ toast("SafeG AI activated! Cameras connecting…","success"); setTimeout(()=>setDone(true),800); }
+    if(launch){ toast("Safeguard SIQ activated! Cameras connecting…","success"); setTimeout(()=>setDone(true),800); }
     else { toast("Saved as draft","info"); }
   };
 
@@ -986,7 +986,7 @@ export default function App() {
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <div style={{width:32,height:32,background:T.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff",fontWeight:700}}>✓</div>
           <div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:21,letterSpacing:3}}>SAFEG AI</div>
+            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:21,letterSpacing:3}}>Safeguard SIQ</div>
             <div style={{fontSize:9,color:T.g2,letterSpacing:3,fontFamily:"'DM Mono',monospace",textTransform:"uppercase"}}>Customer Onboarding</div>
           </div>
         </div>
@@ -1043,3 +1043,4 @@ export default function App() {
     </>
   );
 }
+

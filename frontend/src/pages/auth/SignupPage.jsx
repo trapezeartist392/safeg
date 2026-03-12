@@ -281,7 +281,7 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
     <div style={{animation:"fadeUp .5s ease both"}}>
       <div style={{marginBottom:24}}>
         <div style={{fontFamily:"'Bebas Neue'",fontSize:32,color:T.white,letterSpacing:2}}>REGISTER CAMERAS</div>
-        <div style={{color:T.g1,fontSize:13,marginTop:4}}>Connect your existing IP cameras to SafeG AI</div>
+        <div style={{color:T.g1,fontSize:13,marginTop:4}}>Connect your existing IP cameras to Safeguard SIQ</div>
       </div>
 
       {plants.length>1 && (
@@ -513,7 +513,7 @@ export default function SignupPage({ onLogin }) {
         {/* Logo */}
         <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:28,zIndex:1}}>
           <div style={{width:38,height:38,borderRadius:10,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Bebas Neue'",fontSize:20,color:"#fff"}}>S</div>
-          <div style={{fontFamily:"'Bebas Neue'",fontSize:20,letterSpacing:3,color:T.white}}>SYYAIM SAFEG AI</div>
+          <div style={{fontFamily:"'Bebas Neue'",fontSize:20,letterSpacing:3,color:T.white}}>SAFEGUARD SIQ</div>
         </div>
 
         {/* Step indicator */}
@@ -553,3 +553,4 @@ export default function SignupPage({ onLogin }) {
     </>
   );
 }
+

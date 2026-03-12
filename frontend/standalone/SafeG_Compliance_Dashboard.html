@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeG AI — Factory Compliance Command Centre</title>
+<title>Safeguard SIQ — Factory Compliance Command Centre</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -517,7 +517,7 @@
   <div class="topbar-logo">
     <div class="logo-shield">✓</div>
     <div>
-      <div class="logo-text">SAFEG AI</div>
+      <div class="logo-text">Safeguard SIQ</div>
       <div class="logo-sub">Compliance Command Centre</div>
     </div>
   </div>
@@ -936,7 +936,7 @@
         <div class="form-row one">
           <div class="form-field">
             <div class="form-label">Description of Accident / Occurrence</div>
-            <textarea class="form-input" id="f-description" placeholder="Describe how the accident occurred...">Worker slipped on oil spill near welding bay. Safety footwear was being worn but area hazard marking was absent. SafeG AI camera CAM-04 detected the fall at 14:23:07 IST and triggered immediate supervisor alert. Worker sustained minor abrasion on left knee. No loss of consciousness.</textarea>
+            <textarea class="form-input" id="f-description" placeholder="Describe how the accident occurred...">Worker slipped on oil spill near welding bay. Safety footwear was being worn but area hazard marking was absent. Safeguard SIQ camera CAM-04 detected the fall at 14:23:07 IST and triggered immediate supervisor alert. Worker sustained minor abrasion on left knee. No loss of consciousness.</textarea>
           </div>
         </div>
         <div class="form-row one">
@@ -1034,9 +1034,9 @@
         </div>
       </div>
 
-      <!-- PART E: SafeG AI Evidence -->
+      <!-- PART E: Safeguard SIQ Evidence -->
       <div class="form18-section">
-        <div class="form18-sec-title">PART E — SAFEG AI EVIDENCE LOG <span style="color:var(--teal);font-size:12px">● Auto-captured</span></div>
+        <div class="form18-sec-title">PART E — Safeguard SIQ EVIDENCE LOG <span style="color:var(--teal);font-size:12px">● Auto-captured</span></div>
         <div class="card" style="background:rgba(0,212,184,0.04);border-color:rgba(0,212,184,0.2)">
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
             <div>
@@ -1067,7 +1067,7 @@
           <div style="margin-top:14px;padding:10px;background:rgba(0,212,184,0.05);border-radius:8px;border:1px solid rgba(0,212,184,0.15)">
             <div class="form-label" style="color:var(--teal);margin-bottom:6px">AI Violation Analysis</div>
             <div style="font-size:12px;color:var(--g1);line-height:1.6">
-              SafeG AI detected: <strong style="color:var(--white)">Floor Hazard — Liquid spill (unattended 47 min)</strong> at 13:36:09. 
+              Safeguard SIQ detected: <strong style="color:var(--white)">Floor Hazard — Liquid spill (unattended 47 min)</strong> at 13:36:09. 
               Alert sent to housekeeping at 13:36:15. No corrective action recorded within 30-minute SLA. 
               Subsequent fall event recorded at 14:23:07. Causal chain: Unresolved hazard → Fall → Minor injury.
               <br><strong style="color:var(--teal)">Preventability Assessment: HIGH — Corrective action available 47 min prior to incident.</strong>
@@ -1546,7 +1546,7 @@ function drawCamCanvas(canvas, id, alert) {
   ctx.font='9px monospace';
   ctx.fillText(new Date().toTimeString().slice(0,8), 5, h-5);
   ctx.textAlign='right';
-  ctx.fillText('SAFEG AI', w-5, h-5);
+  ctx.fillText('Safeguard SIQ', w-5, h-5);
   ctx.textAlign='left';
   // Animate
   setInterval(()=>{
@@ -1563,7 +1563,7 @@ function drawCamCanvas(canvas, id, alert) {
     ctx.font='9px monospace';
     ctx.fillText(new Date().toTimeString().slice(0,8), 5, h-5);
     ctx.textAlign='right';
-    ctx.fillText('SAFEG AI', w-5, h-5);
+    ctx.fillText('Safeguard SIQ', w-5, h-5);
     ctx.textAlign='left';
   }, 1000);
 }

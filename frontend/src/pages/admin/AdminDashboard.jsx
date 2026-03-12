@@ -602,7 +602,7 @@ function AdminLogin({ onLogin }) {
           <div style={{ width:42, height:42, borderRadius:11, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>⚙️</div>
           <div>
             <div style={{ ...syne, fontSize:16, fontWeight:800, color:T.white, letterSpacing:1.5 }}>ADMIN PORTAL</div>
-            <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>SYYAIM SAFEG AI · INTERNAL</div>
+            <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>Safeguard SIQ · INTERNAL</div>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 /**
- * SafeG AI — Razorpay Payment Portal
+ * Safeguard SIQ — Razorpay Payment Portal
  * Full-stack payment integration: plan selection → checkout → confirmation
  * Connects to Node.js backend at /api/v1/payments/*
  */
@@ -476,7 +476,7 @@ function SuccessScreen({ payment, plan, onDone }) {
       </div>
       <div style={{ fontSize: 15, color: T.fog, maxWidth: 420, margin: "0 auto 32px", animation: "fadeUp .5s ease .3s both" }}>
         Your <strong style={{ color: plan.color }}>{plan.name} Plan</strong> is now active.
-        SafeG AI is ready to protect your factory floor.
+        Safeguard SIQ is ready to protect your factory floor.
       </div>
 
       {/* Receipt card */}
@@ -631,7 +631,7 @@ export default function PaymentPortal() {
           amount:     totalPaise,
           currency:   "INR",
           key:        "rzp_test_YOUR_KEY_ID", // Replace with your Razorpay test key
-          name:       "SafeG AI",
+          name:       "Safeguard SIQ",
           description:`${plan.name} Plan — ${billing === "annual" ? "Annual" : "Monthly"}`,
         };
       }
@@ -641,7 +641,7 @@ export default function PaymentPortal() {
         key:         orderData.key || import.meta?.env?.VITE_RAZORPAY_KEY || "rzp_test_YOUR_KEY_ID",
         amount:      orderData.amount,
         currency:    orderData.currency || "INR",
-        name:        "Syyaim SafeG AI",
+        name:        "SAFEGUARD SIQ",
         description: orderData.description || `${plan.name} Plan`,
         order_id:    orderData.orderId,
         image:       "https://i.imgur.com/safeg-logo.png",
@@ -832,7 +832,7 @@ export default function PaymentPortal() {
               fontSize: 14, color: "#fff", fontWeight: 900,
             }}>✓</div>
             <div>
-              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase" }}>SafeG AI</div>
+              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase" }}>Safeguard SIQ</div>
             </div>
           </div>
 
@@ -1116,3 +1116,4 @@ export default function PaymentPortal() {
     </>
   );
 }
+
