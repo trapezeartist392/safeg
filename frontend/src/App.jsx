@@ -28,7 +28,7 @@ function AppNav({ user, onLogout }) {
       <div style={{ display:"flex", alignItems:"center", gap:10, marginRight:24, paddingRight:24, borderRight:`1px solid ${T.border}`, flexShrink:0 }}>
         <div style={{ width:34, height:34, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8C52)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:16, color:"#fff" }}>S</div>
         <div>
-          <div style={{ color:T.white, fontWeight:800, fontSize:13, letterSpacing:1.5 }}>Safeguard SIQ</div>
+          <div style={{ color:T.white, fontWeight:800, fontSize:13, letterSpacing:1.5 }}>Safeguards IQ</div>
           <div style={{ color:T.g1, fontSize:9, letterSpacing:2 }}>FACTORY SAFETY</div>
         </div>
       </div>
