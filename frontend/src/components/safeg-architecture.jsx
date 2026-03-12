@@ -125,7 +125,7 @@ const FLOWS = {
     title:"Onboarding → System",
     color: C.orange,
     icon:"🔗",
-    desc:"When you complete the 4-step onboarding wizard, here's exactly what gets written into the Safeguard SIQ database and which modules get activated automatically.",
+    desc:"When you complete the 4-step onboarding wizard, here's exactly what gets written into the Safeguards IQ database and which modules get activated automatically.",
     steps:[
       {from:"Customer Form",to:"Auth Service",data:"Creates tenant account, login credentials, JWT config, billing plan",color:C.orange},
       {from:"Plant Form",to:"Plant Registry DB",data:"Stores factory licence, GPS, shift pattern, inspector details, occupier info",color:C.teal},
@@ -339,7 +339,7 @@ export default function App() {
           <div style={{width:32,height:32,background:C.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",
             display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff",fontWeight:700}}>✓</div>
           <div>
-            <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:900,fontSize:20,letterSpacing:2}}>Safeguard SIQ</div>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:900,fontSize:20,letterSpacing:2}}>Safeguards IQ</div>
             <div style={{fontSize:9,color:C.g2,letterSpacing:3,...mono,textTransform:"uppercase"}}>System Architecture & Integration Map</div>
           </div>
         </div>
@@ -533,7 +533,7 @@ export default function App() {
           <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24}}>
             <div>
               <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:900,fontSize:36,letterSpacing:2}}>LIVE SYSTEM EVENTS</div>
-              <div style={{fontSize:13,color:C.g2,marginTop:4}}>Real-time log of data moving through the Safeguard SIQ pipeline</div>
+              <div style={{fontSize:13,color:C.g2,marginTop:4}}>Real-time log of data moving through the Safeguards IQ pipeline</div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",
               background:"rgba(34,212,104,.08)",border:`1px solid rgba(34,212,104,.25)`,borderRadius:20}}>

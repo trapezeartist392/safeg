@@ -1,5 +1,5 @@
 /**
- * Safeguard SIQ — Billing & Invoice Dashboard
+ * Safeguards IQ — Billing & Invoice Dashboard
  * Shows current plan, payment history, upgrade options
  * Integrates with backend /api/v1/payments/*
  */
