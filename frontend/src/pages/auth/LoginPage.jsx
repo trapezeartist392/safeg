@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -51,14 +51,14 @@ export default function LoginPage({ onLogin }) {
         {/* Animated grid background */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(${T.border} 1px,transparent 1px),linear-gradient(90deg,${T.border} 1px,transparent 1px)`, backgroundSize: "60px 60px", animation: "gridMove 4s linear infinite", opacity: 0.4 }} />
 
-        {/* Left panel — branding */}
+        {/* Left panel â€” branding */}
         <div style={{ width: "50%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "60px 64px", position: "relative", zIndex: 1 }}>
           <div style={{ animation: "fadeUp .6s ease both" }}>
             {/* Logo */}
             <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 56 }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg,${T.orange},#FF8C52)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue'" }}>S</div>
               <div>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, letterSpacing: 3, color: T.white }}>SAFEGUARD SIQ</div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, letterSpacing: 3, color: T.white }}>Safeguards IQ</div>
                 <div style={{ fontSize: 11, color: T.g1, letterSpacing: 2 }}>FACTORY SAFETY INTELLIGENCE</div>
               </div>
             </div>
@@ -82,18 +82,18 @@ export default function LoginPage({ onLogin }) {
           </div>
         </div>
 
-        {/* Right panel — login form */}
+        {/* Right panel â€” login form */}
         <div style={{ width: "50%", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, position: "relative", zIndex: 1 }}>
           <div style={{ width: "100%", maxWidth: 420, background: T.card, border: `1px solid ${T.border}`, borderRadius: 20, padding: 40, animation: "fadeUp .7s ease both" }}>
 
             <div style={{ marginBottom: 32 }}>
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: T.white, letterSpacing: 2, marginBottom: 6 }}>WELCOME BACK</div>
-              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your Safeguard SIQ dashboard</div>
+              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your Safeguards IQ dashboard</div>
             </div>
 
             {error && (
               <div style={{ background: "rgba(255,61,61,.1)", border: `1px solid rgba(255,61,61,.3)`, borderRadius: 10, padding: "12px 16px", color: T.red, fontSize: 13, marginBottom: 20 }}>
-                ⚠ {error}
+                âš  {error}
               </div>
             )}
 
@@ -120,7 +120,7 @@ export default function LoginPage({ onLogin }) {
                   type="password" required
                   value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   style={{ width: "100%", background: "#08101E", border: `1px solid ${T.border}`, borderRadius: 10, padding: "14px 16px", color: T.white, fontSize: 14, fontFamily: "'Nunito'", outline: "none" }}
                 />
               </div>
@@ -136,7 +136,7 @@ export default function LoginPage({ onLogin }) {
                     <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin .8s linear infinite" }} />
                     Signing in...
                   </>
-                ) : "Sign In →"}
+                ) : "Sign In â†’"}
               </button>
             </form>
 
@@ -149,7 +149,7 @@ export default function LoginPage({ onLogin }) {
 
             <div style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: T.g1 }}>
               Don't have an account?{" "}
-              <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>Start free trial →</Link>
+              <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>Start free trial â†’</Link>
             </div>
           </div>
         </div>
@@ -157,4 +157,5 @@ export default function LoginPage({ onLogin }) {
     </>
   );
 }
+
 

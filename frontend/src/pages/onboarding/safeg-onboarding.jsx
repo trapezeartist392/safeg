@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    DESIGN: Industrial precision meets digital
    warmth. Dark slate base, ember-orange primary,
    crisp teal for AI/tech moments. Bebas Neue for
-   headers — industrial, bold. DM Mono for IDs/
-   codes. Nunito for body — approachable.
-───────────────────────────────────────────── */
+   headers â€” industrial, bold. DM Mono for IDs/
+   codes. Nunito for body â€” approachable.
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const G = `
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Nunito:wght@400;500;600;700;800&display=swap');
@@ -27,7 +27,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.35) sepia(1) 
 @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateX(110%)}}
 `;
 
-// ── colour tokens
+// â”€â”€ colour tokens
 const T = {
   bg:     "#080C14",
   bg2:    "#0D1220",
@@ -49,7 +49,7 @@ const T = {
   g3:     "#1A2540",
 };
 
-// ── shared atoms ────────────────────────────────────────
+// â”€â”€ shared atoms â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const Lbl = ({children, req}) => (
   <div style={{fontSize:11,fontWeight:700,color:T.g2,textTransform:"uppercase",letterSpacing:1.8,marginBottom:6,fontFamily:"'DM Mono',monospace",display:"flex",gap:4}}>
     {children}{req&&<span style={{color:T.orange}}>*</span>}
@@ -108,13 +108,13 @@ const Card = ({children, style={}, accent}) => (
   </div>
 );
 
-// ── stepper ──────────────────────────────────────────────
+// â”€â”€ stepper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const STEPS = [
-  {id:"customer", icon:"🏢", label:"Customer", sub:"Company & contact"},
-  {id:"plant",    icon:"🏭", label:"Plant",    sub:"Factory details"},
-  {id:"area",     icon:"📍", label:"Area",     sub:"Zones & departments"},
-  {id:"camera",   icon:"📹", label:"Camera",   sub:"Device setup"},
-  {id:"review",   icon:"✅", label:"Review",   sub:"Confirm & activate"},
+  {id:"customer", icon:"ðŸ¢", label:"Customer", sub:"Company & contact"},
+  {id:"plant",    icon:"ðŸ­", label:"Plant",    sub:"Factory details"},
+  {id:"area",     icon:"ðŸ“", label:"Area",     sub:"Zones & departments"},
+  {id:"camera",   icon:"ðŸ“¹", label:"Camera",   sub:"Device setup"},
+  {id:"review",   icon:"âœ…", label:"Review",   sub:"Confirm & activate"},
 ];
 
 function Stepper({current}) {
@@ -136,7 +136,7 @@ function Stepper({current}) {
                   border:`2px solid ${color}`,
                   display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,
                   transition:"all .3s"}}>
-                  {done ? <span style={{animation:"checkPop .4s ease",display:"inline-block",color:T.green,fontSize:20}}>✓</span> : s.icon}
+                  {done ? <span style={{animation:"checkPop .4s ease",display:"inline-block",color:T.green,fontSize:20}}>âœ“</span> : s.icon}
                 </div>
               </div>
               <div style={{textAlign:"center"}}>
@@ -155,10 +155,10 @@ function Stepper({current}) {
   );
 }
 
-// ── toast ────────────────────────────────────────────────
+// â”€â”€ toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Toast({msg, type, onDone}) {
   const [out, setOut] = useState(false);
-  const icons = {success:"✅",error:"🔴",warning:"⚠️",info:"💡"};
+  const icons = {success:"âœ…",error:"ðŸ”´",warning:"âš ï¸",info:"ðŸ’¡"};
   const bc = {success:T.green,error:T.red,warning:T.amber,info:T.teal};
   useEffect(()=>{
     const t1 = setTimeout(()=>setOut(true), 2800);
@@ -175,14 +175,14 @@ function Toast({msg, type, onDone}) {
   );
 }
 
-// ── STEP 1: CUSTOMER ────────────────────────────────────
+// â”€â”€ STEP 1: CUSTOMER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CustomerStep({data, setData}) {
   const u = (k,v) => setData(p=>({...p,[k]:v}));
   return (
     <div style={{animation:"fadeUp .4s ease"}}>
       <div style={{marginBottom:28}}>
         <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,letterSpacing:3,color:T.white}}>CUSTOMER REGISTRATION</div>
-        <div style={{fontSize:13,color:T.g2,marginTop:4}}>Register the company that will use Safeguards IQ — this becomes the top-level account.</div>
+        <div style={{fontSize:13,color:T.g2,marginTop:4}}>Register the company that will use Safeguards IQ â€” this becomes the top-level account.</div>
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:18,marginBottom:18}}>
@@ -200,13 +200,13 @@ function CustomerStep({data, setData}) {
             "Automobile & Auto Components","Chemical & Petrochemical","Textile & Garments",
             "Food & Beverage Processing","Pharmaceutical","Steel & Metal Fabrication",
             "Cement & Building Materials","Electronics & Semiconductor","Paper & Packaging","Other Manufacturing"
-          ], "Select industry…")}
+          ], "Select industryâ€¦")}
         </Field>
         <Field label="No. of Employees">
-          {sel(data.empCount, v=>u("empCount",v), ["1–50","51–200","201–500","501–2000","2000+"], "Select range…")}
+          {sel(data.empCount, v=>u("empCount",v), ["1â€“50","51â€“200","201â€“500","501â€“2000","2000+"], "Select rangeâ€¦")}
         </Field>
         <Field label="Annual Turnover">
-          {sel(data.turnover, v=>u("turnover",v), ["< ₹1 Cr","₹1–10 Cr","₹10–100 Cr","₹100–500 Cr","> ₹500 Cr"], "Select range…")}
+          {sel(data.turnover, v=>u("turnover",v), ["< â‚¹1 Cr","â‚¹1â€“10 Cr","â‚¹10â€“100 Cr","â‚¹100â€“500 Cr","> â‚¹500 Cr"], "Select rangeâ€¦")}
         </Field>
       </div>
 
@@ -227,7 +227,7 @@ function CustomerStep({data, setData}) {
           {sel(data.state, v=>u("state",v), [
             "Andhra Pradesh","Delhi","Gujarat","Haryana","Karnataka","Kerala","Madhya Pradesh",
             "Maharashtra","Punjab","Rajasthan","Tamil Nadu","Telangana","Uttar Pradesh","West Bengal","Other"
-          ], "Select state…")}
+          ], "Select stateâ€¦")}
         </Field>
         <Field label="GSTIN">
           {inp(data.gstin, v=>u("gstin",v), {placeholder:"27AABCU9603R1ZV",maxLength:15,style:{fontFamily:"'DM Mono',monospace"}})}
@@ -247,7 +247,7 @@ function CustomerStep({data, setData}) {
             {inp(data.contactDesig, v=>u("contactDesig",v), {placeholder:"Plant Manager / HSE Head"})}
           </Field>
           <Field label="Department">
-            {sel(data.contactDept, v=>u("contactDept",v), ["HSE / Safety","Operations","Engineering","IT","Admin","Management"], "Select dept…")}
+            {sel(data.contactDept, v=>u("contactDept",v), ["HSE / Safety","Operations","Engineering","IT","Admin","Management"], "Select deptâ€¦")}
           </Field>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16}}>
@@ -268,8 +268,8 @@ function CustomerStep({data, setData}) {
         <Lbl>Subscription Plan</Lbl>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
           {[
-            {id:"starter", label:"Starter", price:"₹1,200/cam/mo", cams:"Up to 8 cameras", color:T.teal, features:["PPE Detection","Dashboard","Form 18 Auto-fill","Email Alerts"]},
-            {id:"growth",  label:"Growth",  price:"₹1,800/cam/mo", cams:"Up to 32 cameras", color:T.orange, features:["All Starter","Multi-plant","WhatsApp Alerts","ISO Reports","API Access"], popular:true},
+            {id:"starter", label:"Starter", price:"â‚¹1,200/cam/mo", cams:"Up to 8 cameras", color:T.teal, features:["PPE Detection","Dashboard","Form 18 Auto-fill","Email Alerts"]},
+            {id:"growth",  label:"Growth",  price:"â‚¹1,800/cam/mo", cams:"Up to 32 cameras", color:T.orange, features:["All Starter","Multi-plant","WhatsApp Alerts","ISO Reports","API Access"], popular:true},
             {id:"enterprise", label:"Enterprise", price:"Custom pricing", cams:"Unlimited cameras", color:T.purple, features:["All Growth","Dedicated CSM","SLA 99.9%","On-prem option","Custom integrations"]},
           ].map(plan=>(
             <div key={plan.id} onClick={()=>u("plan",plan.id)}
@@ -281,10 +281,10 @@ function CustomerStep({data, setData}) {
               <div style={{fontSize:11,color:T.g2,marginBottom:12}}>{plan.cams}</div>
               {plan.features.map(f=>(
                 <div key={f} style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:T.g1,marginBottom:4}}>
-                  <span style={{color:plan.color,fontSize:10}}>✓</span>{f}
+                  <span style={{color:plan.color,fontSize:10}}>âœ“</span>{f}
                 </div>
               ))}
-              {data.plan===plan.id && <div style={{position:"absolute",top:10,right:10,width:20,height:20,borderRadius:"50%",background:plan.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✓</div>}
+              {data.plan===plan.id && <div style={{position:"absolute",top:10,right:10,width:20,height:20,borderRadius:"50%",background:plan.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>âœ“</div>}
             </div>
           ))}
         </div>
@@ -293,7 +293,7 @@ function CustomerStep({data, setData}) {
   );
 }
 
-// ── STEP 2: PLANT ────────────────────────────────────────
+// â”€â”€ STEP 2: PLANT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PlantStep({data, setData, customer}) {
   const u = (k,v) => setData(p=>({...p,[k]:v}));
   return (
@@ -307,14 +307,14 @@ function PlantStep({data, setData, customer}) {
 
       {/* Auto-linked */}
       <div style={{background:`rgba(0,212,180,.06)`,border:`1.5px solid rgba(0,212,180,.2)`,borderRadius:12,padding:"12px 16px",marginBottom:22,display:"flex",alignItems:"center",gap:10}}>
-        <span style={{fontSize:18}}>🔗</span>
-        <span style={{fontSize:13,color:T.teal}}>Linked to customer: <strong>{customer.companyName||"—"}</strong></span>
+        <span style={{fontSize:18}}>ðŸ”—</span>
+        <span style={{fontSize:13,color:T.teal}}>Linked to customer: <strong>{customer.companyName||"â€”"}</strong></span>
         <span style={{marginLeft:"auto",fontSize:11,color:T.g2,fontFamily:"'DM Mono',monospace"}}>{customer.cin||"CID-TBD"}</span>
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:18,marginBottom:18}}>
         <Field label="Plant / Factory Name" req>
-          {inp(data.plantName, v=>u("plantName",v), {placeholder:"Pune Unit 1 — Main Plant"})}
+          {inp(data.plantName, v=>u("plantName",v), {placeholder:"Pune Unit 1 â€” Main Plant"})}
         </Field>
         <Field label="Factory Licence No. (Factories Act)" req>
           {inp(data.licNo, v=>u("licNo",v), {placeholder:"MH/PUN/F/2019/00423",style:{fontFamily:"'DM Mono',monospace"}})}
@@ -326,10 +326,10 @@ function PlantStep({data, setData, customer}) {
           {sel(data.factoryType, v=>u("factoryType",v), [
             "Manufacturing","Assembly","Process Industry","Warehousing","R&D / Pilot",
             "Power Plant","Mining / Quarry","Construction Site"
-          ], "Select type…")}
+          ], "Select typeâ€¦")}
         </Field>
         <Field label="Hazard Category">
-          {sel(data.hazard, v=>u("hazard",v), ["Low Hazard","Medium Hazard","High Hazard (Schedule 1 Process)","Highly Hazardous (MSIHC Rules)"], "Select…")}
+          {sel(data.hazard, v=>u("hazard",v), ["Low Hazard","Medium Hazard","High Hazard (Schedule 1 Process)","Highly Hazardous (MSIHC Rules)"], "Selectâ€¦")}
         </Field>
         <Field label="Total Workers on Site">
           {inp(data.workers, v=>u("workers",v), {type:"number",placeholder:"250",min:1})}
@@ -353,7 +353,7 @@ function PlantStep({data, setData, customer}) {
           {sel(data.plantState, v=>u("plantState",v), [
             "Andhra Pradesh","Delhi","Gujarat","Haryana","Karnataka","Kerala","Madhya Pradesh",
             "Maharashtra","Punjab","Rajasthan","Tamil Nadu","Telangana","Uttar Pradesh","West Bengal","Other"
-          ], "Select state…")}
+          ], "Select stateâ€¦")}
         </Field>
         <Field label="GPS Coordinates" hint="Paste from Google Maps">
           {inp(data.gps, v=>u("gps",v), {placeholder:"18.6279, 73.7997",style:{fontFamily:"'DM Mono',monospace"}})}
@@ -368,15 +368,15 @@ function PlantStep({data, setData, customer}) {
             {inp(data.licExpiry, v=>u("licExpiry",v), {type:"date"})}
           </Field>
           <Field label="Inspector of Factories Office">
-            {inp(data.inspectorOffice, v=>u("inspectorOffice",v), {placeholder:"Pune District — Joint Director"})}
+            {inp(data.inspectorOffice, v=>u("inspectorOffice",v), {placeholder:"Pune District â€” Joint Director"})}
           </Field>
           <Field label="DGFASLI Region">
-            {sel(data.dgfasli, v=>u("dgfasli",v), ["Mumbai (Western)","Chennai (Southern)","Kolkata (Eastern)","Delhi (Northern)","Hyderabad","Ahmedabad","Bhopal"], "Select region…")}
+            {sel(data.dgfasli, v=>u("dgfasli",v), ["Mumbai (Western)","Chennai (Southern)","Kolkata (Eastern)","Delhi (Northern)","Hyderabad","Ahmedabad","Bhopal"], "Select regionâ€¦")}
           </Field>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16}}>
           <Field label="Shift Pattern">
-            {sel(data.shifts, v=>u("shifts",v), ["Single Shift (8hr)","Double Shift (2×8hr)","Triple Shift (3×8hr)","Continuous (24×7)"], "Select…")}
+            {sel(data.shifts, v=>u("shifts",v), ["Single Shift (8hr)","Double Shift (2Ã—8hr)","Triple Shift (3Ã—8hr)","Continuous (24Ã—7)"], "Selectâ€¦")}
           </Field>
           <Field label="Occupier Name (Factories Act)">
             {inp(data.occupier, v=>u("occupier",v), {placeholder:"MD / Director name"})}
@@ -406,7 +406,7 @@ function PlantStep({data, setData, customer}) {
   );
 }
 
-// ── STEP 3: AREA ─────────────────────────────────────────
+// â”€â”€ STEP 3: AREA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function AreaStep({data, setData, plant}) {
   const TYPES = ["Assembly Line","Welding Zone","Paint Shop","Forklift / Material Handling","Press Room","Electrical / Control Room","Chemical Storage","Loading / Unloading Dock","Warehouse / Store","Boiler / Utility Room","Canteen / Rest Area","Main Gate / Entry","Emergency Assembly Point","Laboratory / QC","Office / Admin","Other"];
   const RISKS = ["Low","Medium","High","Very High (Hazardous)"];
@@ -436,9 +436,9 @@ function AreaStep({data, setData, plant}) {
 
       {data.areas.length === 0 && (
         <div style={{textAlign:"center",padding:"60px 20px",background:T.card,border:`2px dashed ${T.border}`,borderRadius:16,color:T.g2}}>
-          <div style={{fontSize:40,marginBottom:12}}>📍</div>
+          <div style={{fontSize:40,marginBottom:12}}>ðŸ“</div>
           <div style={{fontSize:16,fontWeight:700,color:T.g1,marginBottom:6}}>No areas added yet</div>
-          <div style={{fontSize:13,marginBottom:20}}>Add at least one zone — e.g. "Welding Bay", "Assembly Line A", "Paint Shop"</div>
+          <div style={{fontSize:13,marginBottom:20}}>Add at least one zone â€” e.g. "Welding Bay", "Assembly Line A", "Paint Shop"</div>
           <Btn onClick={addArea} variant="primary">+ Add First Area</Btn>
         </div>
       )}
@@ -449,7 +449,7 @@ function AreaStep({data, setData, plant}) {
             {/* Area header */}
             <div style={{background:T.card2,padding:"12px 18px",display:"flex",alignItems:"center",gap:12,borderBottom:`1px solid ${T.border}`}}>
               <div style={{width:32,height:32,borderRadius:"50%",background:`rgba(255,91,24,.15)`,border:`1.5px solid ${T.orange}`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Bebas Neue',sans-serif",fontSize:16,color:T.orange}}>{i+1}</div>
-              <div style={{flex:1,fontWeight:700,color:area.name||T.g2,fontSize:14}}>{area.name||`Area ${i+1} — click fields below to configure`}</div>
+              <div style={{flex:1,fontWeight:700,color:area.name||T.g2,fontSize:14}}>{area.name||`Area ${i+1} â€” click fields below to configure`}</div>
               <div style={{display:"flex",gap:8,alignItems:"center"}}>
                 {area.riskLevel && <span style={{fontSize:10,padding:"2px 9px",borderRadius:10,fontWeight:700,
                   background:area.riskLevel==="Low"?"rgba(34,212,104,.12)":area.riskLevel==="Medium"?"rgba(255,180,0,.12)":"rgba(255,61,61,.12)",
@@ -457,7 +457,7 @@ function AreaStep({data, setData, plant}) {
                   border:`1px solid ${area.riskLevel==="Low"?"rgba(34,212,104,.3)":area.riskLevel==="Medium"?"rgba(255,180,0,.3)":"rgba(255,61,61,.3)"}`}}>
                   {area.riskLevel} Risk
                 </span>}
-                <button onClick={()=>del(i)} style={{background:"transparent",border:"none",color:T.g2,cursor:"pointer",fontSize:16,padding:"2px 6px"}} title="Remove area">✕</button>
+                <button onClick={()=>del(i)} style={{background:"transparent",border:"none",color:T.g2,cursor:"pointer",fontSize:16,padding:"2px 6px"}} title="Remove area">âœ•</button>
               </div>
             </div>
 
@@ -467,10 +467,10 @@ function AreaStep({data, setData, plant}) {
                   {inp(area.name, v=>upd(i,"name",v), {placeholder:"e.g. Welding Zone B, Assembly Line A"})}
                 </Field>
                 <Field label="Zone Type" req>
-                  {sel(area.type, v=>upd(i,"type",v), TYPES, "Select zone type…")}
+                  {sel(area.type, v=>upd(i,"type",v), TYPES, "Select zone typeâ€¦")}
                 </Field>
                 <Field label="Risk Level" req>
-                  {sel(area.riskLevel, v=>upd(i,"riskLevel",v), RISKS, "Select risk level…")}
+                  {sel(area.riskLevel, v=>upd(i,"riskLevel",v), RISKS, "Select risk levelâ€¦")}
                 </Field>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,marginBottom:16}}>
@@ -506,7 +506,7 @@ function AreaStep({data, setData, plant}) {
 
               <Field label="Additional Notes / Instructions">
                 <textarea value={area.notes} onChange={e=>upd(i,"notes",e.target.value)}
-                  placeholder="e.g. Welding fumes present — respiratory mask mandatory for >10 min exposure…"
+                  placeholder="e.g. Welding fumes present â€” respiratory mask mandatory for >10 min exposureâ€¦"
                   style={{width:"100%",background:T.card2,border:`1.5px solid ${T.border}`,borderRadius:10,
                   padding:"10px 14px",fontSize:13,color:T.white,outline:"none",resize:"vertical",minHeight:64,
                   fontFamily:"'Nunito',sans-serif"}}/>
@@ -525,7 +525,7 @@ function AreaStep({data, setData, plant}) {
   );
 }
 
-// ── STEP 4: CAMERA ───────────────────────────────────────
+// â”€â”€ STEP 4: CAMERA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CameraStep({data, setData, areas}) {
   const MODELS = ["Hikvision DS-2CD2143G2-I","Hikvision DS-2DE4A425IWG-E","Dahua IPC-HDW2831T-AS","CP Plus CP-USC-DA24PL5-0360","Axis P3245-V","Bosch FLEXIDOME 5100i","Generic ONVIF IP Camera","Other"];
   const RESOLUTION = ["1080p Full HD","2MP","4MP","5MP","8MP / 4K","12MP"];
@@ -558,7 +558,7 @@ function CameraStep({data, setData, areas}) {
 
       {areas.length === 0 && (
         <div style={{textAlign:"center",padding:"40px",background:T.card,border:`2px dashed ${T.border}`,borderRadius:16,color:T.g2}}>
-          <div style={{fontSize:13}}>⬅ Go back and add at least one area first</div>
+          <div style={{fontSize:13}}>â¬… Go back and add at least one area first</div>
         </div>
       )}
 
@@ -568,10 +568,10 @@ function CameraStep({data, setData, areas}) {
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,padding:"10px 16px",
             background:`rgba(255,91,24,.07)`,border:`1px solid rgba(255,91,24,.2)`,borderRadius:10}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <span style={{fontSize:18}}>📍</span>
+              <span style={{fontSize:18}}>ðŸ“</span>
               <div>
                 <span style={{fontWeight:700,color:T.orange,fontSize:14}}>{area.name}</span>
-                <span style={{marginLeft:10,fontSize:11,color:T.g2}}>{area.type} · {area.riskLevel} Risk</span>
+                <span style={{marginLeft:10,fontSize:11,color:T.g2}}>{area.type} Â· {area.riskLevel} Risk</span>
               </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -587,9 +587,9 @@ function CameraStep({data, setData, areas}) {
                 {/* Camera header */}
                 <div style={{background:T.card2,padding:"10px 16px",display:"flex",alignItems:"center",gap:12,borderBottom:`1px solid ${T.border}`}}>
                   <div style={{width:28,height:28,borderRadius:"50%",background:`rgba(0,212,180,.12)`,border:`1.5px solid ${T.teal}`,
-                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}}>📹</div>
+                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}}>ðŸ“¹</div>
                   <div style={{flex:1,fontWeight:700,fontSize:13,color:cam.camId?T.white:T.g2,fontFamily:cam.camId?"'DM Mono',monospace":"'Nunito',sans-serif"}}>
-                    {cam.camId||`Camera ${gi+1} — fill CAM ID below`}
+                    {cam.camId||`Camera ${gi+1} â€” fill CAM ID below`}
                   </div>
                   <span style={{fontSize:10,padding:"2px 9px",borderRadius:10,fontWeight:700,fontFamily:"'DM Mono',monospace",
                     background:cam.status==="Active"?"rgba(34,212,104,.12)":"rgba(255,180,0,.12)",
@@ -597,7 +597,7 @@ function CameraStep({data, setData, areas}) {
                     border:`1px solid ${cam.status==="Active"?"rgba(34,212,104,.3)":"rgba(255,180,0,.3)"}`}}>
                     {cam.status}
                   </span>
-                  <button onClick={()=>del(ci)} style={{background:"transparent",border:"none",color:T.g2,cursor:"pointer",fontSize:15}}>✕</button>
+                  <button onClick={()=>del(ci)} style={{background:"transparent",border:"none",color:T.g2,cursor:"pointer",fontSize:15}}>âœ•</button>
                 </div>
 
                 <div style={{padding:16}}>
@@ -606,13 +606,13 @@ function CameraStep({data, setData, areas}) {
                       {inp(cam.camId, v=>upd(ci,"camId",v), {placeholder:"CAM-04",style:{fontFamily:"'DM Mono',monospace"}})}
                     </Field>
                     <Field label="Physical Location" req>
-                      {inp(cam.location, v=>upd(ci,"location",v), {placeholder:"Bay 3 — North wall, 4m height"})}
+                      {inp(cam.location, v=>upd(ci,"location",v), {placeholder:"Bay 3 â€” North wall, 4m height"})}
                     </Field>
                     <Field label="Camera Model">
-                      {sel(cam.model, v=>upd(ci,"model",v), MODELS, "Select model…")}
+                      {sel(cam.model, v=>upd(ci,"model",v), MODELS, "Select modelâ€¦")}
                     </Field>
                     <Field label="Resolution">
-                      {sel(cam.resolution, v=>upd(ci,"resolution",v), RESOLUTION, "Select…")}
+                      {sel(cam.resolution, v=>upd(ci,"resolution",v), RESOLUTION, "Selectâ€¦")}
                     </Field>
                   </div>
 
@@ -635,7 +635,7 @@ function CameraStep({data, setData, areas}) {
                     </div>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                       <Field label="Password">
-                        {inp(cam.password, v=>upd(ci,"password",v), {type:"password",placeholder:"••••••••"})}
+                        {inp(cam.password, v=>upd(ci,"password",v), {type:"password",placeholder:"â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"})}
                       </Field>
                       <Field label="RTSP Stream URL" hint="Auto-built from IP/port if left blank">
                         {inp(cam.rtspUrl, v=>upd(ci,"rtspUrl",v), {placeholder:`rtsp://${cam.ipAddress||"192.168.x.x"}:${cam.port||554}/stream1`,style:{fontFamily:"'DM Mono',monospace",fontSize:12}})}
@@ -648,8 +648,8 @@ function CameraStep({data, setData, areas}) {
                     <Field label="Mount Height">
                       {inp(cam.mountHeight, v=>upd(ci,"mountHeight",v), {placeholder:"4.0 m"})}
                     </Field>
-                    <Field label="View Angle (°)">
-                      {inp(cam.viewAngle, v=>upd(ci,"viewAngle",v), {placeholder:"110°",style:{fontFamily:"'DM Mono',monospace"}})}
+                    <Field label="View Angle (Â°)">
+                      {inp(cam.viewAngle, v=>upd(ci,"viewAngle",v), {placeholder:"110Â°",style:{fontFamily:"'DM Mono',monospace"}})}
                     </Field>
                     <Field label="Coverage Area Description">
                       {inp(cam.coverageDesc, v=>upd(ci,"coverageDesc",v), {placeholder:"Covers welding bay 3 & 4 entry"})}
@@ -676,7 +676,7 @@ function CameraStep({data, setData, areas}) {
                               border:`1.5px solid ${cam[k]?T.teal:T.border}`,
                               background:cam[k]?"rgba(0,212,180,.1)":T.card2,
                               color:cam[k]?T.teal:T.g2,transition:"all .15s"}}>
-                              {cam[k]?"✓ ":""}{l}
+                              {cam[k]?"âœ“ ":""}{l}
                             </div>
                           ))}
                         </div>
@@ -688,18 +688,18 @@ function CameraStep({data, setData, areas}) {
                       </div>
                     </div>
                     <div style={{display:"flex",gap:20}}>
-                      {[{k:"dangerZone",l:"🚧 Danger Zone Monitoring"},{k:"motionDetect",l:"🔍 Motion Detection"}].map(({k,l})=>(
+                      {[{k:"dangerZone",l:"ðŸš§ Danger Zone Monitoring"},{k:"motionDetect",l:"ðŸ” Motion Detection"}].map(({k,l})=>(
                         <div key={k} onClick={()=>upd(ci,k,!cam[k])} style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
                           <div style={{width:18,height:18,borderRadius:4,border:`1.5px solid ${cam[k]?T.orange:T.border}`,
                             background:cam[k]?"rgba(255,91,24,.15)":"transparent",display:"flex",alignItems:"center",
                             justifyContent:"center",fontSize:11,color:T.orange,transition:"all .15s"}}>
-                            {cam[k]?"✓":""}
+                            {cam[k]?"âœ“":""}
                           </div>
                           <span style={{fontSize:13,color:cam[k]?T.g1:T.g2}}>{l}</span>
                         </div>
                       ))}
-                      <Btn onClick={()=>upd(ci,"status","Testing…")} variant="teal" style={{marginLeft:"auto",padding:"6px 14px",fontSize:12}}>
-                        🔗 Test Connection
+                      <Btn onClick={()=>upd(ci,"status","Testingâ€¦")} variant="teal" style={{marginLeft:"auto",padding:"6px 14px",fontSize:12}}>
+                        ðŸ”— Test Connection
                       </Btn>
                     </div>
                   </div>
@@ -714,7 +714,7 @@ function CameraStep({data, setData, areas}) {
               background:"transparent"}}
               onMouseEnter={e=>e.target.style.borderColor=T.teal}
               onMouseLeave={e=>e.target.style.borderColor=T.border}>
-              📹 Click to add a camera to <strong>{area.name}</strong>
+              ðŸ“¹ Click to add a camera to <strong>{area.name}</strong>
             </div>
           )}
         </div>
@@ -723,7 +723,7 @@ function CameraStep({data, setData, areas}) {
   );
 }
 
-// ── STEP 5: REVIEW ───────────────────────────────────────
+// â”€â”€ STEP 5: REVIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ReviewStep({customer, plant, areas, cameras, onActivate}) {
   const totalPPEEnabled = cameras.reduce((a,c)=>{
     return a + [c.detectHelmet,c.detectVest,c.detectBoots,c.detectEye,c.detectGloves,c.detectEar].filter(Boolean).length;
@@ -757,10 +757,10 @@ function ReviewStep({customer, plant, areas, cameras, onActivate}) {
       {/* Summary cards */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:24}}>
         {[
-          {label:"Customer",value:customer.companyName||"—",icon:"🏢",c:T.orange},
-          {label:"Plants",value:"1",icon:"🏭",c:T.teal},
-          {label:"Zones / Areas",value:areas.length,icon:"📍",c:T.blue},
-          {label:"Cameras",value:cameras.length,icon:"📹",c:T.purple},
+          {label:"Customer",value:customer.companyName||"â€”",icon:"ðŸ¢",c:T.orange},
+          {label:"Plants",value:"1",icon:"ðŸ­",c:T.teal},
+          {label:"Zones / Areas",value:areas.length,icon:"ðŸ“",c:T.blue},
+          {label:"Cameras",value:cameras.length,icon:"ðŸ“¹",c:T.purple},
         ].map(s=>(
           <div key={s.label} style={{background:T.card,border:`1.5px solid ${T.border}`,borderRadius:12,padding:16,textAlign:"center",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:s.c}}/>
@@ -846,11 +846,11 @@ function ReviewStep({customer, plant, areas, cameras, onActivate}) {
                 const dets = [c.detectHelmet&&"Helmet",c.detectVest&&"Vest",c.detectBoots&&"Boots",c.detectEye&&"Eye",c.detectGloves&&"Gloves"].filter(Boolean);
                 return (
                   <tr key={i} style={{borderBottom:`1px solid ${T.g3}`}}>
-                    <td style={{padding:"9px 10px",fontSize:12,color:T.orange,fontFamily:"'DM Mono',monospace"}}>{c.camId||"—"}</td>
-                    <td style={{padding:"9px 10px",fontSize:12,color:T.g1}}>{c.location||"—"}</td>
+                    <td style={{padding:"9px 10px",fontSize:12,color:T.orange,fontFamily:"'DM Mono',monospace"}}>{c.camId||"â€”"}</td>
+                    <td style={{padding:"9px 10px",fontSize:12,color:T.g1}}>{c.location||"â€”"}</td>
                     <td style={{padding:"9px 10px",fontSize:12,color:T.g2}}>{c.areaName}</td>
-                    <td style={{padding:"9px 10px",fontSize:11,color:T.teal,fontFamily:"'DM Mono',monospace"}}>{c.ipAddress||"—"}</td>
-                    <td style={{padding:"9px 10px",fontSize:11,color:T.g2}}>{c.model||"—"}</td>
+                    <td style={{padding:"9px 10px",fontSize:11,color:T.teal,fontFamily:"'DM Mono',monospace"}}>{c.ipAddress||"â€”"}</td>
+                    <td style={{padding:"9px 10px",fontSize:11,color:T.g2}}>{c.model||"â€”"}</td>
                     <td style={{padding:"9px 10px"}}><div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{dets.slice(0,3).map(d=><span key={d} style={{fontSize:9,padding:"1px 6px",borderRadius:8,background:"rgba(0,212,180,.1)",color:T.teal}}>{d}</span>)}{dets.length>3&&<span style={{fontSize:9,color:T.g2}}>+{dets.length-3}</span>}</div></td>
                     <td style={{padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:8,background:"rgba(255,180,0,.12)",color:T.amber}}>{c.status}</span></td>
                   </tr>
@@ -864,15 +864,15 @@ function ReviewStep({customer, plant, areas, cameras, onActivate}) {
       {/* Activation */}
       <div style={{background:`linear-gradient(135deg, rgba(255,91,24,.1) 0%, rgba(0,212,180,.08) 100%)`,
         border:`1.5px solid ${T.orange}`,borderRadius:16,padding:24,textAlign:"center"}}>
-        <div style={{fontSize:32,marginBottom:12}}>🚀</div>
+        <div style={{fontSize:32,marginBottom:12}}>ðŸš€</div>
         <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:2,marginBottom:8}}>READY TO ACTIVATE</div>
         <div style={{fontSize:13,color:T.g1,marginBottom:20,maxWidth:480,margin:"0 auto 20px"}}>
           Safeguards IQ will connect to all {cameras.length} camera(s) across {areas.length} zone(s), run a connection test, and begin real-time compliance monitoring within minutes.
         </div>
         <div style={{display:"flex",gap:12,justifyContent:"center"}}>
-          <Btn onClick={()=>onActivate(false)} variant="secondary">💾 Save as Draft</Btn>
+          <Btn onClick={()=>onActivate(false)} variant="secondary">ðŸ’¾ Save as Draft</Btn>
           <Btn onClick={()=>onActivate(true)} variant="primary" style={{padding:"13px 32px",fontSize:16}}>
-            ✅ Activate Safeguards IQ
+            âœ… Activate Safeguards IQ
           </Btn>
         </div>
       </div>
@@ -880,27 +880,27 @@ function ReviewStep({customer, plant, areas, cameras, onActivate}) {
   );
 }
 
-// ── SUCCESS SCREEN ───────────────────────────────────────
+// â”€â”€ SUCCESS SCREEN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function SuccessScreen({customer, plant, areas, cameras, onReset}) {
   return (
     <div style={{textAlign:"center",padding:"40px 20px",animation:"popIn .5s ease"}}>
       <div style={{width:80,height:80,borderRadius:"50%",background:"rgba(34,212,104,.12)",
         border:`3px solid ${T.green}`,display:"flex",alignItems:"center",justifyContent:"center",
-        fontSize:36,margin:"0 auto 24px",animation:"checkPop .5s ease .2s both"}}>✓</div>
+        fontSize:36,margin:"0 auto 24px",animation:"checkPop .5s ease .2s both"}}>âœ“</div>
       <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:40,letterSpacing:3,color:T.green,marginBottom:8}}>
         ONBOARDING COMPLETE
       </div>
       <div style={{fontSize:15,color:T.g1,marginBottom:32,maxWidth:500,margin:"0 auto 32px"}}>
         <strong style={{color:T.white}}>{customer.companyName}</strong> is now live on Safeguards IQ.<br/>
-        {cameras.length} camera(s) across {areas.length} zone(s) are connecting…
+        {cameras.length} camera(s) across {areas.length} zone(s) are connectingâ€¦
       </div>
 
       {/* Status cards */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,maxWidth:600,margin:"0 auto 32px"}}>
         {[
-          {icon:"🔗",label:"Cameras Connecting",value:cameras.length,c:T.teal},
-          {icon:"📍",label:"Zones Active",value:areas.length,c:T.blue},
-          {icon:"🤖",label:"AI Models Loading",value:"PPE + Danger Zone",c:T.purple},
+          {icon:"ðŸ”—",label:"Cameras Connecting",value:cameras.length,c:T.teal},
+          {icon:"ðŸ“",label:"Zones Active",value:areas.length,c:T.blue},
+          {icon:"ðŸ¤–",label:"AI Models Loading",value:"PPE + Danger Zone",c:T.purple},
         ].map(s=>(
           <div key={s.label} style={{background:T.card,border:`1.5px solid ${T.border}`,borderRadius:12,padding:16}}>
             <div style={{fontSize:24,marginBottom:6}}>{s.icon}</div>
@@ -916,7 +916,7 @@ function SuccessScreen({customer, plant, areas, cameras, onReset}) {
         {[
           ["Customer ID","CUST-"+Math.random().toString(36).substr(2,8).toUpperCase(),true],
           ["Plant ID","PLT-"+Math.random().toString(36).substr(2,8).toUpperCase(),true],
-          ["Login Email",customer.email||"—",true],
+          ["Login Email",customer.email||"â€”",true],
           ["Plan",customer.plan?.toUpperCase()||"GROWTH",false],
           ["Dashboard URL","app.syyaimsafeg.ai/"+customer.companyName?.replace(/\s+/g,"-").toLowerCase(),true],
         ].map(([l,v,m])=>(
@@ -929,13 +929,13 @@ function SuccessScreen({customer, plant, areas, cameras, onReset}) {
 
       <div style={{display:"flex",gap:12,justifyContent:"center"}}>
         <Btn onClick={onReset} variant="secondary">+ Onboard Another Plant</Btn>
-        <Btn onClick={()=>{}} variant="primary">→ Go to Dashboard</Btn>
+        <Btn onClick={()=>{}} variant="primary">â†’ Go to Dashboard</Btn>
       </div>
     </div>
   );
 }
 
-// ── MAIN APP ─────────────────────────────────────────────
+// â”€â”€ MAIN APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function App() {
   const [step, setStep] = useState("customer");
   const [done, setDone] = useState(false);
@@ -969,7 +969,7 @@ export default function App() {
   const prev = () => { if(ci>0) setStep(ORDER[ci-1]); };
 
   const activate = (launch) => {
-    if(launch){ toast("Safeguards IQ activated! Cameras connecting…","success"); setTimeout(()=>setDone(true),800); }
+    if(launch){ toast("Safeguards IQ activated! Cameras connectingâ€¦","success"); setTimeout(()=>setDone(true),800); }
     else { toast("Saved as draft","info"); }
   };
 
@@ -984,7 +984,7 @@ export default function App() {
       {/* TOP BAR */}
       <div style={{background:T.bg2,borderBottom:`1px solid ${T.border}`,padding:"0 28px",height:54,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:32,height:32,background:T.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff",fontWeight:700}}>✓</div>
+          <div style={{width:32,height:32,background:T.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff",fontWeight:700}}>âœ“</div>
           <div>
             <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:21,letterSpacing:3}}>Safeguards IQ</div>
             <div style={{fontSize:9,color:T.g2,letterSpacing:3,fontFamily:"'DM Mono',monospace",textTransform:"uppercase"}}>Customer Onboarding</div>
@@ -1023,11 +1023,11 @@ export default function App() {
             {/* NAV BUTTONS */}
             {step !== "review" && (
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:24}}>
-                <Btn onClick={prev} variant="ghost" disabled={ci===0}>← Back</Btn>
+                <Btn onClick={prev} variant="ghost" disabled={ci===0}>â† Back</Btn>
                 <div style={{display:"flex",gap:10,alignItems:"center"}}>
-                  <Btn onClick={()=>toast("Draft saved","info")} variant="secondary">💾 Save Draft</Btn>
+                  <Btn onClick={()=>toast("Draft saved","info")} variant="secondary">ðŸ’¾ Save Draft</Btn>
                   <Btn onClick={next} variant="primary">
-                    {ci===ORDER.length-2 ? "Review →" : "Continue →"}
+                    {ci===ORDER.length-2 ? "Review â†’" : "Continue â†’"}
                   </Btn>
                 </div>
               </div>
@@ -1043,4 +1043,5 @@ export default function App() {
     </>
   );
 }
+
 

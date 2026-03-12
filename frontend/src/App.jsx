@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Routes, Route, NavLink, Navigate } from "react-router-dom";
 
 import LoginPage         from "./pages/auth/LoginPage.jsx";
@@ -19,9 +19,9 @@ function PrivateRoute({ user, children }) {
 
 function AppNav({ user, onLogout }) {
   const navItems = [
-    { to: "/dashboard",  label: "📹 Safety Monitor" },
-    { to: "/compliance", label: "🛡️ Compliance"     },
-    { to: "/billing",    label: "🧾 Billing"        },
+    { to: "/dashboard",  label: "ðŸ“¹ Safety Monitor" },
+    { to: "/compliance", label: "ðŸ›¡ï¸ Compliance"     },
+    { to: "/billing",    label: "ðŸ§¾ Billing"        },
   ];
   return (
     <nav style={{ background:T.nav, borderBottom:`1px solid ${T.border}`, padding:"0 24px", display:"flex", alignItems:"center", gap:4, overflowX:"auto", position:"sticky", top:0, zIndex:100 }}>
@@ -73,12 +73,12 @@ export default function App() {
         <Route path="/signup" element={user ? <Navigate to="/dashboard" replace /> : <SignupPage onLogin={handleLogin} />} />
         <Route path="/"       element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
 
-        {/* Main app — protected */}
+        {/* Main app â€” protected */}
         <Route path="/dashboard"  element={<PrivateRoute user={user}><SafetyMonitor /></PrivateRoute>} />
         <Route path="/compliance" element={<PrivateRoute user={user}><FactoryCompliance /></PrivateRoute>} />
         <Route path="/billing"    element={<PrivateRoute user={user}><BillingDashboard /></PrivateRoute>} />
 
-        {/* Admin portal — completely separate, has its own auth */}
+        {/* Admin portal â€” completely separate, has its own auth */}
         <Route path="/admin/*" element={<AdminDashboard />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -86,3 +86,4 @@ export default function App() {
     </div>
   );
 }
+

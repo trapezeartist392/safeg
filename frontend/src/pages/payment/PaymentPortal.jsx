@@ -1,14 +1,14 @@
-/**
- * Safeguard SIQ — Razorpay Payment Portal
- * Full-stack payment integration: plan selection → checkout → confirmation
+﻿/**
+ * Safeguards IQ â€” Razorpay Payment Portal
+ * Full-stack payment integration: plan selection â†’ checkout â†’ confirmation
  * Connects to Node.js backend at /api/v1/payments/*
  */
 import { useState, useEffect, useRef } from "react";
 
-/* ─── GOOGLE FONTS ─────────────────────────────────── */
+/* â”€â”€â”€ GOOGLE FONTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap');`;
 
-/* ─── DESIGN TOKENS ────────────────────────────────── */
+/* â”€â”€â”€ DESIGN TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const T = {
   void:    "#05080F",
   deep:    "#080D18",
@@ -37,7 +37,7 @@ const T = {
   skyGlow:   "rgba(45,142,255,.12)",
 };
 
-/* ─── GLOBAL STYLES ────────────────────────────────── */
+/* â”€â”€â”€ GLOBAL STYLES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const G = `
 ${FONTS}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -65,7 +65,7 @@ input:focus,select:focus{outline:none}
 button{cursor:pointer;font-family:'Instrument Sans',sans-serif}
 `;
 
-/* ─── PLANS CONFIG ─────────────────────────────────── */
+/* â”€â”€â”€ PLANS CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const PLANS = [
   {
     id: "starter",
@@ -73,10 +73,10 @@ const PLANS = [
     tagline: "Up to 8 cameras",
     monthlyINR: 9600,
     annualINR:  96000,
-    annualSave: "₹19,200 saved",
+    annualSave: "â‚¹19,200 saved",
     color: T.jade,
     glow: T.jadeGlow,
-    icon: "◈",
+    icon: "â—ˆ",
     features: [
       "8 cameras max",
       "PPE detection (Helmet + Vest)",
@@ -94,10 +94,10 @@ const PLANS = [
     tagline: "Up to 32 cameras",
     monthlyINR: 57600,
     annualINR:  576000,
-    annualSave: "₹1,15,200 saved",
+    annualSave: "â‚¹1,15,200 saved",
     color: T.ember,
     glow: T.emberGlow,
-    icon: "⬡",
+    icon: "â¬¡",
     popular: true,
     features: [
       "32 cameras max",
@@ -120,7 +120,7 @@ const PLANS = [
     annualINR:  null,
     color: T.violet,
     glow: "rgba(139,92,246,.12)",
-    icon: "✦",
+    icon: "âœ¦",
     features: [
       "Unlimited cameras",
       "All Growth features",
@@ -144,16 +144,16 @@ const ADD_ONS = [
   { id: "onsite_training",  label: "On-site HSE training",   price: 25000, unit: "one-time" },
 ];
 
-/* ─── HELPERS ──────────────────────────────────────── */
+/* â”€â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const fmt = (n) =>
-  n == null ? "Custom" : "₹" + n.toLocaleString("en-IN");
+  n == null ? "Custom" : "â‚¹" + n.toLocaleString("en-IN");
 
 const fmtShort = (n) =>
   n == null ? "Custom"
-  : n >= 100000 ? "₹" + (n / 100000).toFixed(1).replace(/\.0$/, "") + "L/yr"
-  : "₹" + (n / 1000).toFixed(0) + "K/yr";
+  : n >= 100000 ? "â‚¹" + (n / 100000).toFixed(1).replace(/\.0$/, "") + "L/yr"
+  : "â‚¹" + (n / 1000).toFixed(0) + "K/yr";
 
-/* ─── API LAYER ────────────────────────────────────── */
+/* â”€â”€â”€ API LAYER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const API_BASE = import.meta?.env?.VITE_API_URL || "http://localhost:4000/api/v1";
 
 async function apiCall(method, path, body) {
@@ -171,7 +171,7 @@ async function apiCall(method, path, body) {
   return data;
 }
 
-/* ─── RAZORPAY LOADER ──────────────────────────────── */
+/* â”€â”€â”€ RAZORPAY LOADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function loadRazorpay() {
   return new Promise((resolve) => {
     if (window.Razorpay) { resolve(true); return; }
@@ -183,9 +183,9 @@ function loadRazorpay() {
   });
 }
 
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 /*  COMPONENT: Ambient background orbs                 */
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function AmbientOrbs({ color }) {
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
@@ -208,9 +208,9 @@ function AmbientOrbs({ color }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 /*  COMPONENT: Plan Card                               */
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function PlanCard({ plan, billing, selected, onSelect }) {
   const price = billing === "annual" ? plan.annualINR : plan.monthlyINR;
   const perCam = plan.id === "starter" ? (billing === "annual" ? 1000 : 1200)
@@ -287,7 +287,7 @@ function PlanCard({ plan, billing, selected, onSelect }) {
             </div>
             {perCam && (
               <div style={{ fontSize: 12, color: T.fog, marginTop: 3, fontFamily: "'DM Mono',monospace" }}>
-                ₹{perCam}/cam/mo · +18% GST
+                â‚¹{perCam}/cam/mo Â· +18% GST
               </div>
             )}
             {billing === "annual" && plan.annualSave && (
@@ -298,7 +298,7 @@ function PlanCard({ plan, billing, selected, onSelect }) {
                 border: `1px solid ${T.jade}33`, fontSize: 11,
                 color: T.jade, fontWeight: 600,
               }}>
-                🎁 {plan.annualSave}
+                ðŸŽ {plan.annualSave}
               </div>
             )}
           </>
@@ -309,13 +309,13 @@ function PlanCard({ plan, billing, selected, onSelect }) {
       <div style={{ marginBottom: 20 }}>
         {plan.features.map(f => (
           <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9, marginBottom: 7 }}>
-            <span style={{ color: plan.color, fontSize: 13, marginTop: 1, flexShrink: 0 }}>✓</span>
+            <span style={{ color: plan.color, fontSize: 13, marginTop: 1, flexShrink: 0 }}>âœ“</span>
             <span style={{ fontSize: 13, color: T.cloud, lineHeight: 1.4 }}>{f}</span>
           </div>
         ))}
         {plan.notIncluded?.map(f => (
           <div key={f} style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 7, opacity: 0.35 }}>
-            <span style={{ fontSize: 13, color: T.fog }}>–</span>
+            <span style={{ fontSize: 13, color: T.fog }}>â€“</span>
             <span style={{ fontSize: 13, color: T.fog, textDecoration: "line-through" }}>{f}</span>
           </div>
         ))}
@@ -331,7 +331,7 @@ function PlanCard({ plan, billing, selected, onSelect }) {
           fontSize: 13, fontWeight: 700, color: selected ? "#fff" : T.fog,
           transition: "all .2s",
         }}>
-          {selected ? "✓ Selected" : "Select Plan"}
+          {selected ? "âœ“ Selected" : "Select Plan"}
         </div>
       ) : (
         <a href="mailto:sales@syyaimsafeg.ai" style={{
@@ -341,15 +341,15 @@ function PlanCard({ plan, billing, selected, onSelect }) {
           borderRadius: 10, textAlign: "center",
           fontSize: 13, fontWeight: 700, color: plan.color,
           textDecoration: "none",
-        }}>Contact Sales →</a>
+        }}>Contact Sales â†’</a>
       )}
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 /*  COMPONENT: Order Summary sidebar                   */
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function OrderSummary({ plan, billing, addOns, coupon, couponValid, couponDiscount }) {
   const base = billing === "annual" ? plan.annualINR : plan.monthlyINR;
   const addOnTotal = addOns.reduce((s, id) => {
@@ -415,7 +415,7 @@ function OrderSummary({ plan, billing, addOns, coupon, couponValid, couponDiscou
       <div style={{ borderTop: `1px solid ${T.line}`, margin: "12px 0" }}/>
       <Row label="Subtotal"  value={fmt(subtotal)}/>
       {couponValid && (
-        <Row label={`Coupon (${coupon})`} value={`– ${fmt(discount)}`} accent={T.jade}/>
+        <Row label={`Coupon (${coupon})`} value={`â€“ ${fmt(discount)}`} accent={T.jade}/>
       )}
       <Row label="GST (18%)" value={fmt(gst)} sub/>
       <div style={{ borderTop: `1px solid ${T.line}`, margin: "12px 0" }}/>
@@ -428,14 +428,14 @@ function OrderSummary({ plan, billing, addOns, coupon, couponValid, couponDiscou
           border: `1px solid ${T.jade}33`,
           display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: T.jade,
         }}>
-          <span>🎁</span>
+          <span>ðŸŽ</span>
           <span>You save <strong>{plan.annualSave.split(" ")[0]}</strong> with annual billing vs monthly</span>
         </div>
       )}
 
       {/* Security badges */}
       <div style={{ marginTop: 20, display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {["🔒 SSL Secured", "⚡ Razorpay", "🇮🇳 INR"].map(b => (
+        {["ðŸ”’ SSL Secured", "âš¡ Razorpay", "ðŸ‡®ðŸ‡³ INR"].map(b => (
           <div key={b} style={{
             fontSize: 11, color: T.ghost, padding: "4px 9px",
             border: `1px solid ${T.edge}`, borderRadius: 20,
@@ -446,9 +446,9 @@ function OrderSummary({ plan, billing, addOns, coupon, couponValid, couponDiscou
   );
 }
 
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 /*  COMPONENT: Payment Success Screen                  */
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function SuccessScreen({ payment, plan, onDone }) {
   return (
     <div style={{ textAlign: "center", padding: "40px 20px", animation: "fadeIn .6s ease" }}>
@@ -476,7 +476,7 @@ function SuccessScreen({ payment, plan, onDone }) {
       </div>
       <div style={{ fontSize: 15, color: T.fog, maxWidth: 420, margin: "0 auto 32px", animation: "fadeUp .5s ease .3s both" }}>
         Your <strong style={{ color: plan.color }}>{plan.name} Plan</strong> is now active.
-        Safeguard SIQ is ready to protect your factory floor.
+        Safeguards IQ is ready to protect your factory floor.
       </div>
 
       {/* Receipt card */}
@@ -491,9 +491,9 @@ function SuccessScreen({ payment, plan, onDone }) {
         {[
           ["Payment ID",  payment.razorpay_payment_id || "pay_" + Math.random().toString(36).slice(2,12).toUpperCase()],
           ["Order ID",    payment.razorpay_order_id || "order_" + Math.random().toString(36).slice(2,12).toUpperCase()],
-          ["Plan",        `${plan.name} — ${payment.billing === "annual" ? "Annual" : "Monthly"}`],
+          ["Plan",        `${plan.name} â€” ${payment.billing === "annual" ? "Annual" : "Monthly"}`],
           ["Amount Paid", payment.amount],
-          ["Status",      "✓ Confirmed"],
+          ["Status",      "âœ“ Confirmed"],
           ["Date",        new Date().toLocaleString("en-IN", { dateStyle:"medium", timeStyle:"short" })],
         ].map(([l, v]) => (
           <div key={l} style={{
@@ -514,22 +514,22 @@ function SuccessScreen({ payment, plan, onDone }) {
         <button onClick={onDone} style={{
           background: T.ember, color: "#fff", border: "none",
           padding: "13px 32px", borderRadius: 12, fontSize: 14, fontWeight: 700,
-        }}>→ Go to Dashboard</button>
+        }}>â†’ Go to Dashboard</button>
         <button style={{
           background: "transparent", color: T.fog,
           border: `1.5px solid ${T.line}`,
           padding: "13px 24px", borderRadius: 12, fontSize: 14,
-        }}>📧 Email Receipt</button>
+        }}>ðŸ“§ Email Receipt</button>
       </div>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 /*  MAIN APP                                           */
-/* ═══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 export default function PaymentPortal() {
-  // ── State
+  // â”€â”€ State
   const [screen,        setScreen]       = useState("plans");    // plans | checkout | processing | success | failed
   const [selectedPlan,  setSelectedPlan] = useState("growth");
   const [billing,       setBilling]      = useState("annual");
@@ -553,7 +553,7 @@ export default function PaymentPortal() {
 
   const plan = PLANS.find(p => p.id === selectedPlan);
 
-  // ── Derived totals
+  // â”€â”€ Derived totals
   const base       = billing === "annual" ? plan.annualINR : plan.monthlyINR;
   const addOnTotal = addOns.reduce((s, id) => s + (ADD_ONS.find(x => x.id === id)?.price || 0), 0);
   const subtotal   = base + addOnTotal;
@@ -563,11 +563,11 @@ export default function PaymentPortal() {
   const totalINR   = afterDisc + gst;
   const totalPaise = totalINR * 100;
 
-  // ── Toggle add-on
+  // â”€â”€ Toggle add-on
   const toggleAddOn = (id) =>
     setAddOns(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
-  // ── Validate coupon
+  // â”€â”€ Validate coupon
   const validateCoupon = async () => {
     if (!couponInput.trim()) return;
     setCouponLoading(true); setCouponError("");
@@ -588,7 +588,7 @@ export default function PaymentPortal() {
     }
   };
 
-  // ── Validate checkout form
+  // â”€â”€ Validate checkout form
   const validateForm = () => {
     const e = {};
     if (!form.name.trim())    e.name    = "Required";
@@ -601,7 +601,7 @@ export default function PaymentPortal() {
     return Object.keys(e).length === 0;
   };
 
-  // ── MAIN PAYMENT FLOW ──────────────────────────────
+  // â”€â”€ MAIN PAYMENT FLOW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handlePay = async () => {
     if (!validateForm()) return;
     setPaying(true); setPayError("");
@@ -625,14 +625,14 @@ export default function PaymentPortal() {
         orderData = res.data;
       } catch (apiErr) {
         // Demo fallback: simulate order creation
-        console.warn("Backend unavailable — using demo mode:", apiErr.message);
+        console.warn("Backend unavailable â€” using demo mode:", apiErr.message);
         orderData = {
           orderId:    "order_DEMO" + Date.now().toString(36).toUpperCase(),
           amount:     totalPaise,
           currency:   "INR",
           key:        "rzp_test_YOUR_KEY_ID", // Replace with your Razorpay test key
-          name:       "Safeguard SIQ",
-          description:`${plan.name} Plan — ${billing === "annual" ? "Annual" : "Monthly"}`,
+          name:       "Safeguards IQ",
+          description:`${plan.name} Plan â€” ${billing === "annual" ? "Annual" : "Monthly"}`,
         };
       }
 
@@ -641,7 +641,7 @@ export default function PaymentPortal() {
         key:         orderData.key || import.meta?.env?.VITE_RAZORPAY_KEY || "rzp_test_YOUR_KEY_ID",
         amount:      orderData.amount,
         currency:    orderData.currency || "INR",
-        name:        "SAFEGUARD SIQ",
+        name:        "Safeguards IQ",
         description: orderData.description || `${plan.name} Plan`,
         order_id:    orderData.orderId,
         image:       "https://i.imgur.com/safeg-logo.png",
@@ -693,12 +693,12 @@ export default function PaymentPortal() {
               coupon: couponValid ? coupon : null,
             }).catch(() => {
               // Demo: treat as success if backend unavailable
-              console.warn("Verification API unavailable — demo success");
+              console.warn("Verification API unavailable â€” demo success");
             });
 
             setPaymentResult({
               ...response,
-              amount:  `₹${totalINR.toLocaleString("en-IN")} + GST`,
+              amount:  `â‚¹${totalINR.toLocaleString("en-IN")} + GST`,
               billing,
             });
             setScreen("success");
@@ -732,7 +732,7 @@ export default function PaymentPortal() {
     }
   };
 
-  // ── INPUT helper
+  // â”€â”€ INPUT helper
   const inp = (key, placeholder, type = "text") => (
     <input
       type={type}
@@ -751,7 +751,7 @@ export default function PaymentPortal() {
     />
   );
 
-  /* ── SUCCESS SCREEN ── */
+  /* â”€â”€ SUCCESS SCREEN â”€â”€ */
   if (screen === "success") return (
     <>
       <style>{G}</style>
@@ -762,7 +762,7 @@ export default function PaymentPortal() {
     </>
   );
 
-  /* ── PROCESSING SCREEN ── */
+  /* â”€â”€ PROCESSING SCREEN â”€â”€ */
   if (screen === "processing") return (
     <>
       <style>{G}</style>
@@ -776,13 +776,13 @@ export default function PaymentPortal() {
           borderTopColor: T.ember,
           animation: "spin .8s linear infinite",
         }}/>
-        <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 700 }}>Confirming payment…</div>
+        <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 700 }}>Confirming paymentâ€¦</div>
         <div style={{ color: T.fog, fontSize: 13 }}>Please wait, do not close this window</div>
       </div>
     </>
   );
 
-  /* ── FAILED SCREEN ── */
+  /* â”€â”€ FAILED SCREEN â”€â”€ */
   if (screen === "failed") return (
     <>
       <style>{G}</style>
@@ -794,7 +794,7 @@ export default function PaymentPortal() {
           width: 72, height: 72, borderRadius: "50%",
           background: "rgba(255,59,107,.1)", border: `2px solid ${T.rose}`,
           display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32,
-        }}>✕</div>
+        }}>âœ•</div>
         <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.rose }}>Payment Failed</div>
         <div style={{ color: T.fog, fontSize: 14, maxWidth: 380, textAlign: "center" }}>{payError}</div>
         <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
@@ -806,13 +806,13 @@ export default function PaymentPortal() {
             background: "transparent", color: T.fog,
             border: `1.5px solid ${T.line}`,
             padding: "12px 20px", borderRadius: 12, fontSize: 14,
-          }}>← Back to Plans</button>
+          }}>â† Back to Plans</button>
         </div>
       </div>
     </>
   );
 
-  /* ── PLANS SCREEN ── */
+  /* â”€â”€ PLANS SCREEN â”€â”€ */
   if (screen === "plans") return (
     <>
       <style>{G}</style>
@@ -830,9 +830,9 @@ export default function PaymentPortal() {
               clipPath: "polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 14, color: "#fff", fontWeight: 900,
-            }}>✓</div>
+            }}>âœ“</div>
             <div>
-              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase" }}>Safeguard SIQ</div>
+              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase" }}>Safeguards IQ</div>
             </div>
           </div>
 
@@ -870,7 +870,7 @@ export default function PaymentPortal() {
                     background: T.jade, color: T.deep,
                     fontSize: 8, fontWeight: 800, padding: "1px 5px",
                     borderRadius: 8, letterSpacing: .5,
-                  }}>–20%</span>
+                  }}>â€“20%</span>
                 )}
               </button>
             ))}
@@ -911,7 +911,7 @@ export default function PaymentPortal() {
                     background: sel ? T.ember : "transparent",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 11, color: "#fff", flexShrink: 0,
-                  }}>{sel ? "✓" : ""}</div>
+                  }}>{sel ? "âœ“" : ""}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: T.snow }}>{a.label}</div>
                   </div>
@@ -928,7 +928,7 @@ export default function PaymentPortal() {
         {selectedPlan !== "enterprise" && (
           <div style={{ textAlign: "center", animation: "fadeUp .5s ease .4s both" }}>
             <div style={{ fontSize: 13, color: T.fog, marginBottom: 12 }}>
-              Selected: <strong style={{ color: plan.color }}>{plan.name}</strong> ·{" "}
+              Selected: <strong style={{ color: plan.color }}>{plan.name}</strong> Â·{" "}
               <strong style={{ color: T.snow }}>{fmt(billing === "annual" ? plan.annualINR : plan.monthlyINR)}</strong>
               /{billing === "annual" ? "yr" : "mo"} + 18% GST
             </div>
@@ -940,10 +940,10 @@ export default function PaymentPortal() {
               boxShadow: `0 8px 32px rgba(255,77,0,.35)`,
               animation: "glowPulse 3s ease infinite",
             }}>
-              Proceed to Checkout →
+              Proceed to Checkout â†’
             </button>
             <div style={{ fontSize: 12, color: T.ghost, marginTop: 10 }}>
-              Secured by Razorpay · Cancel anytime · Instant activation
+              Secured by Razorpay Â· Cancel anytime Â· Instant activation
             </div>
           </div>
         )}
@@ -951,7 +951,7 @@ export default function PaymentPortal() {
     </>
   );
 
-  /* ── CHECKOUT SCREEN ── */
+  /* â”€â”€ CHECKOUT SCREEN â”€â”€ */
   return (
     <>
       <style>{G}</style>
@@ -964,10 +964,10 @@ export default function PaymentPortal() {
           <button onClick={() => setScreen("plans")} style={{
             background: "transparent", border: "none", color: T.fog,
             fontSize: 13, display: "flex", alignItems: "center", gap: 6, marginBottom: 20,
-          }}>← Back to plans</button>
+          }}>â† Back to plans</button>
           <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 32, fontWeight: 800 }}>Checkout</div>
           <div style={{ color: T.fog, fontSize: 14, marginTop: 4 }}>
-            Activating <strong style={{ color: plan.color }}>{plan.name} Plan</strong> ·{" "}
+            Activating <strong style={{ color: plan.color }}>{plan.name} Plan</strong> Â·{" "}
             {billing === "annual" ? "Annual" : "Monthly"} billing
           </div>
         </div>
@@ -1010,7 +1010,7 @@ export default function PaymentPortal() {
                       width: "100%", background: T.ink, border: `1.5px solid ${formErrors.state ? T.rose : T.line}`,
                       borderRadius: 10, padding: "11px 14px", fontSize: 14, color: form.state ? T.snow : T.fog,
                     }}>
-                    <option value="">Select state…</option>
+                    <option value="">Select stateâ€¦</option>
                     {["Andhra Pradesh","Delhi","Gujarat","Haryana","Karnataka","Kerala","Madhya Pradesh",
                        "Maharashtra","Punjab","Rajasthan","Tamil Nadu","Telangana","Uttar Pradesh","West Bengal","Other"]
                       .map(s => <option key={s} value={s}>{s}</option>)}
@@ -1034,9 +1034,9 @@ export default function PaymentPortal() {
                   background: T.jadeGlow, border: `1px solid ${T.jade}33`,
                   borderRadius: 10, fontSize: 13, color: T.jade,
                 }}>
-                  ✓ <strong>{coupon}</strong> — {(couponDiscount * 100).toFixed(0)}% off applied!
+                  âœ“ <strong>{coupon}</strong> â€” {(couponDiscount * 100).toFixed(0)}% off applied!
                   <button onClick={() => { setCouponValid(false); setCoupon(""); setCouponInput(""); }}
-                    style={{ marginLeft: "auto", background: "none", border: "none", color: T.fog, fontSize: 16, cursor: "pointer" }}>✕</button>
+                    style={{ marginLeft: "auto", background: "none", border: "none", color: T.fog, fontSize: 16, cursor: "pointer" }}>âœ•</button>
                 </div>
               ) : (
                 <div style={{ display: "flex", gap: 10 }}>
@@ -1052,13 +1052,13 @@ export default function PaymentPortal() {
                     color: T.ember, padding: "11px 20px", borderRadius: 10,
                     fontSize: 13, fontWeight: 700,
                   }}>
-                    {couponLoading ? "…" : "Apply"}
+                    {couponLoading ? "â€¦" : "Apply"}
                   </button>
                 </div>
               )}
               {couponError && <div style={{ fontSize: 12, color: T.rose, marginTop: 8 }}>{couponError}</div>}
               <div style={{ fontSize: 11, color: T.ghost, marginTop: 8 }}>
-                Try: SAFEG20 (20% off) · LAUNCH15 (15% off) · INDIA10 (10% off)
+                Try: SAFEG20 (20% off) Â· LAUNCH15 (15% off) Â· INDIA10 (10% off)
               </div>
             </div>
 
@@ -1077,18 +1077,18 @@ export default function PaymentPortal() {
               {paying ? (
                 <>
                   <div style={{ width: 20, height: 20, borderRadius: "50%", border: "2.5px solid rgba(255,255,255,.3)", borderTopColor: "#fff", animation: "spin .7s linear infinite" }}/>
-                  Opening Razorpay…
+                  Opening Razorpayâ€¦
                 </>
               ) : (
                 <>
-                  <span style={{ fontSize: 20 }}>⚡</span>
-                  Pay {fmt(totalINR)} · Secured by Razorpay
+                  <span style={{ fontSize: 20 }}>âš¡</span>
+                  Pay {fmt(totalINR)} Â· Secured by Razorpay
                 </>
               )}
             </button>
 
             <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: T.ghost }}>
-              By paying you agree to our Terms of Service · 7-day refund policy
+              By paying you agree to our Terms of Service Â· 7-day refund policy
             </div>
 
             {/* Payment methods strip */}
@@ -1116,4 +1116,5 @@ export default function PaymentPortal() {
     </>
   );
 }
+
 
