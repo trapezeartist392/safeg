@@ -1,5 +1,5 @@
-/**
- * Safeguards IQ — Billing & Invoice Dashboard
+﻿/**
+ * Safeguards IQ â€” Billing & Invoice Dashboard
  * Shows current plan, payment history, upgrade options
  * Integrates with backend /api/v1/payments/*
  */
@@ -29,9 +29,9 @@ const API = import.meta?.env?.VITE_API_URL || "http://localhost:4000/api/v1";
 const authHeader = () => ({ Authorization: `Bearer ${window._safegToken}` });
 
 const PLAN_META = {
-  starter:    { color: T.jade,   icon: "◈", label: "Starter",    limit: "8 cameras" },
-  growth:     { color: T.ember,  icon: "⬡", label: "Growth",     limit: "32 cameras" },
-  enterprise: { color: T.violet, icon: "✦", label: "Enterprise", limit: "Unlimited" },
+  starter:    { color: T.jade,   icon: "â—ˆ", label: "Starter",    limit: "8 cameras" },
+  growth:     { color: T.ember,  icon: "â¬¡", label: "Growth",     limit: "32 cameras" },
+  enterprise: { color: T.violet, icon: "âœ¦", label: "Enterprise", limit: "Unlimited" },
 };
 
 const STATUS_META = {
@@ -43,21 +43,21 @@ const STATUS_META = {
 };
 
 function fmtINR(paise) {
-  if (!paise) return "—";
-  return "₹" + (paise / 100).toLocaleString("en-IN");
+  if (!paise) return "â€”";
+  return "â‚¹" + (paise / 100).toLocaleString("en-IN");
 }
 
 function fmtDate(d) {
-  if (!d) return "—";
+  if (!d) return "â€”";
   return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-/* ─── Skeleton loader ───────────────────────────── */
+/* â”€â”€â”€ Skeleton loader â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function Skeleton({ h = 20, w = "100%", mb = 0 }) {
   return <div className="shimmer" style={{ height: h, width: w, marginBottom: mb }}/>;
 }
 
-/* ─── Stat card ─────────────────────────────────── */
+/* â”€â”€â”€ Stat card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function StatCard({ label, value, sub, icon, color, loading }) {
   return (
     <div style={{
@@ -82,7 +82,7 @@ function StatCard({ label, value, sub, icon, color, loading }) {
   );
 }
 
-/* ─── Invoice row ───────────────────────────────── */
+/* â”€â”€â”€ Invoice row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function InvoiceRow({ inv, onDownload, onRefund }) {
   const s = STATUS_META[inv.status] || STATUS_META.created;
   const plan = PLAN_META[inv.plan_id] || PLAN_META.growth;
@@ -91,7 +91,7 @@ function InvoiceRow({ inv, onDownload, onRefund }) {
     <tr style={{ borderBottom: `1px solid ${T.edge}` }}>
       <td style={{ padding: "14px 12px" }}>
         <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 12, color: T.fog }}>
-          {inv.invoice_no || "—"}
+          {inv.invoice_no || "â€”"}
         </div>
         <div style={{ fontSize: 11, color: T.ghost, marginTop: 2 }}>{fmtDate(inv.created_at)}</div>
       </td>
@@ -121,7 +121,7 @@ function InvoiceRow({ inv, onDownload, onRefund }) {
       </td>
       <td style={{ padding: "14px 12px" }}>
         <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: T.fog }}>
-          {inv.razorpay_payment_id?.slice(0, 16) || "—"}
+          {inv.razorpay_payment_id?.slice(0, 16) || "â€”"}
         </div>
       </td>
       <td style={{ padding: "14px 12px" }}>
@@ -129,12 +129,12 @@ function InvoiceRow({ inv, onDownload, onRefund }) {
           <button onClick={() => onDownload(inv)} style={{
             padding: "5px 10px", borderRadius: 7, border: `1px solid ${T.line}`,
             background: "transparent", color: T.fog, fontSize: 11, cursor: "pointer",
-          }}>⬇ PDF</button>
+          }}>â¬‡ PDF</button>
           {inv.status === "captured" && (
             <button onClick={() => onRefund(inv)} style={{
               padding: "5px 10px", borderRadius: 7, border: `1px solid rgba(255,59,107,.3)`,
               background: "rgba(255,59,107,.07)", color: T.rose, fontSize: 11, cursor: "pointer",
-            }}>↩ Refund</button>
+            }}>â†© Refund</button>
           )}
         </div>
       </td>
@@ -142,7 +142,7 @@ function InvoiceRow({ inv, onDownload, onRefund }) {
   );
 }
 
-/* ─── Refund modal ──────────────────────────────── */
+/* â”€â”€â”€ Refund modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function RefundModal({ payment, onConfirm, onClose }) {
   const [reason, setReason] = useState("");
   const [partial, setPartial] = useState(false);
@@ -174,13 +174,13 @@ function RefundModal({ payment, onConfirm, onClose }) {
           Request Refund
         </div>
         <div style={{ fontSize: 13, color: T.fog, marginBottom: 20 }}>
-          {fmtINR(payment.total_amount)} · {payment.invoice_no} · 7-day policy
+          {fmtINR(payment.total_amount)} Â· {payment.invoice_no} Â· 7-day policy
         </div>
 
         <div style={{ marginBottom: 16 }}>
           <div style={{ fontSize: 12, color: T.fog, marginBottom: 6 }}>Reason for refund *</div>
           <textarea value={reason} onChange={e => setReason(e.target.value)}
-            placeholder="Please describe why you're requesting a refund…"
+            placeholder="Please describe why you're requesting a refundâ€¦"
             style={{
               width: "100%", background: T.ink, border: `1.5px solid ${T.line}`,
               borderRadius: 10, padding: "10px 14px", fontSize: 13, color: T.snow,
@@ -197,7 +197,7 @@ function RefundModal({ payment, onConfirm, onClose }) {
         </div>
         {partial && (
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: T.fog, marginBottom: 6 }}>Amount (₹)</div>
+            <div style={{ fontSize: 12, color: T.fog, marginBottom: 6 }}>Amount (â‚¹)</div>
             <input type="number" value={partialAmt} onChange={e => setPartialAmt(e.target.value)}
               placeholder={`Max: ${payment.total_amount / 100}`}
               max={payment.total_amount / 100}
@@ -215,7 +215,7 @@ function RefundModal({ payment, onConfirm, onClose }) {
             border: "none", borderRadius: 10, color: "#fff",
             fontSize: 14, fontWeight: 700,
           }}>
-            {loading ? "Processing…" : "Confirm Refund"}
+            {loading ? "Processingâ€¦" : "Confirm Refund"}
           </button>
           <button onClick={onClose} style={{
             padding: "12px 20px", background: "transparent",
@@ -228,9 +228,9 @@ function RefundModal({ payment, onConfirm, onClose }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MAIN COMPONENT
-   ═══════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 export default function BillingDashboard({ onUpgrade }) {
   const [payments, setPayments]   = useState([]);
   const [loading,  setLoading]    = useState(true);
@@ -240,7 +240,7 @@ export default function BillingDashboard({ onUpgrade }) {
   const [toast,    setToast]      = useState(null);
   const [currentPlan, setCurrentPlan] = useState(null);
 
-  // ── Load data
+  // â”€â”€ Load data
   useEffect(() => {
     loadAll();
   }, []);
@@ -281,7 +281,7 @@ export default function BillingDashboard({ onUpgrade }) {
 
   const handleDownload = (inv) => {
     // In production: fetch /api/v1/payments/:id/invoice-pdf
-    showToast(`Downloading ${inv.invoice_no}…`);
+    showToast(`Downloading ${inv.invoice_no}â€¦`);
   };
 
   const handleRefund = async ({ paymentId, reason, amount }) => {
@@ -292,7 +292,7 @@ export default function BillingDashboard({ onUpgrade }) {
     }).then(r => r.json());
 
     if (!res.success) throw new Error(res.message);
-    showToast("Refund initiated — 5-7 business days");
+    showToast("Refund initiated â€” 5-7 business days");
     loadAll();
   };
 
@@ -320,7 +320,7 @@ export default function BillingDashboard({ onUpgrade }) {
             color: "#fff", border: "none",
             padding: "11px 24px", borderRadius: 12, fontSize: 14, fontWeight: 700,
             boxShadow: "0 6px 20px rgba(255,77,0,.3)",
-          }}>⚡ Upgrade Plan</button>
+          }}>âš¡ Upgrade Plan</button>
         </div>
 
         {/* Current plan banner */}
@@ -349,7 +349,7 @@ export default function BillingDashboard({ onUpgrade }) {
                 }}>ACTIVE</span>
               </div>
               <div style={{ fontSize: 13, color: T.fog, marginTop: 3 }}>
-                {plan.limit} · Renews {new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")}
+                {plan.limit} Â· Renews {new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")}
               </div>
             </div>
           </div>
@@ -364,24 +364,24 @@ export default function BillingDashboard({ onUpgrade }) {
                 padding: "9px 18px", background: `${plan.color}20`,
                 border: `1.5px solid ${plan.color}44`, borderRadius: 10,
                 color: plan.color, fontSize: 13, fontWeight: 600,
-              }}>Upgrade →</button>
+              }}>Upgrade â†’</button>
             )}
           </div>
         </div>
 
         {/* Stat cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 28, animation: "fadeUp .4s ease .2s both" }}>
-          <StatCard icon="💰" label="Total Paid" color={T.jade}
-            value={loading ? "…" : fmtINR(stats?.totalPaid)}
+          <StatCard icon="ðŸ’°" label="Total Paid" color={T.jade}
+            value={loading ? "â€¦" : fmtINR(stats?.totalPaid)}
             sub="All time" loading={loading}/>
-          <StatCard icon="📄" label="Invoices" color={T.sky}
-            value={loading ? "…" : stats?.totalPayments || 0}
+          <StatCard icon="ðŸ“„" label="Invoices" color={T.sky}
+            value={loading ? "â€¦" : stats?.totalPayments || 0}
             sub="Successful" loading={loading}/>
-          <StatCard icon="⏳" label="Pending" color={T.amber}
-            value={loading ? "…" : stats?.openInvoices || 0}
+          <StatCard icon="â³" label="Pending" color={T.amber}
+            value={loading ? "â€¦" : stats?.openInvoices || 0}
             sub="Open invoices" loading={loading}/>
-          <StatCard icon="📅" label="Last Payment" color={T.violet}
-            value={loading ? "…" : fmtDate(stats?.lastPayment)}
+          <StatCard icon="ðŸ“…" label="Last Payment" color={T.violet}
+            value={loading ? "â€¦" : fmtDate(stats?.lastPayment)}
             loading={loading}/>
         </div>
 
@@ -435,7 +435,7 @@ export default function BillingDashboard({ onUpgrade }) {
                     ))
                   ) : payments.length === 0 ? (
                     <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: T.fog, fontSize: 14 }}>
-                      No payments yet — <button onClick={onUpgrade} style={{ background: "none", border: "none", color: T.ember, cursor: "pointer", fontWeight: 700 }}>subscribe to a plan →</button>
+                      No payments yet â€” <button onClick={onUpgrade} style={{ background: "none", border: "none", color: T.ember, cursor: "pointer", fontWeight: 700 }}>subscribe to a plan â†’</button>
                     </td></tr>
                   ) : (
                     payments.map(inv => (
@@ -457,7 +457,7 @@ export default function BillingDashboard({ onUpgrade }) {
               background: T.panel, border: `1.5px solid ${T.line}`,
               borderRadius: 20, padding: 32, textAlign: "center",
             }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>💳</div>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>ðŸ’³</div>
               <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
                 Payment Methods
               </div>
@@ -500,14 +500,14 @@ export default function BillingDashboard({ onUpgrade }) {
           boxShadow: "0 8px 32px rgba(0,0,0,.5)",
           animation: "fadeUp .3s ease",
         }}>
-          <span style={{ color: T.jade }}>✓</span> {toast.msg}
+          <span style={{ color: T.jade }}>âœ“</span> {toast.msg}
         </div>
       )}
     </>
   );
 }
 
-/* ─── Demo data ─────────────────────────────────── */
+/* â”€â”€â”€ Demo data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const DEMO_PAYMENTS = [
   {
     id:"1", invoice_no:"INV-2024-0003", plan_id:"growth", billing_cycle:"annual",
@@ -526,4 +526,5 @@ const DEMO_PAYMENTS = [
     razorpay_payment_id:"pay_MABCDEF246810",
   },
 ];
+
 
