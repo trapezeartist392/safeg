@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -641,9 +641,9 @@ function AdminLogin({ onLogin }) {
           </div>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
             <span style={{ fontSize:11, color:T.g1 }}>Password</span>
-            <span style={{ fontSize:12, color:T.white, ...dm }}>Demo@SafeG2024!</span>
+            <span style={{ fontSize:12, color:T.white, ...dm }}>Demo@SafeG2024</span>
           </div>
-          <button onClick={() => setForm({ email:"suresh@puneauto.com", password:"Demo@SafeG2024!" })}
+          <button onClick={() => setForm({ email:"suresh@puneauto.com", password:"Demo@SafeG2024" })}
             style={{ width:"100%", background:`${T.teal}18`, border:`1px solid ${T.teal}35`, borderRadius:8, padding:"8px", color:T.teal, fontSize:11, fontWeight:700, cursor:"pointer", ...mono, letterSpacing:1 }}>
             ⚡ AUTOFILL DEMO CREDENTIALS
           </button>

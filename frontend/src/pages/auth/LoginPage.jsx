@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const CSS = `
-
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes gridMove{from{transform:translateY(0)}to{transform:translateY(60px)}}
@@ -88,7 +88,7 @@ export default function LoginPage({ onLogin }) {
 
             <div style={{ marginBottom: 32 }}>
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: T.white, letterSpacing: 2, marginBottom: 6 }}>WELCOME BACK</div>
-              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your Safeguards IQ dashboard</div>
+              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your SafeG AI dashboard</div>
             </div>
 
             {error && (
@@ -144,7 +144,7 @@ export default function LoginPage({ onLogin }) {
             <div style={{ marginTop: 20, background: "rgba(0,212,180,.06)", border: `1px solid rgba(0,212,180,.2)`, borderRadius: 10, padding: "12px 16px" }}>
               <div style={{ fontSize: 11, color: T.teal, letterSpacing: 1.5, fontWeight: 700, marginBottom: 6 }}>DEMO CREDENTIALS</div>
               <div style={{ fontSize: 12, color: T.g1, fontFamily: "'DM Mono'" }}>suresh@puneauto.com</div>
-              <div style={{ fontSize: 12, color: T.g1, fontFamily: "'DM Mono'" }}>Demo@SafeG2024!</div>
+              <div style={{ fontSize: 12, color: T.g1, fontFamily: "'DM Mono'" }}>Demo@SafeG2024</div>
             </div>
 
             <div style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: T.g1 }}>
@@ -157,5 +157,3 @@ export default function LoginPage({ onLogin }) {
     </>
   );
 }
-
-
