@@ -322,3 +322,13 @@
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async Promise.all (index 0)
     at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:203:50
+2026-03-17 12:29:24 [error]: Error: connect ECONNREFUSED ::1:5432
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
+    at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)
+2026-03-17 12:30:22 [error]: Error: connect ECONNREFUSED ::1:5432
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
+    at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)
