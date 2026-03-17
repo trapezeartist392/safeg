@@ -1,9 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
 *{margin:0;padding:0;box-sizing:border-box}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes gridMove{from{transform:translateY(0)}to{transform:translateY(60px)}}
@@ -29,7 +29,7 @@ const sel = { ...inp, cursor:"pointer" };
 /* helper: add / remove item from array */
 const toggle = (arr, val) => arr.includes(val) ? arr.filter(x=>x!==val) : [...arr, val];
 
-/* â”€â”€ STEP 1 â€” Company Details â”€â”€ */
+/* ── STEP 1 — Company Details ── */
 function StepCompany({ form, setForm, onNext, setError }) {
   const F = (k,v) => setForm(f=>({...f,[k]:v}));
   return (
@@ -65,7 +65,7 @@ function StepCompany({ form, setForm, onNext, setError }) {
         ].map(({k,l})=>(
           <label key={k} style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
             <div onClick={()=>F(k,!form[k])} style={{width:20,height:20,borderRadius:6,border:`2px solid ${form[k]?T.orange:T.border}`,background:form[k]?T.orange:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all .2s"}}>
-              {form[k]&&<span style={{color:"#fff",fontSize:12,fontWeight:900}}>âœ“</span>}
+              {form[k]&&<span style={{color:"#fff",fontSize:12,fontWeight:900}}>✓</span>}
             </div>
             <span style={{fontSize:13,color:T.g1}}>{l}</span>
           </label>
@@ -78,13 +78,13 @@ function StepCompany({ form, setForm, onNext, setError }) {
         if(!form.agreeTerms){setError("Please agree to the Terms of Service");return;}
         setError("");onNext();
       }} style={{width:"100%",marginTop:24,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:12,padding:"15px",color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'"}}>
-        Continue â†’ Plant Details
+        Continue → Plant Details
       </button>
     </div>
   );
 }
 
-/* â”€â”€ STEP 2 â€” Plant / Factory â”€â”€ */
+/* ── STEP 2 — Plant / Factory ── */
 function StepPlant({ plants, setPlants, onNext, onBack, setError }) {
   const [draft, setDraft] = useState({name:"",type:"",address:"",city:"",state:"",workers:"",shifts:"1"});
   const D = (k,v) => setDraft(d=>({...d,[k]:v}));
@@ -106,13 +106,13 @@ function StepPlant({ plants, setPlants, onNext, onBack, setError }) {
         <div style={{marginBottom:20,display:"flex",flexDirection:"column",gap:10}}>
           {plants.map((p,i)=>(
             <div key={p.id} style={{background:T.card2,border:`1px solid ${T.green}40`,borderRadius:12,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
-              <span style={{fontSize:20}}>ðŸ­</span>
+              <span style={{fontSize:20}}>🏭</span>
               <div style={{flex:1}}>
                 <div style={{fontSize:14,fontWeight:700,color:T.white}}>{p.name}</div>
-                <div style={{fontSize:11,color:T.g1}}>{p.type} Â· {p.city}, {p.state} Â· {p.workers||"?"} workers Â· {p.shifts} shift(s)</div>
+                <div style={{fontSize:11,color:T.g1}}>{p.type} · {p.city}, {p.state} · {p.workers||"?"} workers · {p.shifts} shift(s)</div>
               </div>
-              <span style={{color:T.green,fontSize:18}}>âœ“</span>
-              <button onClick={()=>setPlants(pl=>pl.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:T.red,cursor:"pointer",fontSize:16}}>âœ•</button>
+              <span style={{color:T.green,fontSize:18}}>✓</span>
+              <button onClick={()=>setPlants(pl=>pl.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:T.red,cursor:"pointer",fontSize:16}}>✕</button>
             </div>
           ))}
         </div>
@@ -125,7 +125,7 @@ function StepPlant({ plants, setPlants, onNext, onBack, setError }) {
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
           {[
-            {k:"name",    l:"PLANT NAME *",     t:"text", p:"Unit 1 â€” Forging Shop",    full:true},
+            {k:"name",    l:"PLANT NAME *",     t:"text", p:"Unit 1 — Forging Shop",    full:true},
             {k:"address", l:"ADDRESS",          t:"text", p:"Plot 45, MIDC Bhosari",    full:true},
             {k:"city",    l:"CITY *",           t:"text", p:"Pune"},
             {k:"state",   l:"STATE",            t:"text", p:"Maharashtra"},
@@ -156,19 +156,19 @@ function StepPlant({ plants, setPlants, onNext, onBack, setError }) {
       </div>
 
       <div style={{display:"flex",gap:12}}>
-        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>â† Back</button>
+        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>← Back</button>
         <button onClick={()=>{
           if(plants.length===0){setError("Please add at least one plant");return;}
           setError("");onNext();
         }} style={{flex:2,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:12,padding:"14px",color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'"}}>
-          Continue â†’ Zones / Areas
+          Continue → Zones / Areas
         </button>
       </div>
     </div>
   );
 }
 
-/* â”€â”€ STEP 3 â€” Zones / Areas â”€â”€ */
+/* ── STEP 3 — Zones / Areas ── */
 function StepZones({ plants, zones, setZones, onNext, onBack, setError }) {
   const [selPlant, setSelPlant] = useState(plants[0]?.id||null);
   const [draft, setDraft] = useState({name:"",type:"",riskLevel:"medium"});
@@ -193,7 +193,7 @@ function StepZones({ plants, zones, setZones, onNext, onBack, setError }) {
         <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
           {plants.map(p=>(
             <button key={p.id} onClick={()=>setSelPlant(p.id)} style={{padding:"8px 16px",borderRadius:8,border:`1px solid ${selPlant===p.id?T.orange:T.border}`,background:selPlant===p.id?`${T.orange}20`:T.card2,color:selPlant===p.id?T.orange:T.g1,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>
-              ðŸ­ {p.name}
+              🏭 {p.name}
             </button>
           ))}
         </div>
@@ -204,15 +204,15 @@ function StepZones({ plants, zones, setZones, onNext, onBack, setError }) {
         <div style={{marginBottom:16,display:"flex",flexDirection:"column",gap:8}}>
           {plantZones.map((z,i)=>(
             <div key={z.id} style={{background:T.card2,border:`1px solid ${riskColor(z.riskLevel)}40`,borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:10}}>
-              <span style={{fontSize:16}}>ðŸ“</span>
+              <span style={{fontSize:16}}>📍</span>
               <div style={{flex:1}}>
                 <span style={{fontSize:13,fontWeight:700,color:T.white}}>{z.name}</span>
-                {z.type&&<span style={{fontSize:11,color:T.g1,marginLeft:8}}>Â· {z.type}</span>}
+                {z.type&&<span style={{fontSize:11,color:T.g1,marginLeft:8}}>· {z.type}</span>}
               </div>
               <span style={{fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:20,background:`${riskColor(z.riskLevel)}20`,color:riskColor(z.riskLevel),border:`1px solid ${riskColor(z.riskLevel)}40`}}>
                 {z.riskLevel.toUpperCase()} RISK
               </span>
-              <button onClick={()=>setZones(zs=>zs.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:T.red,cursor:"pointer",fontSize:14}}>âœ•</button>
+              <button onClick={()=>setZones(zs=>zs.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:T.red,cursor:"pointer",fontSize:14}}>✕</button>
             </div>
           ))}
         </div>
@@ -236,9 +236,9 @@ function StepZones({ plants, zones, setZones, onNext, onBack, setError }) {
           <div>
             <label style={lbl}>RISK LEVEL</label>
             <select value={draft.riskLevel} onChange={e=>D("riskLevel",e.target.value)} style={sel}>
-              <option value="low">ðŸŸ¢ Low Risk</option>
-              <option value="medium">ðŸŸ¡ Medium Risk</option>
-              <option value="high">ðŸ”´ High Risk</option>
+              <option value="low">🟢 Low Risk</option>
+              <option value="medium">🟡 Medium Risk</option>
+              <option value="high">🔴 High Risk</option>
             </select>
           </div>
         </div>
@@ -248,19 +248,19 @@ function StepZones({ plants, zones, setZones, onNext, onBack, setError }) {
       </div>
 
       <div style={{display:"flex",gap:12}}>
-        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>â† Back</button>
+        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>← Back</button>
         <button onClick={()=>{
           if(zones.length===0){setError("Please add at least one zone");return;}
           setError("");onNext();
         }} style={{flex:2,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:12,padding:"14px",color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'"}}>
-          Continue â†’ Register Cameras
+          Continue → Register Cameras
         </button>
       </div>
     </div>
   );
 }
 
-/* â”€â”€ STEP 4 â€” Register Cameras â”€â”€ */
+/* ── STEP 4 — Register Cameras ── */
 const PPE_TYPES = ["Helmet","Safety Vest","Gloves","Safety Boots","Goggles","Face Mask"];
 
 function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setError }) {
@@ -288,7 +288,7 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
         <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
           {plants.map(p=>(
             <button key={p.id} onClick={()=>setSelPlant(p.id)} style={{padding:"8px 16px",borderRadius:8,border:`1px solid ${selPlant===p.id?T.orange:T.border}`,background:selPlant===p.id?`${T.orange}20`:T.card2,color:selPlant===p.id?T.orange:T.g1,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>
-              ðŸ­ {p.name}
+              🏭 {p.name}
             </button>
           ))}
         </div>
@@ -301,14 +301,14 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
             const zone = zones.find(z=>z.id===c.zoneId);
             return (
               <div key={c.id} style={{background:T.card2,border:`1px solid ${T.blue}40`,borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:10}}>
-                <span style={{fontSize:16}}>ðŸ“¹</span>
+                <span style={{fontSize:16}}>📹</span>
                 <div style={{flex:1}}>
                   <div style={{fontSize:13,fontWeight:700,color:T.white}}>{c.name}</div>
-                  <div style={{fontSize:11,color:T.g1}}>{c.brand||"IP Camera"} Â· {zone?.name||"Unknown zone"} Â· {c.resolution} Â· PPE: {c.ppeTypes.join(", ")}</div>
+                  <div style={{fontSize:11,color:T.g1}}>{c.brand||"IP Camera"} · {zone?.name||"Unknown zone"} · {c.resolution} · PPE: {c.ppeTypes.join(", ")}</div>
                   {c.rtspUrl&&<div style={{fontSize:10,color:T.g2,fontFamily:"'DM Mono'",marginTop:2}}>{c.rtspUrl}</div>}
                 </div>
-                <span style={{color:T.green,fontSize:16}}>âœ“</span>
-                <button onClick={()=>setCameras(cs=>cs.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:T.red,cursor:"pointer",fontSize:14}}>âœ•</button>
+                <span style={{color:T.green,fontSize:16}}>✓</span>
+                <button onClick={()=>setCameras(cs=>cs.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:T.red,cursor:"pointer",fontSize:14}}>✕</button>
               </div>
             );
           })}
@@ -344,7 +344,7 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
             </select>
           </div>
           <div style={{gridColumn:"span 2"}}>
-            <label style={lbl}>RTSP URL (optional â€” can add later)</label>
+            <label style={lbl}>RTSP URL (optional — can add later)</label>
             <input value={draft.rtspUrl} onChange={e=>D("rtspUrl",e.target.value)} placeholder="rtsp://admin:password@192.168.1.100:554/stream1" style={{...inp,fontFamily:"'DM Mono'",fontSize:12}}/>
           </div>
           <div style={{gridColumn:"span 2"}}>
@@ -354,7 +354,7 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
                 const on = draft.ppeTypes.includes(p);
                 return (
                   <button key={p} onClick={()=>D("ppeTypes",toggle(draft.ppeTypes,p))} style={{padding:"6px 14px",borderRadius:20,border:`1px solid ${on?T.orange:T.border}`,background:on?`${T.orange}20`:T.card,color:on?T.orange:T.g1,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'",transition:"all .2s"}}>
-                    {on?"âœ“ ":""}{p}
+                    {on?"✓ ":""}{p}
                   </button>
                 );
               })}
@@ -367,27 +367,27 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
       </div>
 
       <div style={{background:`${T.teal}0A`,border:`1px solid ${T.teal}30`,borderRadius:10,padding:"12px 16px",marginBottom:20,fontSize:12,color:T.g1}}>
-        ðŸ’¡ <strong style={{color:T.teal}}>No RTSP URL yet?</strong> You can skip this and add camera streams from the dashboard after setup. Our team will also assist you during onboarding.
+        💡 <strong style={{color:T.teal}}>No RTSP URL yet?</strong> You can skip this and add camera streams from the dashboard after setup. Our team will also assist you during onboarding.
       </div>
 
       <div style={{display:"flex",gap:12}}>
-        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>â† Back</button>
+        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>← Back</button>
         <button onClick={()=>{
           if(cameras.length===0){setError("Please add at least one camera");return;}
           setError("");onNext();
         }} style={{flex:2,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:12,padding:"14px",color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'"}}>
-          Continue â†’ Activate Trial
+          Continue → Activate Trial
         </button>
       </div>
     </div>
   );
 }
 
-/* â”€â”€ STEP 5 â€” Activate â”€â”€ */
+/* ── STEP 5 — Activate ── */
 function StepActivate({ form, plants, zones, cameras, loading, success, onBack, onActivate }) {
   if(success) return (
     <div style={{textAlign:"center",padding:"40px 0"}}>
-      <div style={{width:72,height:72,borderRadius:"50%",background:`${T.green}20`,border:`2px solid ${T.green}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 20px",animation:"checkPop .5s ease both"}}>âœ“</div>
+      <div style={{width:72,height:72,borderRadius:"50%",background:`${T.green}20`,border:`2px solid ${T.green}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 20px",animation:"checkPop .5s ease both"}}>✓</div>
       <div style={{fontFamily:"'Bebas Neue'",fontSize:34,color:T.green,letterSpacing:2}}>ACCOUNT ACTIVATED!</div>
       <div style={{color:T.g1,marginTop:8,fontSize:14}}>Setting up your workspace... Redirecting to dashboard.</div>
     </div>
@@ -402,10 +402,10 @@ function StepActivate({ form, plants, zones, cameras, loading, success, onBack, 
       {/* Summary cards */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
         {[
-          {icon:"ðŸ¢",label:"Company",value:form.companyName,sub:form.email},
-          {icon:"ðŸ­",label:"Plants",value:`${plants.length} plant${plants.length!==1?"s":""}`,sub:plants.map(p=>p.name).join(", ")},
-          {icon:"ðŸ“",label:"Zones",value:`${zones.length} zone${zones.length!==1?"s":""}`,sub:zones.map(z=>z.name).join(", ")},
-          {icon:"ðŸ“¹",label:"Cameras",value:`${cameras.length} camera${cameras.length!==1?"s":""}`,sub:cameras.map(c=>c.name).join(", ")},
+          {icon:"🏢",label:"Company",value:form.companyName,sub:form.email},
+          {icon:"🏭",label:"Plants",value:`${plants.length} plant${plants.length!==1?"s":""}`,sub:plants.map(p=>p.name).join(", ")},
+          {icon:"📍",label:"Zones",value:`${zones.length} zone${zones.length!==1?"s":""}`,sub:zones.map(z=>z.name).join(", ")},
+          {icon:"📹",label:"Cameras",value:`${cameras.length} camera${cameras.length!==1?"s":""}`,sub:cameras.map(c=>c.name).join(", ")},
         ].map(({icon,label,value,sub})=>(
           <div key={label} style={{background:T.card2,border:`1px solid ${T.border}`,borderRadius:12,padding:"14px 16px"}}>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
@@ -422,15 +422,15 @@ function StepActivate({ form, plants, zones, cameras, loading, success, onBack, 
       <div style={{background:"rgba(0,212,180,.06)",border:`1px solid rgba(0,212,180,.2)`,borderRadius:12,padding:16,marginBottom:20}}>
         <div style={{fontSize:12,color:T.teal,fontWeight:800,letterSpacing:1.5,marginBottom:10}}>7-DAY FREE TRIAL INCLUDES</div>
         {[
-          "Full platform access â€” all features unlocked",
+          "Full platform access — all features unlocked",
           `${cameras.length} camera${cameras.length!==1?"s":""} connected and monitored`,
-          "Real-time PPE violation detection â€” 6 categories",
+          "Real-time PPE violation detection — 6 categories",
           "WhatsApp + Email alerts to supervisors",
           "Factories Act compliance dashboard",
-          "No credit card required Â· Cancel anytime",
+          "No credit card required · Cancel anytime",
         ].map(f=>(
           <div key={f} style={{display:"flex",gap:8,fontSize:13,color:T.g1,marginBottom:6}}>
-            <span style={{color:T.teal}}>âœ“</span>{f}
+            <span style={{color:T.teal}}>✓</span>{f}
           </div>
         ))}
       </div>
@@ -441,18 +441,18 @@ function StepActivate({ form, plants, zones, cameras, loading, success, onBack, 
       </div>
 
       <div style={{display:"flex",gap:12}}>
-        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>â† Back</button>
+        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>← Back</button>
         <button onClick={onActivate} disabled={loading} style={{flex:2,background:loading?T.g2:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:12,padding:"14px",color:"#fff",fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"'Nunito'",display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
-          {loading?<><div style={{width:18,height:18,border:"2px solid rgba(255,255,255,.3)",borderTopColor:"#fff",borderRadius:"50%",animation:"spin .8s linear infinite"}}/>Activating...</>:"ðŸš€ Activate Free Trial"}
+          {loading?<><div style={{width:18,height:18,border:"2px solid rgba(255,255,255,.3)",borderTopColor:"#fff",borderRadius:"50%",animation:"spin .8s linear infinite"}}/>Activating...</>:"🚀 Activate Free Trial"}
         </button>
       </div>
     </div>
   );
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ══════════════════════════════════════
    MAIN SIGNUP PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+══════════════════════════════════════ */
 export default function SignupPage({ onLogin }) {
   const [step,    setStep]    = useState(0);
   const [form,    setForm]    = useState({
@@ -522,7 +522,7 @@ export default function SignupPage({ onLogin }) {
             <div key={s} style={{display:"flex",alignItems:"center"}}>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
                 <div style={{width:26,height:26,borderRadius:"50%",background:i<step?T.green:i===step?T.orange:T.card2,border:`2px solid ${i<step?T.green:i===step?T.orange:T.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:i<=step?"#fff":T.g2,transition:"all .3s",flexShrink:0}}>
-                  {i<step?"âœ“":i+1}
+                  {i<step?"✓":i+1}
                 </div>
                 <span style={{fontSize:11,color:i===step?T.white:i<step?T.green:T.g2,fontWeight:i===step?700:400,whiteSpace:"nowrap"}}>{s}</span>
               </div>
@@ -535,7 +535,7 @@ export default function SignupPage({ onLogin }) {
         <div style={{width:"100%",maxWidth:maxW,background:T.card,border:`1px solid ${T.border}`,borderRadius:20,padding:32,zIndex:1}}>
           {error&&(
             <div style={{background:"rgba(255,61,61,.1)",border:`1px solid rgba(255,61,61,.3)`,borderRadius:10,padding:"12px 16px",color:T.red,fontSize:13,marginBottom:20}}>
-              âš  {error}
+              ⚠ {error}
             </div>
           )}
           {step===0&&<StepCompany  form={form}    setForm={setForm}   onNext={next}            setError={setError}/>}
@@ -547,7 +547,7 @@ export default function SignupPage({ onLogin }) {
 
         <div style={{marginTop:20,fontSize:13,color:T.g2,zIndex:1}}>
           Already have an account?{" "}
-          <Link to="/login" style={{color:T.orange,fontWeight:700,textDecoration:"none"}}>Sign in â†’</Link>
+          <Link to="/login" style={{color:T.orange,fontWeight:700,textDecoration:"none"}}>Sign in →</Link>
         </div>
       </div>
     </>
