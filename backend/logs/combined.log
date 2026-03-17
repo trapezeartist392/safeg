@@ -332,3 +332,10 @@
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
     at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)
+2026-03-17 12:33:08 [info]: ✅ PostgreSQL connected
+2026-03-17 12:33:08 [info]: ✅ Redis connected
+2026-03-17 12:33:08 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-17 12:33:08 [info]: ✅ WebSocket server initialised
+2026-03-17 12:33:08 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-17 12:33:08 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-17 12:33:08 [info]: 🔍 Health check: http://localhost:4000/api/health
