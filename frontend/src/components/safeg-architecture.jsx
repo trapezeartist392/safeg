@@ -1,7 +1,7 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const G = `
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#040810;color:#E8F0FF;font-family:'Outfit',sans-serif;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#080C18}::-webkit-scrollbar-thumb{background:#162040;border-radius:4px}
@@ -30,7 +30,7 @@ const C = {
   white:"#E8F0FF", g1:"#A8BCDC", g2:"#4A5E82", g3:"#0E1830",
 };
 
-// â”€â”€ tiny helpers
+// ── tiny helpers
 const mono = {fontFamily:"'Share Tech Mono',monospace"};
 const head = {fontFamily:"'Outfit',sans-serif",fontWeight:800};
 
@@ -44,9 +44,9 @@ function Dot({color,blink,size=7}) {
     animation:blink?"blink 1.2s infinite":"none"}}/>;
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // ANIMATED SVG CONNECTOR
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 function Arrow({x1,y1,x2,y2,color=C.orange,label,animated=true,dashed=false}) {
   const id = `arrow-${Math.random().toString(36).slice(2,7)}`;
   const dx = x2-x1, dy = y2-y1;
@@ -88,9 +88,9 @@ function Arrow({x1,y1,x2,y2,color=C.orange,label,animated=true,dashed=false}) {
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // MODULE BOX
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 function Module({x,y,w=160,h=64,color=C.orange,icon,title,sub,onClick,active,pulse: doPulse}) {
   const [hov, setHov] = useState(false);
   const bc = hov||active ? color : C.border2;
@@ -117,14 +117,14 @@ function Module({x,y,w=160,h=64,color=C.orange,icon,title,sub,onClick,active,pul
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // DATA FLOW PANEL (right side detail)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 const FLOWS = {
   onboarding: {
-    title:"Onboarding â†’ System",
+    title:"Onboarding → System",
     color: C.orange,
-    icon:"ðŸ”—",
+    icon:"🔗",
     desc:"When you complete the 4-step onboarding wizard, here's exactly what gets written into the Safeguards IQ database and which modules get activated automatically.",
     steps:[
       {from:"Customer Form",to:"Auth Service",data:"Creates tenant account, login credentials, JWT config, billing plan",color:C.orange},
@@ -138,43 +138,43 @@ const FLOWS = {
   dashboard: {
     title:"Dashboard Data Sources",
     color: C.teal,
-    icon:"ðŸ“Š",
+    icon:"📊",
     desc:"Every KPI and table in the compliance dashboard is pulled live from these backend services, all seeded by onboarding data.",
     steps:[
-      {from:"AI Engine",to:"PPE KPI Tile",data:"Compliance % = violations_today / total_detections Ã— 100, refreshed every 30s",color:C.green},
+      {from:"AI Engine",to:"PPE KPI Tile",data:"Compliance % = violations_today / total_detections × 100, refreshed every 30s",color:C.green},
       {from:"Violation DB",to:"Violation Table",data:"Queries by plant_id + date range, ordered by severity DESC",color:C.red},
       {from:"Camera Registry",to:"Live Feed Grid",data:"RTSP URLs resolved from camera table, streamed via WebRTC/HLS proxy",color:C.teal},
-      {from:"Zone Config",to:"Form 18 Auto-fill",data:"Zone name, camera ID, PPE type, timestamp â†’ pre-populates statutory fields",color:C.orange},
-      {from:"Plant Registry",to:"Compliance Reports",data:"Factory licence, occupier, DGFASLI region â†’ ISO 45001 + ESIC templates",color:C.blue},
-      {from:"Alert Engine",to:"WhatsApp / Email",data:"Violation event â†’ lookup supervisor for zone â†’ send formatted alert",color:C.purple},
+      {from:"Zone Config",to:"Form 18 Auto-fill",data:"Zone name, camera ID, PPE type, timestamp → pre-populates statutory fields",color:C.orange},
+      {from:"Plant Registry",to:"Compliance Reports",data:"Factory licence, occupier, DGFASLI region → ISO 45001 + ESIC templates",color:C.blue},
+      {from:"Alert Engine",to:"WhatsApp / Email",data:"Violation event → lookup supervisor for zone → send formatted alert",color:C.purple},
     ]
   },
   form18: {
     title:"Form 18 Auto-Population",
     color: C.amber,
-    icon:"ðŸ“‹",
-    desc:"Form 18 fields are populated from 4 different sources collected during onboarding â€” zero re-entry needed.",
+    icon:"📋",
+    desc:"Form 18 fields are populated from 4 different sources collected during onboarding — zero re-entry needed.",
     steps:[
-      {from:"Customer (Step 1)",to:"Part A â€” Factory Name",data:"companyName, regNo, industry, address â†’ Factory & registration details",color:C.orange},
-      {from:"Plant (Step 2)",to:"Part A â€” Occupier/Manager",data:"occupier, manager, licNo, inspectorOffice â†’ statutory identity",color:C.teal},
-      {from:"Camera (Step 4)",to:"Part B â€” Accident Details",data:"camId, zone, timestamp, AI confidence â†’ auto-populates incident location + time",color:C.purple},
-      {from:"Area (Step 3)",to:"Part B â€” Department",data:"area.name + area.type â†’ Department / Section field",color:C.blue},
-      {from:"AI Engine",to:"Part E â€” Evidence Log",data:"Detection frame, confidence score, causal chain analysis â†’ AI Evidence section",color:C.pink},
-      {from:"Plant (Step 2)",to:"Part G â€” Declaration",data:"hseName, hseEmail, inspector office â†’ declaration section + deadline warning",color:C.green},
+      {from:"Customer (Step 1)",to:"Part A — Factory Name",data:"companyName, regNo, industry, address → Factory & registration details",color:C.orange},
+      {from:"Plant (Step 2)",to:"Part A — Occupier/Manager",data:"occupier, manager, licNo, inspectorOffice → statutory identity",color:C.teal},
+      {from:"Camera (Step 4)",to:"Part B — Accident Details",data:"camId, zone, timestamp, AI confidence → auto-populates incident location + time",color:C.purple},
+      {from:"Area (Step 3)",to:"Part B — Department",data:"area.name + area.type → Department / Section field",color:C.blue},
+      {from:"AI Engine",to:"Part E — Evidence Log",data:"Detection frame, confidence score, causal chain analysis → AI Evidence section",color:C.pink},
+      {from:"Plant (Step 2)",to:"Part G — Declaration",data:"hseName, hseEmail, inspector office → declaration section + deadline warning",color:C.green},
     ]
   },
   camera: {
-    title:"Camera â†’ AI â†’ Alert Pipeline",
+    title:"Camera → AI → Alert Pipeline",
     color: C.purple,
-    icon:"ðŸ“¹",
-    desc:"The real-time pipeline from physical camera to compliance alert â€” latency under 3 seconds end-to-end.",
+    icon:"📹",
+    desc:"The real-time pipeline from physical camera to compliance alert — latency under 3 seconds end-to-end.",
     steps:[
-      {from:"IP Camera (RTSP)",to:"Stream Ingestion",data:"ffmpeg / GStreamer decodes RTSP stream â†’ 4 FPS frame extraction",color:C.g1},
+      {from:"IP Camera (RTSP)",to:"Stream Ingestion",data:"ffmpeg / GStreamer decodes RTSP stream → 4 FPS frame extraction",color:C.g1},
       {from:"Frame Buffer",to:"AI Inference (GPU)",data:"YOLOv8 model runs PPE detection per frame. Zone-specific class filters applied.",color:C.teal},
-      {from:"AI Inference",to:"Violation Detector",data:"Missing PPE class â†’ cross-check with area.ppeRequired â†’ trigger if match",color:C.red},
+      {from:"AI Inference",to:"Violation Detector",data:"Missing PPE class → cross-check with area.ppeRequired → trigger if match",color:C.red},
       {from:"Violation Detector",to:"Violation DB",data:"INSERT violation: camId, zoneId, type, frame_url, confidence, timestamp",color:C.orange},
-      {from:"Violation DB",to:"Alert Engine",data:"Pub/Sub event â†’ lookup zone supervisor â†’ format WhatsApp/Email alert",color:C.amber},
-      {from:"Alert Engine",to:"Dashboard WebSocket",data:"Push to connected dashboard clients â†’ live KPI update + ticker + timeline",color:C.green},
+      {from:"Violation DB",to:"Alert Engine",data:"Pub/Sub event → lookup zone supervisor → format WhatsApp/Email alert",color:C.amber},
+      {from:"Alert Engine",to:"Dashboard WebSocket",data:"Push to connected dashboard clients → live KPI update + ticker + timeline",color:C.green},
     ]
   }
 };
@@ -194,7 +194,7 @@ function FlowDetail({flow, onClose}) {
             <Tag color={f.color}>{flow.toUpperCase()}</Tag>
           </div>
         </div>
-        <button onClick={onClose} style={{background:"transparent",border:"none",color:C.g2,cursor:"pointer",fontSize:18}}>âœ•</button>
+        <button onClick={onClose} style={{background:"transparent",border:"none",color:C.g2,cursor:"pointer",fontSize:18}}>✕</button>
       </div>
       <div style={{fontSize:13,color:C.g1,lineHeight:1.6,marginBottom:20,padding:"12px 14px",
         background:C.bg3,borderRadius:10,borderLeft:`3px solid ${f.color}`}}>
@@ -213,7 +213,7 @@ function FlowDetail({flow, onClose}) {
             <div style={{flex:1}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5,flexWrap:"wrap"}}>
                 <span style={{fontSize:12,fontWeight:700,color:s.color,...mono}}>{s.from}</span>
-                <span style={{color:C.g2,fontSize:12}}>â†’</span>
+                <span style={{color:C.g2,fontSize:12}}>→</span>
                 <span style={{fontSize:12,fontWeight:700,color:C.white}}>{s.to}</span>
               </div>
               <div style={{fontSize:11,color:C.g1,lineHeight:1.5}}>{s.data}</div>
@@ -225,9 +225,9 @@ function FlowDetail({flow, onClose}) {
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // MAIN ARCHITECTURE DIAGRAM
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [activeFlow, setActiveFlow] = useState("onboarding");
@@ -238,13 +238,13 @@ export default function App() {
 
   // Live events simulation
   const events = [
-    {t:"14:23:07",msg:"CAM-04 â†’ PPE violation detected â†’ Violation DB â†’ Alert sent",c:C.red},
-    {t:"14:23:10",msg:"Dashboard WebSocket push â†’ KPI updated â†’ Form 18 pre-filled",c:C.orange},
-    {t:"14:19:44",msg:"CAM-11 â†’ Zone breach â†’ Supervisor alerted via WhatsApp",c:C.amber},
-    {t:"14:18:00",msg:"AI Engine heartbeat â†’ All 16 cameras healthy",c:C.green},
-    {t:"14:15:02",msg:"CAM-07 â†’ No vest â†’ Violation #VIO-233 created",c:C.red},
-    {t:"14:10:00",msg:"Plant Registry â†’ ISO 45001 report auto-generated",c:C.blue},
-    {t:"14:05:30",msg:"Camera stream reconnected â†’ CAM-09 back online",c:C.teal},
+    {t:"14:23:07",msg:"CAM-04 → PPE violation detected → Violation DB → Alert sent",c:C.red},
+    {t:"14:23:10",msg:"Dashboard WebSocket push → KPI updated → Form 18 pre-filled",c:C.orange},
+    {t:"14:19:44",msg:"CAM-11 → Zone breach → Supervisor alerted via WhatsApp",c:C.amber},
+    {t:"14:18:00",msg:"AI Engine heartbeat → All 16 cameras healthy",c:C.green},
+    {t:"14:15:02",msg:"CAM-07 → No vest → Violation #VIO-233 created",c:C.red},
+    {t:"14:10:00",msg:"Plant Registry → ISO 45001 report auto-generated",c:C.blue},
+    {t:"14:05:30",msg:"Camera stream reconnected → CAM-09 back online",c:C.teal},
   ];
 
   const SVG_W = 900, SVG_H = 680;
@@ -252,58 +252,58 @@ export default function App() {
   // Node positions (x,y,w,h)
   const nodes = {
     // Layer 0: Input (leftmost)
-    cam:      {x:20,  y:140, w:150, h:60, color:C.purple, icon:"ðŸ“¹", title:"IP Cameras", sub:"RTSP Â· ONVIF Â· 16 feeds"},
-    onboard:  {x:20,  y:240, w:150, h:60, color:C.orange, icon:"ðŸ§™", title:"Onboarding", sub:"4-step wizard"},
-    mobile:   {x:20,  y:340, w:150, h:60, color:C.teal,   icon:"ðŸ“±", title:"Mobile App", sub:"Inspector Â· HSE officer"},
-    api:      {x:20,  y:440, w:150, h:60, color:C.blue,   icon:"ðŸ”Œ", title:"REST API",   sub:"3rd party Â· ERP sync"},
+    cam:      {x:20,  y:140, w:150, h:60, color:C.purple, icon:"📹", title:"IP Cameras", sub:"RTSP · ONVIF · 16 feeds"},
+    onboard:  {x:20,  y:240, w:150, h:60, color:C.orange, icon:"🧙", title:"Onboarding", sub:"4-step wizard"},
+    mobile:   {x:20,  y:340, w:150, h:60, color:C.teal,   icon:"📱", title:"Mobile App", sub:"Inspector · HSE officer"},
+    api:      {x:20,  y:440, w:150, h:60, color:C.blue,   icon:"🔌", title:"REST API",   sub:"3rd party · ERP sync"},
 
     // Layer 1: Ingestion
-    stream:   {x:220, y:100, w:155, h:60, color:C.purple, icon:"ðŸ“¡", title:"Stream Ingestion", sub:"ffmpeg Â· frame extract 4fps"},
-    auth:     {x:220, y:200, w:155, h:60, color:C.orange, icon:"ðŸ”", title:"Auth & Tenant", sub:"JWT Â· multi-tenant isolate"},
-    plantdb:  {x:220, y:300, w:155, h:60, color:C.teal,   icon:"ðŸ—„ï¸",  title:"Plant Registry", sub:"Customerâ†’Plantâ†’Areaâ†’Cam"},
-    alertmgr: {x:220, y:400, w:155, h:60, color:C.amber,  icon:"ðŸ””", title:"Alert Manager", sub:"WhatsApp Â· Email Â· SMS"},
-    webhook:  {x:220, y:500, w:155, h:60, color:C.blue,   icon:"ðŸ”—", title:"Webhook / ERP", sub:"SAP Â· Oracle Â· Shram Suvid."},
+    stream:   {x:220, y:100, w:155, h:60, color:C.purple, icon:"📡", title:"Stream Ingestion", sub:"ffmpeg · frame extract 4fps"},
+    auth:     {x:220, y:200, w:155, h:60, color:C.orange, icon:"🔐", title:"Auth & Tenant", sub:"JWT · multi-tenant isolate"},
+    plantdb:  {x:220, y:300, w:155, h:60, color:C.teal,   icon:"🗄️",  title:"Plant Registry", sub:"Customer→Plant→Area→Cam"},
+    alertmgr: {x:220, y:400, w:155, h:60, color:C.amber,  icon:"🔔", title:"Alert Manager", sub:"WhatsApp · Email · SMS"},
+    webhook:  {x:220, y:500, w:155, h:60, color:C.blue,   icon:"🔗", title:"Webhook / ERP", sub:"SAP · Oracle · Shram Suvid."},
 
     // Layer 2: Core AI
-    ai:       {x:430, y:140, w:155, h:65, color:C.pink,   icon:"ðŸ¤–", title:"AI Engine (GPU)", sub:"YOLOv8 PPE Â· Danger Zone"},
-    zoneconf: {x:430, y:240, w:155, h:60, color:C.blue,   icon:"ðŸ“", title:"Zone Config", sub:"PPE rules Â· thresholds"},
-    violdb:   {x:430, y:340, w:155, h:60, color:C.red,    icon:"âš ï¸",  title:"Violation DB",   sub:"PostgreSQL Â· time-series"},
-    formfill: {x:430, y:440, w:155, h:60, color:C.amber,  icon:"ðŸ“‹", title:"Form 18 Engine", sub:"Auto-populate statutory"},
-    rptgen:   {x:430, y:540, w:155, h:60, color:C.green,  icon:"ðŸ“„", title:"Report Generator", sub:"ISO Â· ESIC Â· BRSR Â· OSH"},
+    ai:       {x:430, y:140, w:155, h:65, color:C.pink,   icon:"🤖", title:"AI Engine (GPU)", sub:"YOLOv8 PPE · Danger Zone"},
+    zoneconf: {x:430, y:240, w:155, h:60, color:C.blue,   icon:"📍", title:"Zone Config", sub:"PPE rules · thresholds"},
+    violdb:   {x:430, y:340, w:155, h:60, color:C.red,    icon:"⚠️",  title:"Violation DB",   sub:"PostgreSQL · time-series"},
+    formfill: {x:430, y:440, w:155, h:60, color:C.amber,  icon:"📋", title:"Form 18 Engine", sub:"Auto-populate statutory"},
+    rptgen:   {x:430, y:540, w:155, h:60, color:C.green,  icon:"📄", title:"Report Generator", sub:"ISO · ESIC · BRSR · OSH"},
 
     // Layer 3: Output (rightmost)
-    dash:     {x:640, y:80,  w:155, h:60, color:C.teal,   icon:"ðŸ“Š", title:"Live Dashboard", sub:"KPIs Â· cameras Â· timeline"},
-    camfeed:  {x:640, y:170, w:155, h:60, color:C.purple, icon:"ðŸŽ¥", title:"Camera Grid", sub:"WebRTC Â· HLS proxy"},
-    violist:  {x:640, y:260, w:155, h:60, color:C.red,    icon:"ðŸš¨", title:"Violation Register", sub:"Real-time + history"},
-    form18:   {x:640, y:350, w:155, h:60, color:C.amber,  icon:"ðŸ“‹", title:"Form 18 Filing", sub:"Pre-filled + submit"},
-    inspector:{x:640, y:440, w:155, h:60, color:C.green,  icon:"âœ…", title:"Inspection Check", sub:"24-item daily checklist"},
-    reports:  {x:640, y:530, w:155, h:60, color:C.blue,   icon:"ðŸ“‘", title:"Compliance Reports", sub:"Auto PDF export"},
+    dash:     {x:640, y:80,  w:155, h:60, color:C.teal,   icon:"📊", title:"Live Dashboard", sub:"KPIs · cameras · timeline"},
+    camfeed:  {x:640, y:170, w:155, h:60, color:C.purple, icon:"🎥", title:"Camera Grid", sub:"WebRTC · HLS proxy"},
+    violist:  {x:640, y:260, w:155, h:60, color:C.red,    icon:"🚨", title:"Violation Register", sub:"Real-time + history"},
+    form18:   {x:640, y:350, w:155, h:60, color:C.amber,  icon:"📋", title:"Form 18 Filing", sub:"Pre-filled + submit"},
+    inspector:{x:640, y:440, w:155, h:60, color:C.green,  icon:"✅", title:"Inspection Check", sub:"24-item daily checklist"},
+    reports:  {x:640, y:530, w:155, h:60, color:C.blue,   icon:"📑", title:"Compliance Reports", sub:"Auto PDF export"},
   };
 
   // Edges: [from_node, to_node, label, color]
   const edges = [
-    // Cameras â†’ stream
+    // Cameras → stream
     ["cam","stream","RTSP",C.purple],
-    // Onboarding â†’ auth, plantdb
+    // Onboarding → auth, plantdb
     ["onboard","auth","creates",C.orange],
     ["onboard","plantdb","seeds",C.teal],
     ["onboard","zoneconf","configures",C.blue],
     // Mobile / API
     ["mobile","auth",null,C.teal],
     ["api","webhook",null,C.blue],
-    // Ingestion â†’ AI
+    // Ingestion → AI
     ["stream","ai","frames@4fps",C.pink],
     ["plantdb","zoneconf","zone rules",C.blue],
     ["plantdb","formfill","factory data",C.amber],
     ["plantdb","rptgen","compliance data",C.green],
-    // AI â†’ violations
+    // AI → violations
     ["ai","violdb","detections",C.red],
     ["zoneconf","ai","PPE filters",C.pink],
-    // Violations â†’ alerts + form18
+    // Violations → alerts + form18
     ["violdb","alertmgr","events",C.amber],
     ["violdb","formfill","incident data",C.amber],
     ["violdb","violist","live push",C.red],
-    // Alert â†’ outputs
+    // Alert → outputs
     ["alertmgr","dash","push",C.teal],
     ["webhook","rptgen","sync",C.blue],
     // Outputs
@@ -320,10 +320,10 @@ export default function App() {
 
   // Layer labels
   const layers = [
-    {x:20,  label:"INPUT LAYER",    sub:"Cameras Â· Wizard Â· Mobile Â· API"},
-    {x:220, label:"INGESTION",      sub:"Stream Â· Auth Â· Registry Â· Alerts"},
-    {x:430, label:"CORE ENGINE",    sub:"AI Â· Zone Config Â· Violations Â· Forms"},
-    {x:640, label:"OUTPUT / UI",    sub:"Dashboard Â· Reports Â· Forms Â· Checks"},
+    {x:20,  label:"INPUT LAYER",    sub:"Cameras · Wizard · Mobile · API"},
+    {x:220, label:"INGESTION",      sub:"Stream · Auth · Registry · Alerts"},
+    {x:430, label:"CORE ENGINE",    sub:"AI · Zone Config · Violations · Forms"},
+    {x:640, label:"OUTPUT / UI",    sub:"Dashboard · Reports · Forms · Checks"},
   ];
 
   const clickFlow = (key) => { setActiveFlow(key); setTab("dataflow"); };
@@ -337,14 +337,14 @@ export default function App() {
         display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <div style={{width:32,height:32,background:C.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",
-            display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff",fontWeight:700}}>âœ“</div>
+            display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff",fontWeight:700}}>✓</div>
           <div>
             <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:900,fontSize:20,letterSpacing:2}}>Safeguards IQ</div>
             <div style={{fontSize:9,color:C.g2,letterSpacing:3,...mono,textTransform:"uppercase"}}>System Architecture & Integration Map</div>
           </div>
         </div>
         <div style={{display:"flex",gap:4}}>
-          {[{id:"architecture",l:"ðŸ—º Architecture"},{id:"dataflow",l:"ðŸ”— Data Flows"},{id:"liveevents",l:"âš¡ Live Events"}].map(t=>(
+          {[{id:"architecture",l:"🗺 Architecture"},{id:"dataflow",l:"🔗 Data Flows"},{id:"liveevents",l:"⚡ Live Events"}].map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)}
               style={{padding:"6px 18px",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer",
               border:`1.5px solid ${tab===t.id?C.orange:C.border}`,
@@ -359,13 +359,13 @@ export default function App() {
         </div>
       </div>
 
-      {/* â•â• TAB: ARCHITECTURE â•â• */}
+      {/* ══ TAB: ARCHITECTURE ══ */}
       {tab==="architecture" && (
         <div style={{padding:"28px 28px 40px"}}>
           <div style={{marginBottom:28,animation:"fadeUp .4s ease"}}>
             <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:900,fontSize:38,letterSpacing:2}}>HOW IT ALL CONNECTS</div>
             <div style={{fontSize:14,color:C.g1,marginTop:6,maxWidth:700}}>
-              Click any module to see its data flow. The onboarding wizard is the <strong style={{color:C.orange}}>seed</strong> â€” everything downstream is automatically populated from those 4 steps.
+              Click any module to see its data flow. The onboarding wizard is the <strong style={{color:C.orange}}>seed</strong> — everything downstream is automatically populated from those 4 steps.
             </div>
           </div>
 
@@ -444,10 +444,10 @@ export default function App() {
               <div style={{background:C.card,border:`1.5px solid ${C.border}`,borderRadius:14,padding:18}}>
                 <div style={{fontWeight:700,fontSize:12,color:C.g2,textTransform:"uppercase",letterSpacing:2,marginBottom:14,...mono}}>Explore Data Flows</div>
                 {[
-                  {id:"onboarding",icon:"ðŸ”—",label:"Onboarding â†’ System",color:C.orange},
-                  {id:"camera",    icon:"ðŸ“¹",label:"Camera â†’ AI â†’ Alert",color:C.purple},
-                  {id:"dashboard", icon:"ðŸ“Š",label:"Dashboard Data Sources",color:C.teal},
-                  {id:"form18",    icon:"ðŸ“‹",label:"Form 18 Auto-Population",color:C.amber},
+                  {id:"onboarding",icon:"🔗",label:"Onboarding → System",color:C.orange},
+                  {id:"camera",    icon:"📹",label:"Camera → AI → Alert",color:C.purple},
+                  {id:"dashboard", icon:"📊",label:"Dashboard Data Sources",color:C.teal},
+                  {id:"form18",    icon:"📋",label:"Form 18 Auto-Population",color:C.amber},
                 ].map(f=>(
                   <div key={f.id} onClick={()=>clickFlow(f.id)} style={{display:"flex",alignItems:"center",gap:12,
                     padding:"11px 14px",borderRadius:10,cursor:"pointer",marginBottom:8,
@@ -456,7 +456,7 @@ export default function App() {
                     transition:"all .2s"}}>
                     <span style={{fontSize:18}}>{f.icon}</span>
                     <span style={{fontSize:13,fontWeight:600,color:activeFlow===f.id&&tab==="dataflow"?f.color:C.g1,flex:1}}>{f.label}</span>
-                    <span style={{color:C.g2,fontSize:12}}>â†’</span>
+                    <span style={{color:C.g2,fontSize:12}}>→</span>
                   </div>
                 ))}
               </div>
@@ -484,7 +484,7 @@ export default function App() {
         </div>
       )}
 
-      {/* â•â• TAB: DATA FLOWS â•â• */}
+      {/* ══ TAB: DATA FLOWS ══ */}
       {tab==="dataflow" && (
         <div style={{padding:"28px",display:"grid",gridTemplateColumns:"260px 1fr",gap:20}}>
           {/* Flow selector */}
@@ -507,12 +507,12 @@ export default function App() {
 
             {/* Onboarding to dashboard mapping */}
             <div style={{background:C.card,border:`1.5px solid ${C.border}`,borderRadius:14,padding:16,marginTop:16}}>
-              <div style={{fontWeight:700,fontSize:11,color:C.orange,textTransform:"uppercase",letterSpacing:2,marginBottom:12,...mono}}>Onboarding â†’ Dashboard</div>
+              <div style={{fontWeight:700,fontSize:11,color:C.orange,textTransform:"uppercase",letterSpacing:2,marginBottom:12,...mono}}>Onboarding → Dashboard</div>
               {[
-                ["Customer","â†’ Account + Login + Billing"],
-                ["Plant","â†’ Plant Registry + Licence DB"],
-                ["Area","â†’ Zone Config + PPE Rules"],
-                ["Camera","â†’ Live Feed + AI Detection"],
+                ["Customer","→ Account + Login + Billing"],
+                ["Plant","→ Plant Registry + Licence DB"],
+                ["Area","→ Zone Config + PPE Rules"],
+                ["Camera","→ Live Feed + AI Detection"],
               ].map(([from,to])=>(
                 <div key={from} style={{fontSize:12,color:C.g1,marginBottom:6,display:"flex",gap:6}}>
                   <strong style={{color:C.orange,minWidth:60}}>{from}</strong>
@@ -527,7 +527,7 @@ export default function App() {
         </div>
       )}
 
-      {/* â•â• TAB: LIVE EVENTS â•â• */}
+      {/* ══ TAB: LIVE EVENTS ══ */}
       {tab==="liveevents" && (
         <div style={{padding:"28px"}}>
           <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24}}>
@@ -538,7 +538,7 @@ export default function App() {
             <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",
               background:"rgba(34,212,104,.08)",border:`1px solid rgba(34,212,104,.25)`,borderRadius:20}}>
               <Dot color={C.green} blink size={8}/>
-              <span style={{fontSize:12,color:C.green,...mono}}>LIVE Â· All systems nominal</span>
+              <span style={{fontSize:12,color:C.green,...mono}}>LIVE · All systems nominal</span>
             </div>
           </div>
 
@@ -558,7 +558,7 @@ export default function App() {
                     <span style={{color:e.c,flex:1,lineHeight:1.5}}>{e.msg}</span>
                   </div>
                 ))}
-                <div style={{padding:"8px 10px",color:C.g2,animation:"blink 1s infinite"}}>â–‹</div>
+                <div style={{padding:"8px 10px",color:C.g2,animation:"blink 1s infinite"}}>▋</div>
               </div>
             </div>
 
@@ -573,8 +573,8 @@ export default function App() {
                   {name:"Violation DB (PostgreSQL)",status:"Healthy",latency:"8ms",color:C.green},
                   {name:"Alert Manager",status:"Healthy",latency:"1.2s",color:C.green},
                   {name:"Form 18 Engine",status:"Healthy",latency:"45ms",color:C.green},
-                  {name:"Report Generator",status:"Idle",latency:"â€”",color:C.g2},
-                  {name:"Webhook / ERP Sync",status:"Idle",latency:"â€”",color:C.g2},
+                  {name:"Report Generator",status:"Idle",latency:"—",color:C.g2},
+                  {name:"Webhook / ERP Sync",status:"Idle",latency:"—",color:C.g2},
                 ].map(m=>(
                   <div key={m.name} style={{display:"flex",alignItems:"center",gap:12,padding:"9px 0",
                     borderBottom:`1px solid ${C.g3}`}}>
@@ -608,14 +608,14 @@ export default function App() {
 
           {/* Integration map (text) */}
           <div style={{marginTop:20,background:C.card,border:`1.5px solid ${C.border}`,borderRadius:16,padding:24}}>
-            <div style={{fontWeight:900,fontSize:18,marginBottom:4}}>ðŸ”„ THE COMPLETE INTEGRATION CHAIN</div>
+            <div style={{fontWeight:900,fontSize:18,marginBottom:4}}>🔄 THE COMPLETE INTEGRATION CHAIN</div>
             <div style={{fontSize:13,color:C.g2,marginBottom:20}}>How a single onboarding session creates the entire working system</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:0}}>
               {[
-                {step:"01",title:"You fill Onboarding",desc:"Customer â†’ Plant â†’ Area â†’ Camera wizard",color:C.orange,icon:"ðŸ§™",sub:"~10 minutes"},
-                {step:"02",title:"Database seeded",desc:"Plant Registry, Zone Config, Camera Registry, Auth all populated",color:C.teal,icon:"ðŸ—„ï¸",sub:"Instant"},
-                {step:"03",title:"Cameras connect",desc:"Stream Ingestion pulls RTSP feeds, AI Engine loads zone-specific PPE model",color:C.purple,icon:"ðŸ“¡",sub:"~2 minutes"},
-                {step:"04",title:"Dashboard goes live",desc:"KPIs, camera grid, violation log, Form 18 all auto-populated from onboarding data",color:C.green,icon:"ðŸš€",sub:"~3 minutes"},
+                {step:"01",title:"You fill Onboarding",desc:"Customer → Plant → Area → Camera wizard",color:C.orange,icon:"🧙",sub:"~10 minutes"},
+                {step:"02",title:"Database seeded",desc:"Plant Registry, Zone Config, Camera Registry, Auth all populated",color:C.teal,icon:"🗄️",sub:"Instant"},
+                {step:"03",title:"Cameras connect",desc:"Stream Ingestion pulls RTSP feeds, AI Engine loads zone-specific PPE model",color:C.purple,icon:"📡",sub:"~2 minutes"},
+                {step:"04",title:"Dashboard goes live",desc:"KPIs, camera grid, violation log, Form 18 all auto-populated from onboarding data",color:C.green,icon:"🚀",sub:"~3 minutes"},
               ].map((s,i)=>(
                 <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",
                   padding:"20px 16px",position:"relative",
@@ -628,7 +628,7 @@ export default function App() {
                   <div style={{fontSize:12,color:C.g1,lineHeight:1.6,marginBottom:8}}>{s.desc}</div>
                   <Tag color={s.color}>{s.sub}</Tag>
                   {i<3 && <div style={{position:"absolute",right:-12,top:"50%",transform:"translateY(-50%)",
-                    fontSize:18,color:C.g2}}>â€º</div>}
+                    fontSize:18,color:C.g2}}>›</div>}
                 </div>
               ))}
             </div>

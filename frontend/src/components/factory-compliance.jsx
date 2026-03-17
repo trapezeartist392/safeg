@@ -1,6 +1,6 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-// â”€â”€â”€ PALETTE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PALETTE ───────────────────────────────────────────────────
 const C = {
   bg:      "#05060E",
   bg2:     "#090B18",
@@ -22,9 +22,9 @@ const C = {
   g3:      "#1A2240",
 };
 
-// â”€â”€â”€ GLOBAL STYLES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── GLOBAL STYLES ──────────────────────────────────────────────
 const globalCSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Syne:wght@400;600;700;800&display=swap');
+  
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:${C.bg};color:${C.white};font-family:'Syne',sans-serif;overflow-x:hidden}
   ::-webkit-scrollbar{width:4px;height:4px}
@@ -46,40 +46,40 @@ const globalCSS = `
   @keyframes ringFill{from{stroke-dashoffset:440}to{stroke-dashoffset:var(--target)}}
 `;
 
-// â”€â”€â”€ DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── DATA ───────────────────────────────────────────────────────
 const VIOLATIONS = [
-  {id:"VIO-235",date:"Today 14:23",type:"PPE â€” No Helmet",zone:"Welding B",worker:"W-4821",sev:"High",action:"Supervisor notified, helmet issued",status:"Open"},
+  {id:"VIO-235",date:"Today 14:23",type:"PPE — No Helmet",zone:"Welding B",worker:"W-4821",sev:"High",action:"Supervisor notified, helmet issued",status:"Open"},
   {id:"VIO-234",date:"Today 14:19",type:"Danger Zone Breach",zone:"Forklift Area",worker:"W-2341",sev:"High",action:"Ops suspended pending review",status:"Pending"},
-  {id:"VIO-233",date:"Today 13:15",type:"PPE â€” No Vest",zone:"Paint Shop",worker:"W-8823",sev:"Medium",action:"Vest issued, re-inducted",status:"Closed"},
-  {id:"VIO-232",date:"Yesterday",type:"Machine Guard Missing",zone:"Press Room",worker:"â€“",sev:"High",action:"Guard reinstalled & inspected",status:"Closed"},
-  {id:"VIO-231",date:"Yesterday",type:"Spill â€” Housekeeping",zone:"Welding B",worker:"â€“",sev:"Medium",action:"Spill cleaned, SOP revised",status:"Closed"},
-  {id:"VIO-230",date:"2 days ago",type:"Fire Exit Blocked",zone:"Store Room",worker:"â€“",sev:"High",action:"Exit cleared, disciplinary action",status:"Closed"},
+  {id:"VIO-233",date:"Today 13:15",type:"PPE — No Vest",zone:"Paint Shop",worker:"W-8823",sev:"Medium",action:"Vest issued, re-inducted",status:"Closed"},
+  {id:"VIO-232",date:"Yesterday",type:"Machine Guard Missing",zone:"Press Room",worker:"–",sev:"High",action:"Guard reinstalled & inspected",status:"Closed"},
+  {id:"VIO-231",date:"Yesterday",type:"Spill — Housekeeping",zone:"Welding B",worker:"–",sev:"Medium",action:"Spill cleaned, SOP revised",status:"Closed"},
+  {id:"VIO-230",date:"2 days ago",type:"Fire Exit Blocked",zone:"Store Room",worker:"–",sev:"High",action:"Exit cleared, disciplinary action",status:"Closed"},
 ];
 
 const PPE_TYPES = [
-  {name:"Hard Hat",pct:98,icon:"â›‘ï¸",c:C.green},
-  {name:"Safety Vest",pct:94,icon:"ðŸ¦º",c:C.amber},
-  {name:"Safety Boots",pct:99,icon:"ðŸ‘¢",c:C.green},
-  {name:"Eye Protection",pct:86,icon:"ðŸ¥½",c:C.red},
-  {name:"Gloves",pct:91,icon:"ðŸ§¤",c:C.teal},
-  {name:"Ear Protection",pct:88,icon:"ðŸŽ§",c:C.orange},
+  {name:"Hard Hat",pct:98,icon:"⛑️",c:C.green},
+  {name:"Safety Vest",pct:94,icon:"🦺",c:C.amber},
+  {name:"Safety Boots",pct:99,icon:"👢",c:C.green},
+  {name:"Eye Protection",pct:86,icon:"🥽",c:C.red},
+  {name:"Gloves",pct:91,icon:"🧤",c:C.teal},
+  {name:"Ear Protection",pct:88,icon:"🎧",c:C.orange},
 ];
 
 const ZONES = [
-  {name:"Assembly A",pct:98,icon:"ðŸ”©",c:C.green},
-  {name:"Welding B",pct:89,icon:"âš¡",c:C.amber},
-  {name:"Paint Shop",pct:84,icon:"ðŸŽ¨",c:C.red},
-  {name:"Forklift Area",pct:92,icon:"ðŸšœ",c:C.teal},
-  {name:"Press Room",pct:96,icon:"ðŸ”§",c:C.green},
-  {name:"Electrical",pct:99,icon:"âš™ï¸",c:C.green},
+  {name:"Assembly A",pct:98,icon:"🔩",c:C.green},
+  {name:"Welding B",pct:89,icon:"⚡",c:C.amber},
+  {name:"Paint Shop",pct:84,icon:"🎨",c:C.red},
+  {name:"Forklift Area",pct:92,icon:"🚜",c:C.teal},
+  {name:"Press Room",pct:96,icon:"🔧",c:C.green},
+  {name:"Electrical",pct:99,icon:"⚙️",c:C.green},
 ];
 
 const TIMELINE = [
-  {icon:"ðŸš¨",color:C.red,title:"No Helmet â€” Zone B Welding",meta:"14:23:07 Â· CAM-04 Â· Auto-alerted"},
-  {icon:"âš ï¸",color:C.amber,title:"Danger zone breach â€” Forklift",meta:"14:19:44 Â· CAM-11 Â· Pending"},
-  {icon:"âœ…",color:C.green,title:"Morning inspection passed",meta:"08:00:00 Â· All 24 zones clear"},
-  {icon:"ðŸ“‹",color:C.blue,title:"Form 18 filed â€” Incident #234",meta:"09:45:00 Â· Auto-generated"},
-  {icon:"ðŸš¨",color:C.red,title:"Safety vest missing â€” Paint Shop",meta:"13:15:02 Â· CAM-07 Â· Resolved"},
+  {icon:"🚨",color:C.red,title:"No Helmet — Zone B Welding",meta:"14:23:07 · CAM-04 · Auto-alerted"},
+  {icon:"⚠️",color:C.amber,title:"Danger zone breach — Forklift",meta:"14:19:44 · CAM-11 · Pending"},
+  {icon:"✅",color:C.green,title:"Morning inspection passed",meta:"08:00:00 · All 24 zones clear"},
+  {icon:"📋",color:C.blue,title:"Form 18 filed — Incident #234",meta:"09:45:00 · Auto-generated"},
+  {icon:"🚨",color:C.red,title:"Safety vest missing — Paint Shop",meta:"13:15:02 · CAM-07 · Resolved"},
 ];
 
 const ZONE_BARS = [
@@ -95,7 +95,7 @@ const ZONE_BARS = [
 const CHECK_ITEMS = {
   "Safety Equipment":[
     "All PPE stations stocked and accessible",
-    "Hard hat condition checked â€” no cracks",
+    "Hard hat condition checked — no cracks",
     "Safety harnesses inspected and tagged",
     "Eye wash stations operational",
     "Emergency showers functional",
@@ -114,11 +114,11 @@ const CHECK_ITEMS = {
     "Extinguishers within service date",
     "Sprinkler heads unobstructed",
     "Fire alarm test conducted",
-    "Emergency exits clear â€” no blockage",
+    "Emergency exits clear — no blockage",
     "Evacuation route maps visible",
   ],
   "Housekeeping":[
-    "Floors dry â€” no spills or puddles",
+    "Floors dry — no spills or puddles",
     "Chemical storage correctly labelled",
     "Waste bins not overflowing",
     "Walkways clear of obstacles",
@@ -127,7 +127,7 @@ const CHECK_ITEMS = {
   ],
 };
 
-// â”€â”€â”€ TINY COMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TINY COMPONENTS ────────────────────────────────────────────
 
 function Dot({color=C.orange,size=6,blink=false}) {
   return <div style={{width:size,height:size,borderRadius:"50%",background:color,animation:blink?"blink 1.2s infinite":"none",flexShrink:0}} />;
@@ -176,7 +176,7 @@ function KpiCard({label,value,unit,trend,trendUp,color=C.orange}) {
 
 function Toast({msg,type,onDone}) {
   const [out,setOut]=useState(false);
-  const icons={success:"âœ…",error:"ðŸ”´",warning:"âš ï¸",info:"â„¹ï¸"};
+  const icons={success:"✅",error:"🔴",warning:"⚠️",info:"ℹ️"};
   const colors={success:C.green,error:C.red,warning:C.amber,info:C.blue};
   useEffect(()=>{const t=setTimeout(()=>setOut(true),2700);const t2=setTimeout(onDone,3100);return()=>{clearTimeout(t);clearTimeout(t2)};},[]);
   return <div style={{display:"flex",alignItems:"center",gap:10,background:C.card,border:`1px solid ${colors[type]}44`,borderRadius:10,padding:"12px 18px",minWidth:280,boxShadow:"0 8px 30px rgba(0,0,0,.5)",animation:out?"toastOut .35s ease forwards":"toastIn .35s ease forwards",fontFamily:"'Syne',sans-serif",fontSize:13,color:C.white}}>
@@ -184,7 +184,7 @@ function Toast({msg,type,onDone}) {
   </div>;
 }
 
-// â”€â”€â”€ RING CHART â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── RING CHART ─────────────────────────────────────────────────
 function Ring({pct,color=C.green,size=160,label="COMPLIANT"}) {
   const r=68, circ=2*Math.PI*r;
   const offset = circ*(1-pct/100);
@@ -205,7 +205,7 @@ function Ring({pct,color=C.green,size=160,label="COMPLIANT"}) {
   </div>;
 }
 
-// â”€â”€â”€ CAMERA FEED (Canvas) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CAMERA FEED (Canvas) ────────────────────────────────────────
 function CamFeed({cam}) {
   const ref=useRef();
   useEffect(()=>{
@@ -256,33 +256,33 @@ function CamFeed({cam}) {
   return <canvas ref={ref} width={320} height={180} style={{width:"100%",height:"100%",display:"block"}} />;
 }
 
-// â”€â”€â”€ FORM 18 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── FORM 18 ─────────────────────────────────────────────────────
 function Form18({toast}) {
   const today=new Date().toISOString().slice(0,10);
   const [f,setF]=useState({
     factoryName:"Pune Auto Components Pvt Ltd",
     regNo:"MH/PUN/F/2019/00423",
     industry:"Automobile Components Manufacturing",
-    address:"Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune â€“ 411018",
+    address:"Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune – 411018",
     district:"Pune", state:"Maharashtra",
     occupier:"", manager:"", contact:"",
-    accDate:today, accTime:"14:23", department:"Welding Zone B â€” Bay 3",
+    accDate:today, accTime:"14:23", department:"Welding Zone B — Bay 3",
     nature:"Fall from height",
-    operation:"MIG Welding â€” Chassis subframe assembly",
+    operation:"MIG Welding — Chassis subframe assembly",
     description:"Worker slipped on oil spill near welding bay. Safeguards IQ camera CAM-04 detected the incident at 14:23:07 IST and triggered immediate supervisor alert. Worker sustained minor abrasion on left knee. No loss of consciousness.",
-    immCause:"Oil spill on floor not cleaned â€” housekeeping protocol violation",
+    immCause:"Oil spill on floor not cleaned — housekeeping protocol violation",
     rootCause:"Inadequate housekeeping schedule and absence of spill kit in Welding Zone B",
-    firstAid:"Yes â€” On-site", hospital:"No â€” Treated on-site",
-    esic:"Yes â€” ESIC IP No. MH48920234",
-    doctor:"Dr. Priya Mehta â€” On-site MBBS",
+    firstAid:"Yes — On-site", hospital:"No — Treated on-site",
+    esic:"Yes — ESIC IP No. MH48920234",
+    doctor:"Dr. Priya Mehta — On-site MBBS",
     medDate:today, declarant:"", designation:"", filingDate:today,
     inspector:"Office of Inspector of Factories, Pune District",
   });
-  const [injured,setInjured]=useState([{name:"Ramesh Kumar Singh",sex:"Male",age:34,empType:"Permanent â€“ Factory Worker",dept:"Welding",injuryType:"Minor Injury",bodyPart:"Left knee â€” abrasion",days:2}]);
+  const [injured,setInjured]=useState([{name:"Ramesh Kumar Singh",sex:"Male",age:34,empType:"Permanent – Factory Worker",dept:"Welding",injuryType:"Minor Injury",bodyPart:"Left knee — abrasion",days:2}]);
   const [capa,setCapa]=useState([
-    {action:"Immediate housekeeping of Welding Zone B â€” spill removed",resp:"Rajesh Patil â€” Housekeeping Supervisor",date:today,status:"Completed"},
+    {action:"Immediate housekeeping of Welding Zone B — spill removed",resp:"Rajesh Patil — Housekeeping Supervisor",date:today,status:"Completed"},
     {action:"Install spill containment kit in Welding Zone B",resp:"Maintenance Manager",date:today,status:"In Progress"},
-    {action:"Revise housekeeping SOP â€” reduce response SLA from 30 to 10 min",resp:"HSE Manager",date:today,status:"Pending"},
+    {action:"Revise housekeeping SOP — reduce response SLA from 30 to 10 min",resp:"HSE Manager",date:today,status:"Pending"},
   ]);
 
   const upd=(k,v)=>setF(prev=>({...prev,[k]:v}));
@@ -292,7 +292,7 @@ function Form18({toast}) {
   };
   const submit=()=>{
     if(!f.declarant){toast("Enter declarant name before filing","error");return;}
-    toast("Form 18 #F18-2024-235 filed â€” Inspector notified","success");
+    toast("Form 18 #F18-2024-235 filed — Inspector notified","success");
     setTimeout(()=>toast("PDF saved to compliance folder","info"),900);
   };
 
@@ -305,7 +305,7 @@ function Form18({toast}) {
   const field=(label,children)=><div style={{display:"flex",flexDirection:"column"}}>{lbl(label)}{children}</div>;
 
   const secTitle=(t,badge)=><div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:17,color:C.orange,letterSpacing:2,fontWeight:700,marginBottom:16,paddingBottom:10,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:10}}>
-    {t}{badge&&<span style={{fontSize:11,color:C.teal,letterSpacing:1}}>â— {badge}</span>}
+    {t}{badge&&<span style={{fontSize:11,color:C.teal,letterSpacing:1}}>● {badge}</span>}
   </div>;
 
   const row=(...children)=><div style={{display:"grid",gridTemplateColumns:`repeat(${children.length},1fr)`,gap:14,marginBottom:14}}>{children}</div>;
@@ -320,12 +320,12 @@ function Form18({toast}) {
       {/* Page Header */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24}}>
         <div>
-          <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>FORM 18 â€” ACCIDENT REPORT</div>
-          <div style={{fontSize:12,color:C.g2,marginTop:4,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>THE FACTORIES ACT, 1948 â€” SECTION 88 Â· AI-ASSISTED FILING</div>
+          <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>FORM 18 — ACCIDENT REPORT</div>
+          <div style={{fontSize:12,color:C.g2,marginTop:4,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>THE FACTORIES ACT, 1948 — SECTION 88 · AI-ASSISTED FILING</div>
         </div>
         <div style={{display:"flex",gap:10}}>
-          <button onClick={autoFill} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 18px",borderRadius:8,background:"rgba(0,212,184,.1)",color:C.teal,border:`1px solid rgba(0,212,184,.3)`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:600}}>ðŸ¤– AI Auto-Fill</button>
-          <button onClick={()=>toast("Draft saved","success")} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 18px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>ðŸ’¾ Save Draft</button>
+          <button onClick={autoFill} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 18px",borderRadius:8,background:"rgba(0,212,184,.1)",color:C.teal,border:`1px solid rgba(0,212,184,.3)`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:600}}>🤖 AI Auto-Fill</button>
+          <button onClick={()=>toast("Draft saved","success")} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 18px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>💾 Save Draft</button>
         </div>
       </div>
 
@@ -355,7 +355,7 @@ function Form18({toast}) {
 
           {/* PART A */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART A â€” FACTORY & REGISTRATION DETAILS")}
+            {secTitle("PART A — FACTORY & REGISTRATION DETAILS")}
             {row(
               field("Name of Factory", autoInp(f.factoryName,"factoryName")),
               field("Factory Registration No.", autoInp(f.regNo,"regNo")),
@@ -375,7 +375,7 @@ function Form18({toast}) {
 
           {/* PART B */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART B â€” ACCIDENT / DANGEROUS OCCURRENCE DETAILS")}
+            {secTitle("PART B — ACCIDENT / DANGEROUS OCCURRENCE DETAILS")}
             {row(
               field("Date of Accident", inp("accDate","date")),
               field("Time of Accident", autoInp(f.accTime,"accTime")),
@@ -396,7 +396,7 @@ function Form18({toast}) {
 
           {/* PART C */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART C â€” INJURED PERSON(S) DETAILS")}
+            {secTitle("PART C — INJURED PERSON(S) DETAILS")}
             <div style={{overflowX:"auto"}}>
               <table style={{width:"100%",borderCollapse:"collapse"}}>
                 <thead>
@@ -409,7 +409,7 @@ function Form18({toast}) {
                       <td style={tdStyle}>{tdInp(row.name,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],name:v};return n}))}</td>
                       <td style={tdStyle}>{tdSel(row.sex,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],sex:v};return n}),["Male","Female","Other"])}</td>
                       <td style={tdStyle}>{tdInp(row.age,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],age:v};return n}),"40px")}</td>
-                      <td style={tdStyle}>{tdSel(row.empType,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],empType:v};return n}),["Permanent â€“ Factory Worker","Contract Worker","Trainee","Apprentice"])}</td>
+                      <td style={tdStyle}>{tdSel(row.empType,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],empType:v};return n}),["Permanent – Factory Worker","Contract Worker","Trainee","Apprentice"])}</td>
                       <td style={tdStyle}>{tdInp(row.dept,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],dept:v};return n}),"70px")}</td>
                       <td style={tdStyle}>{tdSel(row.injuryType,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],injuryType:v};return n}),["Minor Injury","Serious Injury","Fatal","Dangerous Occurrence"])}</td>
                       <td style={tdStyle}>{tdInp(row.bodyPart,v=>setInjured(p=>{const n=[...p];n[i]={...n[i],bodyPart:v};return n}))}</td>
@@ -419,7 +419,7 @@ function Form18({toast}) {
                 </tbody>
               </table>
             </div>
-            <button onClick={()=>setInjured(p=>[...p,{name:"",sex:"Male",age:"",empType:"Permanent â€“ Factory Worker",dept:"",injuryType:"Minor Injury",bodyPart:"",days:""}])}
+            <button onClick={()=>setInjured(p=>[...p,{name:"",sex:"Male",age:"",empType:"Permanent – Factory Worker",dept:"",injuryType:"Minor Injury",bodyPart:"",days:""}])}
               style={{marginTop:10,padding:"6px 14px",borderRadius:7,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:12,fontFamily:"'Syne',sans-serif"}}>
               + Add Person
             </button>
@@ -427,11 +427,11 @@ function Form18({toast}) {
 
           {/* PART D */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART D â€” MEDICAL TREATMENT & FIRST AID")}
+            {secTitle("PART D — MEDICAL TREATMENT & FIRST AID")}
             {row(
-              field("First Aid Given?", sel("firstAid",["Yes â€” On-site first aid","No"])),
-              field("Referred to Hospital?", sel("hospital",["No â€” Treated on-site","Yes â€” Government Hospital","Yes â€” Private Hospital"])),
-              field("ESIC Member?", sel("esic",["Yes â€” ESIC IP No. MH48920234","No â€” Not covered"])),
+              field("First Aid Given?", sel("firstAid",["Yes — On-site first aid","No"])),
+              field("Referred to Hospital?", sel("hospital",["No — Treated on-site","Yes — Government Hospital","Yes — Private Hospital"])),
+              field("ESIC Member?", sel("esic",["Yes — ESIC IP No. MH48920234","No — Not covered"])),
             )}
             {row(
               field("Medical Officer Name", inp("doctor")),
@@ -441,31 +441,31 @@ function Form18({toast}) {
 
           {/* PART E: Safeguards IQ Evidence */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART E â€” Safeguards IQ EVIDENCE LOG","Auto-captured")}
+            {secTitle("PART E — Safeguards IQ EVIDENCE LOG","Auto-captured")}
             <div style={{background:"rgba(0,212,184,.04)",border:`1px solid rgba(0,212,184,.2)`,borderRadius:10,padding:20}}>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:14}}>
                 {[
-                  ["Camera ID","CAM-04 Â· Zone B Welding"],
+                  ["Camera ID","CAM-04 · Zone B Welding"],
                   ["Detection Timestamp",new Date().toISOString().slice(0,10)+" 14:23:07 IST"],
                   ["AI Confidence Score","98.7%"],
-                  ["Alert Sent To","Zone B Supervisor Â· Plant Manager"],
+                  ["Alert Sent To","Zone B Supervisor · Plant Manager"],
                   ["Response Time","28 seconds"],
-                  ["Evidence Video","ðŸ“¹ Click to view clip â†’"],
+                  ["Evidence Video","📹 Click to view clip →"],
                 ].map(([k,v])=><div key={k}>
                   <div style={{fontSize:10,color:C.teal,textTransform:"uppercase",letterSpacing:1.5,fontFamily:"'Barlow Condensed',sans-serif",marginBottom:4}}>{k}</div>
                   <div style={{fontSize:13,fontFamily:k.includes("Timestamp")||k.includes("Score")?"'Barlow Condensed',sans-serif":"'Syne',sans-serif",cursor:k.includes("Video")?"pointer":"default",color:k.includes("Video")?C.teal:C.white}}>{v}</div>
                 </div>)}
               </div>
               <div style={{background:"rgba(0,212,184,.06)",borderRadius:8,border:`1px solid rgba(0,212,184,.15)`,padding:"12px 16px",fontSize:12,color:C.g1,lineHeight:1.7}}>
-                Safeguards IQ detected: <strong style={{color:C.white}}>Floor Hazard â€” Liquid spill (unattended 47 min)</strong> at 13:36:09. Alert sent to housekeeping at 13:36:15. No corrective action recorded within 30-min SLA. Subsequent fall recorded at 14:23:07.
-                <br/><strong style={{color:C.teal}}>Preventability Assessment: HIGH â€” Corrective action available 47 minutes prior to incident.</strong>
+                Safeguards IQ detected: <strong style={{color:C.white}}>Floor Hazard — Liquid spill (unattended 47 min)</strong> at 13:36:09. Alert sent to housekeeping at 13:36:15. No corrective action recorded within 30-min SLA. Subsequent fall recorded at 14:23:07.
+                <br/><strong style={{color:C.teal}}>Preventability Assessment: HIGH — Corrective action available 47 minutes prior to incident.</strong>
               </div>
             </div>
           </div>
 
           {/* PART F: CAPA */}
           <div style={{marginBottom:28}}>
-            {secTitle("PART F â€” CORRECTIVE & PREVENTIVE ACTIONS (CAPA)")}
+            {secTitle("PART F — CORRECTIVE & PREVENTIVE ACTIONS (CAPA)")}
             <div style={{overflowX:"auto"}}>
               <table style={{width:"100%",borderCollapse:"collapse"}}>
                 <thead>
@@ -492,7 +492,7 @@ function Form18({toast}) {
 
           {/* PART G: Declaration */}
           <div style={{marginBottom:0}}>
-            {secTitle("PART G â€” DECLARATION BY MANAGER / OCCUPIER")}
+            {secTitle("PART G — DECLARATION BY MANAGER / OCCUPIER")}
             {row(
               field("Name of Declarant", inp("declarant")),
               field("Designation", inp("designation")),
@@ -502,7 +502,7 @@ function Form18({toast}) {
               field("Submitted To (Inspector of Factories)", inp("inspector")),
             )}
             <div style={{background:"rgba(255,184,0,.06)",border:`1px solid rgba(255,184,0,.2)`,borderRadius:8,padding:"12px 16px",fontSize:12,color:C.g1,lineHeight:1.6,marginTop:8}}>
-              âš ï¸ <strong style={{color:C.amber}}>Statutory Deadline:</strong> File with Inspector of Factories within <strong style={{color:C.white}}>24 hours</strong> of accident (Section 88, Factories Act 1948). For dangerous occurrences, report immediately by phone and follow up in writing within 12 hours.
+              ⚠️ <strong style={{color:C.amber}}>Statutory Deadline:</strong> File with Inspector of Factories within <strong style={{color:C.white}}>24 hours</strong> of accident (Section 88, Factories Act 1948). For dangerous occurrences, report immediately by phone and follow up in writing within 12 hours.
             </div>
           </div>
 
@@ -510,17 +510,17 @@ function Form18({toast}) {
 
         {/* Action Bar */}
         <div style={{display:"flex",gap:12,justifyContent:"flex-end",padding:"18px 32px",borderTop:`1px solid ${C.border}`,background:C.card}}>
-          <button onClick={()=>toast("Draft saved","success")} style={{padding:"10px 22px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>ðŸ’¾ Save Draft</button>
-          <button onClick={()=>toast("Form sent for print","info")} style={{padding:"10px 22px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>ðŸ–¨ï¸ Print</button>
-          <button onClick={()=>toast("Submitted to Shram Suvidha portal","success")} style={{padding:"10px 22px",borderRadius:8,background:"rgba(34,212,106,.12)",color:C.green,border:`1px solid rgba(34,212,106,.3)`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:600}}>ðŸ“¤ Submit to Portal</button>
-          <button onClick={submit} style={{padding:"10px 22px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>âœ… File Report</button>
+          <button onClick={()=>toast("Draft saved","success")} style={{padding:"10px 22px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>💾 Save Draft</button>
+          <button onClick={()=>toast("Form sent for print","info")} style={{padding:"10px 22px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>🖨️ Print</button>
+          <button onClick={()=>toast("Submitted to Shram Suvidha portal","success")} style={{padding:"10px 22px",borderRadius:8,background:"rgba(34,212,106,.12)",color:C.green,border:`1px solid rgba(34,212,106,.3)`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:600}}>📤 Submit to Portal</button>
+          <button onClick={submit} style={{padding:"10px 22px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>✅ File Report</button>
         </div>
       </div>
     </div>
   );
 }
 
-// â”€â”€â”€ INSPECTION PAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── INSPECTION PAGE ─────────────────────────────────────────────
 function InspectionPage({toast}) {
   const [checks, setChecks] = useState(() => {
     const init = {};
@@ -546,14 +546,14 @@ function InspectionPage({toast}) {
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24}}>
         <div>
           <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>DAILY INSPECTION</div>
-          <div style={{fontSize:12,color:C.g2,marginTop:4,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>FACTORIES ACT COMPLIANCE CHECKLIST Â· {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"}).toUpperCase()}</div>
+          <div style={{fontSize:12,color:C.g2,marginTop:4,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>FACTORIES ACT COMPLIANCE CHECKLIST · {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"}).toUpperCase()}</div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
           <div style={{textAlign:"right"}}>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:28,color:C.green}}>{passed}<span style={{color:C.g2,fontSize:16}}>/{total}</span></div>
-            <div style={{fontSize:11,color:C.g2}}>Passed Â· <span style={{color:C.red}}>{failed} Failed</span></div>
+            <div style={{fontSize:11,color:C.g2}}>Passed · <span style={{color:C.red}}>{failed} Failed</span></div>
           </div>
-          <button onClick={()=>{if(passed<8){toast("Complete at least 8 checks","warning");return;}toast(`Inspection signed off â€” ${passed} items passed`,"success");}} style={{padding:"10px 22px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>Sign Off</button>
+          <button onClick={()=>{if(passed<8){toast("Complete at least 8 checks","warning");return;}toast(`Inspection signed off — ${passed} items passed`,"success");}} style={{padding:"10px 22px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>Sign Off</button>
         </div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
@@ -566,7 +566,7 @@ function InspectionPage({toast}) {
                 return (
                   <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",background:C.card2,border:`1px solid ${state===true?C.green:state===false?C.red:C.border}`,borderRadius:8,cursor:"pointer",transition:"all .15s"}} onClick={()=>toggle(cat,i)}>
                     <div style={{width:20,height:20,borderRadius:5,border:`2px solid ${state===true?C.green:state===false?C.red:C.g3}`,background:state===true?"rgba(34,212,106,.2)":state===false?"rgba(255,59,59,.2)":"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:11}}>
-                      {state===true?"âœ“":state===false?"âœ—":""}
+                      {state===true?"✓":state===false?"✗":""}
                     </div>
                     <div style={{fontSize:13,color:state===true?C.g2:C.g1,textDecoration:state===true?"line-through":"none",flex:1}}>{item}</div>
                     <div style={{fontSize:9,color:state===true?C.green:state===false?C.red:C.g3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}}>{state===true?"PASS":state===false?"FAIL":"TAP"}</div>
@@ -581,7 +581,7 @@ function InspectionPage({toast}) {
   );
 }
 
-// â”€â”€â”€ MAIN APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── MAIN APP ────────────────────────────────────────────────────
 export default function App() {
   const [page, setPage] = useState("dashboard");
   const [toasts, setToasts] = useState([]);
@@ -594,23 +594,23 @@ export default function App() {
   const removeToast = id => setToasts(p=>p.filter(t=>t.id!==id));
 
   const navItems = [
-    {id:"dashboard",label:"Dashboard",icon:"ðŸ“Š"},
-    {id:"cameras",label:"Live Cameras",icon:"ðŸ“¹"},
-    {id:"ppe",label:"PPE Compliance",icon:"ðŸ¦º"},
-    {id:"violations",label:"Violations",icon:"âš ï¸",badge:7},
-    {id:"form18",label:"Form 18",icon:"ðŸ“‹",badge:2},
-    {id:"inspection",label:"Inspection",icon:"âœ…"},
-    {id:"reports",label:"Reports",icon:"ðŸ“„"},
+    {id:"dashboard",label:"Dashboard",icon:"📊"},
+    {id:"cameras",label:"Live Cameras",icon:"📹"},
+    {id:"ppe",label:"PPE Compliance",icon:"🦺"},
+    {id:"violations",label:"Violations",icon:"⚠️",badge:7},
+    {id:"form18",label:"Form 18",icon:"📋",badge:2},
+    {id:"inspection",label:"Inspection",icon:"✅"},
+    {id:"reports",label:"Reports",icon:"📄"},
   ];
 
   const sideNav = [
-    {label:"Factory",items:[{icon:"ðŸ­",name:"Pune Auto Plant",active:true},{icon:"ðŸ­",name:"Chennai Unit 2"},{icon:"ðŸ­",name:"Ahmedabad Plant"}]},
+    {label:"Factory",items:[{icon:"🏭",name:"Pune Auto Plant",active:true},{icon:"🏭",name:"Chennai Unit 2"},{icon:"🏭",name:"Ahmedabad Plant"}]},
     {label:"Compliance",items:[
-      {icon:"ðŸ“Š",name:"Overview",pg:"dashboard"},{icon:"ðŸ“¹",name:"Camera Feeds",pg:"cameras"},
-      {icon:"ðŸ¦º",name:"PPE Tracking",pg:"ppe"},{icon:"âš ï¸",name:"Violations",pg:"violations",badge:7},
-      {icon:"ðŸ“‹",name:"Form 18",pg:"form18",badge:2},{icon:"âœ…",name:"Inspection",pg:"inspection"},
+      {icon:"📊",name:"Overview",pg:"dashboard"},{icon:"📹",name:"Camera Feeds",pg:"cameras"},
+      {icon:"🦺",name:"PPE Tracking",pg:"ppe"},{icon:"⚠️",name:"Violations",pg:"violations",badge:7},
+      {icon:"📋",name:"Form 18",pg:"form18",badge:2},{icon:"✅",name:"Inspection",pg:"inspection"},
     ]},
-    {label:"Reports",items:[{icon:"ðŸ“„",name:"ISO 45001"},{icon:"ðŸ“„",name:"ESIC Returns"},{icon:"ðŸ“„",name:"BRSR Safety"},{icon:"ðŸ“„",name:"OSH Code"}]},
+    {label:"Reports",items:[{icon:"📄",name:"ISO 45001"},{icon:"📄",name:"ESIC Returns"},{icon:"📄",name:"BRSR Safety"},{icon:"📄",name:"OSH Code"}]},
   ];
 
   return (
@@ -620,14 +620,14 @@ export default function App() {
       {/* TOPBAR */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 24px",height:56,background:C.bg2,borderBottom:`1px solid ${C.border}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:34,height:34,background:C.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:"#fff",animation:"pulse 3s infinite",flexShrink:0}}>âœ“</div>
+          <div style={{width:34,height:34,background:C.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:"#fff",animation:"pulse 3s infinite",flexShrink:0}}>✓</div>
           <div>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,letterSpacing:3,fontWeight:700}}>Safeguards IQ</div>
             <div style={{fontSize:9,color:C.g2,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif"}}>COMPLIANCE COMMAND CENTRE</div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:7,background:"rgba(34,212,106,.08)",border:`1px solid rgba(34,212,106,.25)`,borderRadius:20,padding:"5px 14px",fontSize:11,color:C.green,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}}>
-          <Dot color={C.green} blink size={7}/> MONITORING ACTIVE Â· 16 CAMERAS
+          <Dot color={C.green} blink size={7}/> MONITORING ACTIVE · 16 CAMERAS
         </div>
         <div style={{display:"flex",gap:4}}>
           {navItems.map(n=>(
@@ -661,17 +661,17 @@ export default function App() {
         {/* CONTENT */}
         <div style={{flex:1,overflowY:"auto",padding:24}}>
 
-          {/* â”€â”€ DASHBOARD â”€â”€ */}
+          {/* ── DASHBOARD ── */}
           {page==="dashboard" && (
             <div style={{animation:"slideIn .3s ease"}}>
               {/* Alert Ticker */}
               <div style={{overflow:"hidden",background:"rgba(255,59,59,.07)",border:`1px solid rgba(255,59,59,.18)`,borderRadius:8,padding:"7px 0",marginBottom:20}}>
                 <div style={{display:"flex",gap:48,animation:"ticker 28s linear infinite",whiteSpace:"nowrap"}}>
                   {[...Array(2)].map((_,ri)=>[
-                    {t:"ðŸ”´ ALERT: No helmet â€” Zone B Welding Â· 14:23:07"},
-                    {t:"âš ï¸ Danger zone breach â€” Forklift area Â· 14:19:44"},
-                    {t:"ðŸ”´ Safety vest missing â€” Paint Shop Â· 14:15:02"},
-                    {t:"âœ… PPE compliance restored â€” Assembly A Â· 14:10:55"},
+                    {t:"🔴 ALERT: No helmet — Zone B Welding · 14:23:07"},
+                    {t:"⚠️ Danger zone breach — Forklift area · 14:19:44"},
+                    {t:"🔴 Safety vest missing — Paint Shop · 14:15:02"},
+                    {t:"✅ PPE compliance restored — Assembly A · 14:10:55"},
                   ].map((a,i)=><span key={`${ri}-${i}`} style={{fontSize:11,color:C.red,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,display:"inline-flex",alignItems:"center",gap:16}}>{a.t}<span style={{color:C.g3}}>///</span></span>))}
                 </div>
               </div>
@@ -679,25 +679,25 @@ export default function App() {
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>COMPLIANCE COMMAND CENTRE</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>PUNE AUTO PLANT Â· {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase()}</div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>PUNE AUTO PLANT · {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase()}</div>
                 </div>
-                <button onClick={()=>setPage("form18")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>ðŸ“‹ File Form 18</button>
+                <button onClick={()=>setPage("form18")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>📋 File Form 18</button>
               </div>
 
               {/* KPIs */}
               <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="PPE Compliance" value="97%" unit="Today" trend="â†‘ +4.2% vs last week" trendUp={true} color={C.green}/>
-                <KpiCard label="Active Violations" value="7" unit="Open cases" trend="â†‘ 2 new this hour" trendUp={false} color={C.red}/>
-                <KpiCard label="Cameras Online" value="16/16" unit="All operational" trend="â— All systems normal" trendUp={true} color={C.teal}/>
-                <KpiCard label="Near-Miss Events" value="3" unit="This week" trend="â†“ âˆ’2 vs last week" trendUp={true} color={C.amber}/>
-                <KpiCard label="Compliance Score" value="92" unit="/ 100 Â· Grade A" trend="â†‘ Factories Act" trendUp={true} color={C.blue}/>
+                <KpiCard label="PPE Compliance" value="97%" unit="Today" trend="↑ +4.2% vs last week" trendUp={true} color={C.green}/>
+                <KpiCard label="Active Violations" value="7" unit="Open cases" trend="↑ 2 new this hour" trendUp={false} color={C.red}/>
+                <KpiCard label="Cameras Online" value="16/16" unit="All operational" trend="● All systems normal" trendUp={true} color={C.teal}/>
+                <KpiCard label="Near-Miss Events" value="3" unit="This week" trend="↓ −2 vs last week" trendUp={true} color={C.amber}/>
+                <KpiCard label="Compliance Score" value="92" unit="/ 100 · Grade A" trend="↑ Factories Act" trendUp={true} color={C.blue}/>
               </div>
 
               {/* Row 2 */}
               <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr 1.1fr",gap:16,marginBottom:16}}>
                 {/* Bar Chart */}
                 <Card>
-                  <CardTitle>Violations by Zone â€” This Week</CardTitle>
+                  <CardTitle>Violations by Zone — This Week</CardTitle>
                   <div style={{display:"flex",alignItems:"flex-end",gap:8,height:130,padding:"0 4px"}}>
                     {ZONE_BARS.map((d,i)=>(
                       <div key={d.label} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
@@ -715,8 +715,8 @@ export default function App() {
                   <CardTitle color={C.green}>PPE Compliance Today</CardTitle>
                   <Ring pct={97}/>
                   <div style={{display:"flex",gap:16,marginTop:10,fontSize:11,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}}>
-                    <span style={{color:C.green}}>â— Pass: 1,247</span>
-                    <span style={{color:C.red}}>â— Fail: 38</span>
+                    <span style={{color:C.green}}>● Pass: 1,247</span>
+                    <span style={{color:C.red}}>● Fail: 38</span>
                   </div>
                 </Card>
                 {/* Timeline */}
@@ -764,32 +764,32 @@ export default function App() {
             </div>
           )}
 
-          {/* â”€â”€ CAMERAS â”€â”€ */}
+          {/* ── CAMERAS ── */}
           {page==="cameras" && (
             <div style={{animation:"slideIn .3s ease"}}>
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>LIVE CAMERA FEEDS</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>16 CAMERAS Â· AI DETECTION ACTIVE Â· <span style={{color:C.green}}>ALL ONLINE</span></div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>16 CAMERAS · AI DETECTION ACTIVE · <span style={{color:C.green}}>ALL ONLINE</span></div>
                 </div>
-                <button onClick={()=>toast("Clip exported","success")} style={{padding:"9px 18px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>ðŸ“¥ Export Clip</button>
+                <button onClick={()=>toast("Clip exported","success")} style={{padding:"9px 18px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>📥 Export Clip</button>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
                 {[
-                  {id:"CAM-01",loc:"Assembly A â€” Gate",alert:false},
-                  {id:"CAM-02",loc:"Assembly A â€” Mid",alert:false},
-                  {id:"CAM-03",loc:"Welding B â€” Entry",alert:false},
-                  {id:"CAM-04",loc:"Welding B â€” Bay 3",alert:true},
-                  {id:"CAM-05",loc:"Paint Shop â€” Inlet",alert:false},
-                  {id:"CAM-06",loc:"Paint Shop â€” Exit",alert:false},
-                  {id:"CAM-07",loc:"Paint Shop â€” Spray",alert:true},
+                  {id:"CAM-01",loc:"Assembly A — Gate",alert:false},
+                  {id:"CAM-02",loc:"Assembly A — Mid",alert:false},
+                  {id:"CAM-03",loc:"Welding B — Entry",alert:false},
+                  {id:"CAM-04",loc:"Welding B — Bay 3",alert:true},
+                  {id:"CAM-05",loc:"Paint Shop — Inlet",alert:false},
+                  {id:"CAM-06",loc:"Paint Shop — Exit",alert:false},
+                  {id:"CAM-07",loc:"Paint Shop — Spray",alert:true},
                   {id:"CAM-08",loc:"Forklift Bay N",alert:false},
                   {id:"CAM-09",loc:"Forklift Bay S",alert:true},
                   {id:"CAM-10",loc:"Press Room A",alert:false},
                   {id:"CAM-11",loc:"Press Room B",alert:false},
                   {id:"CAM-12",loc:"Electrical Room",alert:false},
-                  {id:"CAM-13",loc:"Store â€” Gate",alert:false},
-                  {id:"CAM-14",loc:"Store â€” Internal",alert:false},
+                  {id:"CAM-13",loc:"Store — Gate",alert:false},
+                  {id:"CAM-14",loc:"Store — Internal",alert:false},
                   {id:"CAM-15",loc:"Main Entrance",alert:false},
                   {id:"CAM-16",loc:"Emergency Exit",alert:false},
                 ].map(cam=>(
@@ -804,7 +804,7 @@ export default function App() {
                       </div>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
                         <div style={{background:"rgba(0,0,0,.7)",color:C.g1,fontSize:9,padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>{cam.loc}</div>
-                        {cam.alert && <div style={{background:"rgba(255,59,59,.85)",color:"#fff",fontSize:9,padding:"3px 8px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,animation:"blink .7s infinite"}}>âš  VIOLATION</div>}
+                        {cam.alert && <div style={{background:"rgba(255,59,59,.85)",color:"#fff",fontSize:9,padding:"3px 8px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,animation:"blink .7s infinite"}}>⚠ VIOLATION</div>}
                       </div>
                     </div>
                   </div>
@@ -813,11 +813,11 @@ export default function App() {
             </div>
           )}
 
-          {/* â”€â”€ PPE â”€â”€ */}
+          {/* ── PPE ── */}
           {page==="ppe" && (
             <div style={{animation:"slideIn .3s ease"}}>
               <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3,marginBottom:4}}>PPE COMPLIANCE TRACKER</div>
-              <div style={{fontSize:12,color:C.g2,marginBottom:20,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>REAL-TIME PERSONAL PROTECTIVE EQUIPMENT MONITORING â€” ALL ZONES</div>
+              <div style={{fontSize:12,color:C.g2,marginBottom:20,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>REAL-TIME PERSONAL PROTECTIVE EQUIPMENT MONITORING — ALL ZONES</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:20}}>
                 {PPE_TYPES.map(p=>(
                   <div key={p.name} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"16px 18px",position:"relative",overflow:"hidden"}}>
@@ -842,7 +842,7 @@ export default function App() {
                   {ZONES.map(z=><MiniBar key={z.name} label={`${z.icon} ${z.name}`} pct={z.pct} color={z.c}/>)}
                 </Card>
                 <Card>
-                  <CardTitle color={C.red}>PPE Violation Log â€” Today</CardTitle>
+                  <CardTitle color={C.red}>PPE Violation Log — Today</CardTitle>
                   <table style={{width:"100%",borderCollapse:"collapse"}}>
                     <thead><tr>{["Time","Worker","Violation","Zone","Severity","Status"].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 10px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
                     <tbody>
@@ -868,21 +868,21 @@ export default function App() {
             </div>
           )}
 
-          {/* â”€â”€ VIOLATIONS â”€â”€ */}
+          {/* ── VIOLATIONS ── */}
           {page==="violations" && (
             <div style={{animation:"slideIn .3s ease"}}>
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>VIOLATION REGISTER</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>ALL SAFETY INCIDENTS Â· FACTORIES ACT SECTION 7A COMPLIANT</div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>ALL SAFETY INCIDENTS · FACTORIES ACT SECTION 7A COMPLIANT</div>
                 </div>
                 <button onClick={()=>toast("VIO-236 created and assigned","success")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>+ Log Violation</button>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="Open" value="7" unit="Require action" trend="â†‘ 2 new today" trendUp={false} color={C.red}/>
-                <KpiCard label="Pending Review" value="4" unit="Awaiting sign-off" trend="â†’ Same as yesterday" color={C.amber}/>
-                <KpiCard label="Closed Today" value="12" unit="Resolved" trend="â†‘ +3 vs yesterday" trendUp={true} color={C.green}/>
-                <KpiCard label="This Month" value="47" unit="Total" trend="â†“ âˆ’23% vs last month" trendUp={true} color={C.blue}/>
+                <KpiCard label="Open" value="7" unit="Require action" trend="↑ 2 new today" trendUp={false} color={C.red}/>
+                <KpiCard label="Pending Review" value="4" unit="Awaiting sign-off" trend="→ Same as yesterday" color={C.amber}/>
+                <KpiCard label="Closed Today" value="12" unit="Resolved" trend="↑ +3 vs yesterday" trendUp={true} color={C.green}/>
+                <KpiCard label="This Month" value="47" unit="Total" trend="↓ −23% vs last month" trendUp={true} color={C.blue}/>
               </div>
               <Card>
                 <CardTitle>All Violations</CardTitle>
@@ -910,27 +910,27 @@ export default function App() {
             </div>
           )}
 
-          {/* â”€â”€ FORM 18 â”€â”€ */}
+          {/* ── FORM 18 ── */}
           {page==="form18" && <Form18 toast={toast}/>}
 
-          {/* â”€â”€ INSPECTION â”€â”€ */}
+          {/* ── INSPECTION ── */}
           {page==="inspection" && <InspectionPage toast={toast}/>}
 
-          {/* â”€â”€ REPORTS â”€â”€ */}
+          {/* ── REPORTS ── */}
           {page==="reports" && (
             <div style={{animation:"slideIn .3s ease"}}>
               <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3,marginBottom:4}}>COMPLIANCE REPORTS</div>
-              <div style={{fontSize:12,color:C.g2,marginBottom:24,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>AUTO-GENERATED STATUTORY REPORTS â€” ISO 45001 Â· ESIC Â· BRSR Â· FACTORIES ACT</div>
+              <div style={{fontSize:12,color:C.g2,marginBottom:24,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>AUTO-GENERATED STATUTORY REPORTS — ISO 45001 · ESIC · BRSR · FACTORIES ACT</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:20}}>
                 {[
-                  {icon:"ðŸ“‹",title:"ISO 45001 Monthly Report",desc:"OHS Management System â€” January 2024",status:"Closed",badge:"Ready to export"},
-                  {icon:"ðŸ¥",title:"ESIC Half-Yearly Return",desc:"Employee State Insurance â€” H1 2024",status:"Pending",badge:"Due in 12 days"},
-                  {icon:"ðŸ“Š",title:"SEBI BRSR Safety Data",desc:"Business Responsibility & Sustainability",status:"Closed",badge:"Ready to export"},
-                  {icon:"âš ï¸",title:"Accident Summary Report",desc:"Form 18 & 19 Register â€” 2024",status:"Closed",badge:"3 incidents filed"},
-                  {icon:"ðŸ›ï¸",title:"Shram Suvidha Portal Sync",desc:"Labour compliance â€” Ministry of Labour",status:"Pending",badge:"Sync pending"},
-                  {icon:"ðŸ“œ",title:"OSH Code 2020 Compliance",desc:"Occupational Safety Health â€” Quarterly",status:"Closed",badge:"Compliant"},
+                  {icon:"📋",title:"ISO 45001 Monthly Report",desc:"OHS Management System — January 2024",status:"Closed",badge:"Ready to export"},
+                  {icon:"🏥",title:"ESIC Half-Yearly Return",desc:"Employee State Insurance — H1 2024",status:"Pending",badge:"Due in 12 days"},
+                  {icon:"📊",title:"SEBI BRSR Safety Data",desc:"Business Responsibility & Sustainability",status:"Closed",badge:"Ready to export"},
+                  {icon:"⚠️",title:"Accident Summary Report",desc:"Form 18 & 19 Register — 2024",status:"Closed",badge:"3 incidents filed"},
+                  {icon:"🏛️",title:"Shram Suvidha Portal Sync",desc:"Labour compliance — Ministry of Labour",status:"Pending",badge:"Sync pending"},
+                  {icon:"📜",title:"OSH Code 2020 Compliance",desc:"Occupational Safety Health — Quarterly",status:"Closed",badge:"Compliant"},
                 ].map((r,i)=>(
-                  <Card key={i} style={{cursor:"pointer"}} onClick={()=>toast(`${r.title} â€” ${r.badge}`,"success")}>
+                  <Card key={i} style={{cursor:"pointer"}} onClick={()=>toast(`${r.title} — ${r.badge}`,"success")}>
                     <div style={{fontSize:32,marginBottom:12}}>{r.icon}</div>
                     <div style={{fontSize:16,fontWeight:700,color:C.white,marginBottom:6}}>{r.title}</div>
                     <div style={{fontSize:12,color:C.g2,marginBottom:14}}>{r.desc}</div>
@@ -939,13 +939,13 @@ export default function App() {
                 ))}
               </div>
               <Card>
-                <CardTitle>Annual Compliance Summary â€” FY 2024</CardTitle>
+                <CardTitle>Annual Compliance Summary — FY 2024</CardTitle>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14}}>
-                  <KpiCard label="Total Violations" value="47" trend="â†“ âˆ’23% vs last year" trendUp={true} color={C.green}/>
-                  <KpiCard label="Near-Misses" value="12" trend="â†“ âˆ’40% YoY" trendUp={true} color={C.green}/>
-                  <KpiCard label="Lost Work Days" value="18" trend="â†’ No change" color={C.amber}/>
-                  <KpiCard label="Fatalities" value="0" trend="â— Zero record maintained" trendUp={true} color={C.green}/>
-                  <KpiCard label="Compliance Rate" value="97%" trend="â†‘ +4% YoY" trendUp={true} color={C.green}/>
+                  <KpiCard label="Total Violations" value="47" trend="↓ −23% vs last year" trendUp={true} color={C.green}/>
+                  <KpiCard label="Near-Misses" value="12" trend="↓ −40% YoY" trendUp={true} color={C.green}/>
+                  <KpiCard label="Lost Work Days" value="18" trend="→ No change" color={C.amber}/>
+                  <KpiCard label="Fatalities" value="0" trend="● Zero record maintained" trendUp={true} color={C.green}/>
+                  <KpiCard label="Compliance Rate" value="97%" trend="↑ +4% YoY" trendUp={true} color={C.green}/>
                 </div>
               </Card>
             </div>

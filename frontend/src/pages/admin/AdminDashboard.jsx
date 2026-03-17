@@ -1,10 +1,10 @@
-﻿import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-/* â”€â”€â”€ FONTS & ANIMATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── FONTS & ANIMATIONS ───────────────────────────── */
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
 *{margin:0;padding:0;box-sizing:border-box}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideLeft{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
@@ -33,7 +33,7 @@ const mono  = { fontFamily:"'Share Tech Mono',monospace" };
 const syne  = { fontFamily:"'Syne',sans-serif" };
 const dm    = { fontFamily:"'DM Mono',monospace" };
 
-/* â”€â”€â”€ SHARED ATOMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── SHARED ATOMS ─────────────────────────────────── */
 function Pill({ color=T.orange, children, size=10 }) {
   return (
     <span style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"3px 10px", borderRadius:20, fontSize:size, fontWeight:700, background:`${color}18`, color, border:`1px solid ${color}35`, ...mono }}>
@@ -68,27 +68,27 @@ function Spinner() {
   return <div style={{ width:28, height:28, border:`2px solid ${T.border}`, borderTopColor:T.orange, borderRadius:"50%", animation:"spin .7s linear infinite" }} />;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ══════════════════════════════════════════════════════
    ARCHITECTURE SECTION
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+══════════════════════════════════════════════════════ */
 function ArchSection({ sysInfo }) {
   const [tab, setTab]   = useState("stack");
   const [open, setOpen] = useState(null);
 
   const STACK = [
-    { id:"camera",   icon:"ðŸ“·", label:"CAMERA LAYER",    color:T.blue,
+    { id:"camera",   icon:"📷", label:"CAMERA LAYER",    color:T.blue,
       chips:["Hikvision IP","Dahua PTZ","CP Plus","ONVIF Generic","RTSP Feed"],
-      detail:"16â€“32 cameras per plant. RTSP/ONVIF protocol. 1080p @ 4â€“8 FPS. PoE powered over CAT6. Offline buffering up to 4 hours." },
-    { id:"edge",     icon:"âš¡", label:"EDGE AI LAYER",   color:T.orange,
-      chips:["Frame Capture 4 FPS","YOLOv8 PPE Model","Confidence â‰¥ 85%","Violation Trigger","Alert Queue"],
-      detail:"Local edge server processes streams â€” no cloud dependency. < 3s detection latency. Works fully offline. GPU optional (Jetson Nano / x86 with CUDA)." },
-    { id:"backend",  icon:"âš™ï¸", label:"BACKEND API",     color:T.teal,
+      detail:"16–32 cameras per plant. RTSP/ONVIF protocol. 1080p @ 4–8 FPS. PoE powered over CAT6. Offline buffering up to 4 hours." },
+    { id:"edge",     icon:"⚡", label:"EDGE AI LAYER",   color:T.orange,
+      chips:["Frame Capture 4 FPS","YOLOv8 PPE Model","Confidence ≥ 85%","Violation Trigger","Alert Queue"],
+      detail:"Local edge server processes streams — no cloud dependency. < 3s detection latency. Works fully offline. GPU optional (Jetson Nano / x86 with CUDA)." },
+    { id:"backend",  icon:"⚙️", label:"BACKEND API",     color:T.teal,
       chips:["Node.js 22","Express 4","PostgreSQL 16","Redis 7","WebSocket"],
       detail:"50+ REST endpoints under /api/v1. JWT + Refresh token auth. Rate limiting. Real-time events over WebSocket. Razorpay payment integration." },
-    { id:"notify",   icon:"ðŸ””", label:"NOTIFICATION",    color:T.amber,
+    { id:"notify",   icon:"🔔", label:"NOTIFICATION",    color:T.amber,
       chips:["WhatsApp MSG91","SMTP Email","SMS","Dashboard Push","Form 18 Auto"],
       detail:"< 28s alert delivery from camera to WhatsApp. Multi-channel simultaneous. Factories Act 1948 Form 18 auto-filled and emailed to HSE officer." },
-    { id:"frontend", icon:"ðŸ–¥ï¸", label:"FRONTEND",        color:T.green,
+    { id:"frontend", icon:"🖥️", label:"FRONTEND",        color:T.green,
       chips:["React 18","Vite 5","Tailwind CSS","Recharts","Lucide Icons"],
       detail:"Single-page React 18 app. Real-time WebSocket dashboard. Mobile-responsive. Login/signup with 7-day trial flow. Admin portal (this screen)." },
   ];
@@ -105,14 +105,14 @@ function ArchSection({ sysInfo }) {
   ];
 
   const SERVICES = [
-    { name:"safeg-backend",   tech:"Node.js 22 + Express",  port:4000, status:"online",  icon:"âš™ï¸",  c:T.green  },
-    { name:"safeg-websocket", tech:"WS Server",             port:4000, status:"online",  icon:"ðŸ”Œ",  c:T.green  },
-    { name:"postgres",        tech:"PostgreSQL 16 Alpine",  port:5432, status:"online",  icon:"ðŸ—„ï¸",  c:T.green  },
-    { name:"redis",           tech:"Redis 7 Alpine",        port:6379, status:"online",  icon:"âš¡",  c:T.green  },
-    { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5001, status:"standby", icon:"ðŸ¤–",  c:T.amber  },
-    { name:"nginx",           tech:"Nginx 1.25 Alpine",     port:80,   status:"online",  icon:"ðŸŒ",  c:T.green  },
-    { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:5173, status:"online",  icon:"ðŸ–¥ï¸",  c:T.green  },
-    { name:"admin-portal",    tech:"React â€” this screen",   port:5173, status:"active",  icon:"ðŸ”",  c:T.teal   },
+    { name:"safeg-backend",   tech:"Node.js 22 + Express",  port:4000, status:"online",  icon:"⚙️",  c:T.green  },
+    { name:"safeg-websocket", tech:"WS Server",             port:4000, status:"online",  icon:"🔌",  c:T.green  },
+    { name:"postgres",        tech:"PostgreSQL 16 Alpine",  port:5432, status:"online",  icon:"🗄️",  c:T.green  },
+    { name:"redis",           tech:"Redis 7 Alpine",        port:6379, status:"online",  icon:"⚡",  c:T.green  },
+    { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5001, status:"standby", icon:"🤖",  c:T.amber  },
+    { name:"nginx",           tech:"Nginx 1.25 Alpine",     port:80,   status:"online",  icon:"🌐",  c:T.green  },
+    { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:5173, status:"online",  icon:"🖥️",  c:T.green  },
+    { name:"admin-portal",    tech:"React — this screen",   port:5173, status:"active",  icon:"🔐",  c:T.teal   },
   ];
 
   const tabs = [
@@ -132,10 +132,10 @@ function ArchSection({ sysInfo }) {
 
       {/* KPIs */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14, marginBottom:26 }}>
-        <KPI label="DETECTION LATENCY" value="< 3s"   sub="cam â†’ alert"         color={T.teal}   icon="âš¡" i={0} />
-        <KPI label="AI ACCURACY"       value="98.7%"  sub="PPE detection rate"  color={T.green}  icon="ðŸŽ¯" i={1} />
-        <KPI label="ALERT DELIVERY"    value="< 28s"  sub="cam â†’ WhatsApp"      color={T.orange} icon="ðŸ””" i={2} />
-        <KPI label="UPTIME SLA"        value="99.9%"  sub="guaranteed"          color={T.blue}   icon="â˜ï¸" i={3} />
+        <KPI label="DETECTION LATENCY" value="< 3s"   sub="cam → alert"         color={T.teal}   icon="⚡" i={0} />
+        <KPI label="AI ACCURACY"       value="98.7%"  sub="PPE detection rate"  color={T.green}  icon="🎯" i={1} />
+        <KPI label="ALERT DELIVERY"    value="< 28s"  sub="cam → WhatsApp"      color={T.orange} icon="🔔" i={2} />
+        <KPI label="UPTIME SLA"        value="99.9%"  sub="guaranteed"          color={T.blue}   icon="☁️" i={3} />
       </div>
 
       {/* Tab bar */}
@@ -159,7 +159,7 @@ function ArchSection({ sysInfo }) {
                 <div style={{ display:"flex", gap:6, flexWrap:"wrap", flex:1 }}>
                   {layer.chips.map(c => <Pill key={c} color={layer.color} size={10}>{c}</Pill>)}
                 </div>
-                <span style={{ color:T.g2, fontSize:12 }}>{open===i?"â–²":"â–¼"}</span>
+                <span style={{ color:T.g2, fontSize:12 }}>{open===i?"▲":"▼"}</span>
               </div>
               {open === i && (
                 <div style={{ borderTop:`1px solid ${T.border}`, marginTop:14, paddingTop:14, fontSize:13, color:T.g1, lineHeight:1.8, animation:"fadeUp .3s ease both" }}>
@@ -178,7 +178,7 @@ function ArchSection({ sysInfo }) {
             <div key={f.n} style={{ display:"grid", gridTemplateColumns:"36px 180px 28px 1fr 120px 100px", alignItems:"center", gap:14, background:T.card, border:`1px solid ${T.border}`, borderRadius:12, padding:"14px 18px", animation:`fadeUp .35s ease ${i*.04}s both` }}>
               <span style={{ fontSize:11, color:T.g2, ...mono }}>{f.n}</span>
               <span style={{ fontSize:13, color:T.white, fontWeight:600 }}>{f.from}</span>
-              <span style={{ textAlign:"center", fontSize:18, color:f.c }}>â†’</span>
+              <span style={{ textAlign:"center", fontSize:18, color:f.c }}>→</span>
               <span style={{ fontSize:13, color:T.white, fontWeight:600 }}>{f.to}</span>
               <Pill color={f.c} size={10}>{f.proto}</Pill>
               <span style={{ fontSize:12, color:T.g1, textAlign:"right", ...mono }}>{f.lat}</span>
@@ -195,7 +195,7 @@ function ArchSection({ sysInfo }) {
               <span style={{ fontSize:26 }}>{s.icon}</span>
               <div style={{ flex:1 }}>
                 <div style={{ ...mono, fontSize:13, color:T.white, fontWeight:600 }}>{s.name}</div>
-                <div style={{ fontSize:11, color:T.g1, marginTop:3 }}>{s.tech} Â· :{s.port}</div>
+                <div style={{ fontSize:11, color:T.g1, marginTop:3 }}>{s.tech} · :{s.port}</div>
               </div>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <Dot color={s.c} animate={s.status==="online"||s.status==="active"} />
@@ -211,7 +211,7 @@ function ArchSection({ sysInfo }) {
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
           {/* Server */}
           <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:22 }}>
-            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>ðŸ–¥ï¸ Server Runtime</div>
+            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>🖥️ Server Runtime</div>
             {sysInfo ? (
               Object.entries(sysInfo.server).map(([k,v]) => (
                 <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:`1px solid ${T.border}`, fontSize:13 }}>
@@ -225,7 +225,7 @@ function ArchSection({ sysInfo }) {
           </div>
           {/* App */}
           <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:22 }}>
-            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>ðŸ“Š Application Stats</div>
+            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>📊 Application Stats</div>
             {sysInfo ? (
               Object.entries(sysInfo.app).map(([k,v]) => (
                 <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:`1px solid ${T.border}`, fontSize:13 }}>
@@ -243,9 +243,9 @@ function ArchSection({ sysInfo }) {
   );
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ══════════════════════════════════════════════════════
    PAYMENT SECTION
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+══════════════════════════════════════════════════════ */
 function PaySection({ token }) {
   const [tab,      setTab]      = useState("overview");
   const [stats,    setStats]    = useState(null);
@@ -292,7 +292,7 @@ function PaySection({ token }) {
   };
 
   const STATUS_C = { captured:T.green, created:T.amber, failed:T.red, refunded:T.blue, refund_pending:T.amber };
-  const fmt      = (paise) => `â‚¹${((paise||0)/100).toLocaleString("en-IN")}`;
+  const fmt      = (paise) => `₹${((paise||0)/100).toLocaleString("en-IN")}`;
 
   const tabs = [
     { id:"overview",       label:"OVERVIEW"       },
@@ -309,23 +309,23 @@ function PaySection({ token }) {
           <div style={{ ...syne, fontSize:22, fontWeight:800, color:T.white }}>Payment Management</div>
           <div style={{ fontSize:13, color:T.g1, marginTop:4 }}>Razorpay transactions, MRR, subscriptions and refunds</div>
         </div>
-        <button onClick={load} style={{ ...mono, background:`${T.teal}12`, border:`1px solid ${T.teal}35`, borderRadius:10, padding:"8px 16px", color:T.teal, fontSize:11, cursor:"pointer", fontWeight:700 }}>â†» REFRESH</button>
+        <button onClick={load} style={{ ...mono, background:`${T.teal}12`, border:`1px solid ${T.teal}35`, borderRadius:10, padding:"8px 16px", color:T.teal, fontSize:11, cursor:"pointer", fontWeight:700 }}>↻ REFRESH</button>
       </div>
 
       {/* Flash message */}
       {msg && (
         <div style={{ background:msg.ok?`${T.green}12`:`${T.red}12`, border:`1px solid ${msg.ok?T.green:T.red}35`, borderRadius:10, padding:"11px 16px", color:msg.ok?T.green:T.red, fontSize:13, marginBottom:20, display:"flex", justifyContent:"space-between" }}>
-          {msg.ok?"âœ…":"âš "} {msg.text}
-          <button onClick={()=>setMsg(null)} style={{ background:"none",border:"none",color:"inherit",cursor:"pointer",fontSize:14 }}>âœ•</button>
+          {msg.ok?"✅":"⚠"} {msg.text}
+          <button onClick={()=>setMsg(null)} style={{ background:"none",border:"none",color:"inherit",cursor:"pointer",fontSize:14 }}>✕</button>
         </div>
       )}
 
       {/* KPIs */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14, marginBottom:26 }}>
-        <KPI label="TOTAL REVENUE"   value={stats?fmt(stats.totalRevenue):"â€”"}   sub="all time (excl. GST)"  color={T.green}  icon="ðŸ’°" i={0} />
-        <KPI label="THIS MONTH"      value={stats?fmt(stats.monthRevenue):"â€”"}   sub="month to date"         color={T.teal}   icon="ðŸ“ˆ" i={1} />
-        <KPI label="ACTIVE PLANS"    value={stats?.activePlans   ?? "â€”"}          sub="paying customers"      color={T.orange} icon="âœ…" i={2} />
-        <KPI label="PENDING REFUNDS" value={stats?.pendingRefunds ?? "â€”"}         sub="action required"       color={T.red}    icon="â†©ï¸" i={3} />
+        <KPI label="TOTAL REVENUE"   value={stats?fmt(stats.totalRevenue):"—"}   sub="all time (excl. GST)"  color={T.green}  icon="💰" i={0} />
+        <KPI label="THIS MONTH"      value={stats?fmt(stats.monthRevenue):"—"}   sub="month to date"         color={T.teal}   icon="📈" i={1} />
+        <KPI label="ACTIVE PLANS"    value={stats?.activePlans   ?? "—"}          sub="paying customers"      color={T.orange} icon="✅" i={2} />
+        <KPI label="PENDING REFUNDS" value={stats?.pendingRefunds ?? "—"}         sub="action required"       color={T.red}    icon="↩️" i={3} />
       </div>
 
       {/* Tabs */}
@@ -339,7 +339,7 @@ function PaySection({ token }) {
         <div style={{ display:"flex", justifyContent:"center", alignItems:"center", height:200, gap:14, color:T.g1 }}><Spinner/>Loading payment data...</div>
       ) : (
         <>
-          {/* â”€â”€ OVERVIEW â”€â”€ */}
+          {/* ── OVERVIEW ── */}
           {tab === "overview" && (
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
               {/* Revenue by plan */}
@@ -356,7 +356,7 @@ function PaySection({ token }) {
                     <div key={key} style={{ marginBottom:16 }}>
                       <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, marginBottom:6 }}>
                         <span style={{ color:T.g1 }}>{label}</span>
-                        <span style={{ color:T.white, ...mono }}>{fmt(val)} Â· {pct}%</span>
+                        <span style={{ color:T.white, ...mono }}>{fmt(val)} · {pct}%</span>
                       </div>
                       <div style={{ height:5, background:T.border, borderRadius:3, overflow:"hidden" }}>
                         <div style={{ height:"100%", width:`${pct}%`, background:color, borderRadius:3 }} />
@@ -372,8 +372,8 @@ function PaySection({ token }) {
                 {payments.slice(0,7).map((p, i) => (
                   <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"9px 0", borderBottom:`1px solid ${T.border}` }}>
                     <div>
-                      <div style={{ fontSize:13, color:T.white, fontWeight:600 }}>{p.customer_name || "â€”"}</div>
-                      <div style={{ fontSize:11, color:T.g1, ...mono }}>{p.plan_id} Â· {p.invoice_no}</div>
+                      <div style={{ fontSize:13, color:T.white, fontWeight:600 }}>{p.customer_name || "—"}</div>
+                      <div style={{ fontSize:11, color:T.g1, ...mono }}>{p.plan_id} · {p.invoice_no}</div>
                     </div>
                     <div style={{ textAlign:"right" }}>
                       <div style={{ fontSize:13, color:T.green, fontWeight:700, ...mono }}>{fmt(p.total_amount)}</div>
@@ -385,7 +385,7 @@ function PaySection({ token }) {
             </div>
           )}
 
-          {/* â”€â”€ TRANSACTIONS â”€â”€ */}
+          {/* ── TRANSACTIONS ── */}
           {tab === "transactions" && (
             <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, overflow:"hidden" }}>
               <div style={{ overflowX:"auto" }}>
@@ -401,13 +401,13 @@ function PaySection({ token }) {
                     {payments.map((p, i) => (
                       <tr key={i} style={{ borderTop:`1px solid ${T.border}` }}>
                         <td style={{ padding:"12px 14px", fontSize:11, color:T.teal, ...mono, whiteSpace:"nowrap" }}>{p.invoice_no||`INV-${i+1}`}</td>
-                        <td style={{ padding:"12px 14px", fontSize:13, color:T.white, maxWidth:160, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{p.customer_name||"â€”"}</td>
-                        <td style={{ padding:"12px 14px" }}><Pill color={T.orange}>{p.plan_id||"â€”"}</Pill></td>
-                        <td style={{ padding:"12px 14px", fontSize:13, color:T.g1, textAlign:"center" }}>{p.camera_count||"â€”"}</td>
+                        <td style={{ padding:"12px 14px", fontSize:13, color:T.white, maxWidth:160, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{p.customer_name||"—"}</td>
+                        <td style={{ padding:"12px 14px" }}><Pill color={T.orange}>{p.plan_id||"—"}</Pill></td>
+                        <td style={{ padding:"12px 14px", fontSize:13, color:T.g1, textAlign:"center" }}>{p.camera_count||"—"}</td>
                         <td style={{ padding:"12px 14px", fontSize:13, color:T.green, fontWeight:700, ...mono }}>{fmt(p.total_amount)}</td>
                         <td style={{ padding:"12px 14px", fontSize:12, color:T.g2, ...mono }}>{fmt(p.gst_amount)}</td>
-                        <td style={{ padding:"12px 14px" }}><Pill color={STATUS_C[p.status]||T.g2}>{p.status||"â€”"}</Pill></td>
-                        <td style={{ padding:"12px 14px", fontSize:11, color:T.g1, ...mono, whiteSpace:"nowrap" }}>{p.created_at?new Date(p.created_at).toLocaleDateString("en-IN"):"â€”"}</td>
+                        <td style={{ padding:"12px 14px" }}><Pill color={STATUS_C[p.status]||T.g2}>{p.status||"—"}</Pill></td>
+                        <td style={{ padding:"12px 14px", fontSize:11, color:T.g1, ...mono, whiteSpace:"nowrap" }}>{p.created_at?new Date(p.created_at).toLocaleDateString("en-IN"):"—"}</td>
                         <td style={{ padding:"12px 14px" }}>
                           {p.status === "captured" && (
                             <button onClick={() => setModal(p)} style={{ background:`${T.red}15`, border:`1px solid ${T.red}35`, borderRadius:6, padding:"4px 10px", color:T.red, fontSize:10, cursor:"pointer", ...mono, fontWeight:700 }}>REFUND</button>
@@ -421,13 +421,13 @@ function PaySection({ token }) {
             </div>
           )}
 
-          {/* â”€â”€ SUBSCRIPTIONS â”€â”€ */}
+          {/* ── SUBSCRIPTIONS ── */}
           {tab === "subscriptions" && (
             <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }}>
               {[
-                { key:"starter",      label:"STARTER",      color:T.blue,   price:"â‚¹2,500/cam/mo"   },
-                { key:"professional", label:"PROFESSIONAL",  color:T.orange, price:"â‚¹2,000/cam/mo"   },
-                { key:"enterprise",   label:"ENTERPRISE",    color:T.teal,   price:"â‚¹1,600/cam/mo"   },
+                { key:"starter",      label:"STARTER",      color:T.blue,   price:"₹2,500/cam/mo"   },
+                { key:"professional", label:"PROFESSIONAL",  color:T.orange, price:"₹2,000/cam/mo"   },
+                { key:"enterprise",   label:"ENTERPRISE",    color:T.teal,   price:"₹1,600/cam/mo"   },
               ].map(({ key, label, color, price }) => (
                 <div key={key} style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:24 }}>
                   <div style={{ ...syne, fontSize:16, fontWeight:800, color, marginBottom:4 }}>{label}</div>
@@ -445,14 +445,14 @@ function PaySection({ token }) {
             </div>
           )}
 
-          {/* â”€â”€ CUSTOMERS â”€â”€ */}
+          {/* ── CUSTOMERS ── */}
           {tab === "customers" && (
             <CustomerTable token={token} />
           )}
         </>
       )}
 
-      {/* â”€â”€ REFUND MODAL â”€â”€ */}
+      {/* ── REFUND MODAL ── */}
       {modal && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.75)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:200 }}>
           <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:18, padding:34, width:420, animation:"fadeUp .3s ease both" }}>
@@ -475,12 +475,12 @@ function PaySection({ token }) {
               ))}
             </div>
             <div style={{ background:`${T.amber}10`, border:`1px solid ${T.amber}30`, borderRadius:10, padding:"10px 14px", fontSize:12, color:T.amber, marginBottom:22 }}>
-              âš  This will initiate a full refund via Razorpay. Action cannot be undone.
+              ⚠ This will initiate a full refund via Razorpay. Action cannot be undone.
             </div>
             <div style={{ display:"flex", gap:12 }}>
               <button onClick={() => setModal(null)} style={{ flex:1, background:"transparent", border:`1px solid ${T.border}`, borderRadius:10, padding:"12px", color:T.g1, fontSize:13, fontWeight:700, cursor:"pointer" }}>Cancel</button>
               <button onClick={doRefund} disabled={refunding} style={{ flex:1, background:`linear-gradient(135deg,${T.red},#FF5A5A)`, border:"none", borderRadius:10, padding:"12px", color:"#fff", fontSize:13, fontWeight:800, cursor:refunding?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
-                {refunding?<><Spinner/>Processing...</>:"Confirm Refund â‚¹"}
+                {refunding?<><Spinner/>Processing...</>:"Confirm Refund ₹"}
               </button>
             </div>
           </div>
@@ -490,7 +490,7 @@ function PaySection({ token }) {
   );
 }
 
-/* â”€â”€ CUSTOMER TABLE (sub-component of PaySection) â”€â”€â”€ */
+/* ── CUSTOMER TABLE (sub-component of PaySection) ─── */
 function CustomerTable({ token }) {
   const [customers, setCustomers] = useState([]);
   const [loading,   setLoading]   = useState(true);
@@ -520,11 +520,11 @@ function CustomerTable({ token }) {
           {customers.map((c, i) => (
             <tr key={i} style={{ borderTop:`1px solid ${T.border}` }}>
               <td style={{ padding:"12px 14px", fontSize:13, color:T.white, fontWeight:600, maxWidth:180, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.company_name}</td>
-              <td style={{ padding:"12px 14px" }}><Pill color={T.orange}>{c.plan_id||"â€”"}</Pill></td>
-              <td style={{ padding:"12px 14px", fontSize:13, color:T.g1, textAlign:"center" }}>{c.camera_count||"â€”"}</td>
-              <td style={{ padding:"12px 14px" }}><Pill color={STATUS_C[c.subscription_status]||T.g2}>{c.subscription_status||"â€”"}</Pill></td>
-              <td style={{ padding:"12px 14px", fontSize:11, color:T.amber, ...mono }}>{c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString("en-IN"):"â€”"}</td>
-              <td style={{ padding:"12px 14px", fontSize:11, color:T.g1, ...mono }}>{c.created_at?new Date(c.created_at).toLocaleDateString("en-IN"):"â€”"}</td>
+              <td style={{ padding:"12px 14px" }}><Pill color={T.orange}>{c.plan_id||"—"}</Pill></td>
+              <td style={{ padding:"12px 14px", fontSize:13, color:T.g1, textAlign:"center" }}>{c.camera_count||"—"}</td>
+              <td style={{ padding:"12px 14px" }}><Pill color={STATUS_C[c.subscription_status]||T.g2}>{c.subscription_status||"—"}</Pill></td>
+              <td style={{ padding:"12px 14px", fontSize:11, color:T.amber, ...mono }}>{c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString("en-IN"):"—"}</td>
+              <td style={{ padding:"12px 14px", fontSize:11, color:T.g1, ...mono }}>{c.created_at?new Date(c.created_at).toLocaleDateString("en-IN"):"—"}</td>
               <td style={{ padding:"12px 14px", fontSize:13, color:T.teal, textAlign:"center" }}>{c.plant_count||0}</td>
             </tr>
           ))}
@@ -534,7 +534,7 @@ function CustomerTable({ token }) {
   );
 }
 
-/* â”€â”€ MOCK DATA (fallback when API not ready) â”€â”€â”€â”€â”€â”€â”€ */
+/* ── MOCK DATA (fallback when API not ready) ─────── */
 const MOCK_STATS = {
   totalRevenue:4850000, monthRevenue:960000, activePlans:12, pendingRefunds:2,
   byPlan:{ enterprise:2400000, professional:1800000, starter:650000 },
@@ -561,9 +561,9 @@ const MOCK_CUSTOMERS = Array.from({ length:6 }, (_, i) => ({
   plant_count:[2,3,1,2,4,1][i],
 }));
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ══════════════════════════════════════════════════════
    ADMIN LOGIN SCREEN
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+══════════════════════════════════════════════════════ */
 function AdminLogin({ onLogin }) {
   const [form, setForm]   = useState({ email:"", password:"" });
   const [err,  setErr]    = useState("");
@@ -577,7 +577,7 @@ function AdminLogin({ onLogin }) {
       const res = await axios.post("/api/v1/auth/login", form);
       const { user, accessToken } = res.data.data;
       if (!["superadmin","customer_admin"].includes(user.role)) {
-        setErr("Admin access only â€” contact your system administrator"); return;
+        setErr("Admin access only — contact your system administrator"); return;
       }
       localStorage.setItem("safeg_admin_token", accessToken);
       localStorage.setItem("safeg_admin",       JSON.stringify(user));
@@ -599,26 +599,26 @@ function AdminLogin({ onLogin }) {
       <div style={{ width:400, background:T.card, border:`1px solid ${T.border}`, borderRadius:22, padding:42, position:"relative", zIndex:1, animation:"fadeUp .55s ease both" }}>
         {/* Logo */}
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
-          <div style={{ width:42, height:42, borderRadius:11, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>âš™ï¸</div>
+          <div style={{ width:42, height:42, borderRadius:11, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>⚙️</div>
           <div>
             <div style={{ ...syne, fontSize:16, fontWeight:800, color:T.white, letterSpacing:1.5 }}>ADMIN PORTAL</div>
-            <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>Safeguards IQ Â· INTERNAL</div>
+            <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>Safeguards IQ · INTERNAL</div>
           </div>
         </div>
 
         {/* Warning strip */}
         <div style={{ background:`${T.red}0E`, border:`1px solid ${T.red}25`, borderRadius:10, padding:"9px 14px", fontSize:11, color:`${T.red}CC`, marginBottom:28, marginTop:22, display:"flex", gap:8, alignItems:"center", ...mono }}>
-          ðŸ”’ RESTRICTED Â· AUTHORISED PERSONNEL ONLY
+          🔒 RESTRICTED · AUTHORISED PERSONNEL ONLY
         </div>
 
         {err && (
-          <div style={{ background:`${T.red}10`, border:`1px solid ${T.red}30`, borderRadius:10, padding:"10px 14px", color:T.red, fontSize:13, marginBottom:18 }}>âš  {err}</div>
+          <div style={{ background:`${T.red}10`, border:`1px solid ${T.red}30`, borderRadius:10, padding:"10px 14px", color:T.red, fontSize:13, marginBottom:18 }}>⚠ {err}</div>
         )}
 
         <form onSubmit={submit}>
           {[
             { key:"email",    label:"ADMIN EMAIL",  type:"email",    ph:"admin@syyaimsafeg.ai" },
-            { key:"password", label:"PASSWORD",     type:"password", ph:"â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" },
+            { key:"password", label:"PASSWORD",     type:"password", ph:"••••••••••••" },
           ].map(({ key, label, type, ph }) => (
             <div key={key} style={{ marginBottom:16 }}>
               <label style={{ fontSize:9, color:T.g1, letterSpacing:2.5, display:"block", marginBottom:7, fontWeight:700, ...mono }}>{label}</label>
@@ -628,7 +628,7 @@ function AdminLogin({ onLogin }) {
           ))}
 
           <button type="submit" disabled={load} style={{ width:"100%", marginTop:8, background:load?T.g2:`linear-gradient(135deg,${T.orange},${T.orng2})`, border:"none", borderRadius:11, padding:"14px", color:"#fff", fontSize:14, fontWeight:800, cursor:load?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
-            {load ? <><Spinner />Authenticating...</> : "Access Admin Portal â†’"}
+            {load ? <><Spinner />Authenticating...</> : "Access Admin Portal →"}
           </button>
         </form>
 
@@ -645,24 +645,24 @@ function AdminLogin({ onLogin }) {
           </div>
           <button onClick={() => setForm({ email:"suresh@puneauto.com", password:"Demo@SafeG2024!" })}
             style={{ width:"100%", background:`${T.teal}18`, border:`1px solid ${T.teal}35`, borderRadius:8, padding:"8px", color:T.teal, fontSize:11, fontWeight:700, cursor:"pointer", ...mono, letterSpacing:1 }}>
-            âš¡ AUTOFILL DEMO CREDENTIALS
+            ⚡ AUTOFILL DEMO CREDENTIALS
           </button>
         </div>
 
         <div style={{ textAlign:"center", marginTop:16 }}>
-          <button onClick={() => navigate("/login")} style={{ background:"none", border:"none", color:T.g2, fontSize:12, cursor:"pointer" }}>â† Back to main app</button>
+          <button onClick={() => navigate("/login")} style={{ background:"none", border:"none", color:T.g2, fontSize:12, cursor:"pointer" }}>← Back to main app</button>
         </div>
       </div>
     </div>
   );
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ══════════════════════════════════════════════════════
    ROOT ADMIN DASHBOARD
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+══════════════════════════════════════════════════════ */
 const NAV = [
-  { id:"architecture", label:"Architecture", icon:"ðŸ—ºï¸" },
-  { id:"payments",     label:"Payments",     icon:"ðŸ’³" },
+  { id:"architecture", label:"Architecture", icon:"🗺️" },
+  { id:"payments",     label:"Payments",     icon:"💳" },
 ];
 
 export default function AdminDashboard() {
@@ -691,12 +691,12 @@ export default function AdminDashboard() {
       <style>{CSS}</style>
       <div style={{ display:"flex", minHeight:"100vh", background:T.bg }}>
 
-        {/* â”€â”€ SIDEBAR â”€â”€ */}
+        {/* ── SIDEBAR ── */}
         <div style={{ width:220, background:T.bg2, borderRight:`1px solid ${T.border}`, display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", flexShrink:0 }}>
           {/* Logo */}
           <div style={{ padding:"22px 20px", borderBottom:`1px solid ${T.border}` }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:36, height:36, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>âš™ï¸</div>
+              <div style={{ width:36, height:36, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>⚙️</div>
               <div>
                 <div style={{ ...syne, fontSize:13, fontWeight:800, color:T.white, letterSpacing:1.5 }}>ADMIN</div>
                 <div style={{ fontSize:9, color:T.g2, letterSpacing:2.5, ...mono }}>INTERNAL PORTAL</div>
@@ -743,7 +743,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* â”€â”€ MAIN CONTENT â”€â”€ */}
+        {/* ── MAIN CONTENT ── */}
         <div style={{ flex:1, overflowY:"auto" }}>
           {/* Topbar */}
           <div style={{ padding:"14px 28px", borderBottom:`1px solid ${T.border}`, background:T.bg2, position:"sticky", top:0, zIndex:50, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
@@ -751,7 +751,7 @@ export default function AdminDashboard() {
               {NAV.find(n=>n.id===section)?.icon} {NAV.find(n=>n.id===section)?.label}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-              {sysInfo && <span style={{ fontSize:11, color:T.g1, ...mono }}>Node {sysInfo.server.nodeVersion} Â· {sysInfo.server.memUsedMB}MB</span>}
+              {sysInfo && <span style={{ fontSize:11, color:T.g1, ...mono }}>Node {sysInfo.server.nodeVersion} · {sysInfo.server.memUsedMB}MB</span>}
               <Dot color={T.green} animate />
               <span style={{ fontSize:10, color:T.green, ...mono }}>SYSTEM ONLINE</span>
               <Pill color={T.orange}>ADMIN</Pill>
