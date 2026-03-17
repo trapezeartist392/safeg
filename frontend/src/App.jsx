@@ -19,9 +19,9 @@ function PrivateRoute({ user, children }) {
 
 function AppNav({ user, onLogout }) {
   const navItems = [
-    { to: "/dashboard",  label: "ðŸ“¹ Safety Monitor" },
-    { to: "/compliance", label: "ðŸ›¡ï¸ Compliance"     },
-    { to: "/billing",    label: "ðŸ§¾ Billing"        },
+    { to: "/dashboard",  label: "Safety Monitor" },
+    { to: "/compliance", label: "Compliance"     },
+    { to: "/billing",    label: "Billing"        },
   ];
   return (
     <nav style={{ background:T.nav, borderBottom:`1px solid ${T.border}`, padding:"0 24px", display:"flex", alignItems:"center", gap:4, overflowX:"auto", position:"sticky", top:0, zIndex:100 }}>
