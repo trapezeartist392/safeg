@@ -28,7 +28,7 @@ build/
 venv/
 env/
 
-# AI Models — large files not needed in git
+# AI Models ï¿½ large files not needed in git
 ai/*.pt
 ai/runs/
 ai/Construction-Site-Safety-1/
@@ -65,3 +65,4 @@ backend/evidence/
 # Cache
 .cache/
 ai/.cache/
+backend/.env
