@@ -34,7 +34,8 @@ const onboardingRoutes  = require('./routes/onboarding.routes');
 const healthRoutes      = require('./routes/health.routes');
 const paymentRoutes     = require('./routes/payment.routes');
 const adminRoutes       = require('./routes/admin.routes');
-
+const discoveryRoutes = require('./routes/camera.discovery.routes');
+const aiRoutes = require('./routes/ai.routes');
 const app = express();
 
 // ── Security
@@ -43,6 +44,9 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000','http://localhost:5173'],
   credentials: true,
 }));
+
+//camera discovery endpoint needs to be public (for on-prem deployments), so we mount it before auth middleware
+app.use('/api/v1/cameras', discoveryRoutes);
 
 // ── Rate limiting
 const limiter = rateLimit({
@@ -67,6 +71,9 @@ app.use(morgan('combined', {
 
 // ── Request ID (every request gets a traceable ID)
 app.use(requestId);
+
+// Mount in backend app.js
+app.use('/api/v1/ai', aiRoutes);
 
 // ── Swagger Docs
 try {

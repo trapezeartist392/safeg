@@ -230,3 +230,15 @@
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
     at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)
+2026-03-26 14:44:03 [error]: insert or update on table "violations" violates foreign key constraint "violations_camera_id_fkey"
+2026-03-26 14:49:14 [error]: insert or update on table "violations" violates foreign key constraint "violations_camera_id_fkey"
+2026-03-26 15:03:18 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:04:06 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:11:08 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:14:32 [error]: AI stream start error: connect ECONNREFUSED ::1:5002
+2026-03-26 15:18:56 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-30 10:26:08 [error]: Error: connect ECONNREFUSED ::1:5432
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
+    at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)

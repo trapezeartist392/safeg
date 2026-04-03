@@ -339,3 +339,218 @@
 2026-03-17 12:33:08 [info]: 🚀 SafeG AI Backend running on port 4000
 2026-03-17 12:33:08 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
 2026-03-17 12:33:08 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-20 15:24:28 [info]: ✅ PostgreSQL connected
+2026-03-20 15:24:28 [info]: ✅ Redis connected
+2026-03-20 15:24:28 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-20 15:24:28 [info]: ✅ WebSocket server initialised
+2026-03-20 15:24:28 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-20 15:24:28 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-20 15:24:28 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-23 15:00:50 [info]: ✅ PostgreSQL connected
+2026-03-23 15:00:50 [info]: ✅ Redis connected
+2026-03-23 15:00:50 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-23 15:00:50 [info]: ✅ WebSocket server initialised
+2026-03-23 15:00:50 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-23 15:00:50 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-23 15:00:50 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-23 15:01:30 [info]: SIGINT received — shutting down gracefully
+2026-03-23 15:01:45 [info]: ✅ PostgreSQL connected
+2026-03-23 15:01:45 [info]: ✅ Redis connected
+2026-03-23 15:01:45 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-23 15:01:45 [info]: ✅ WebSocket server initialised
+2026-03-23 15:01:45 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-23 15:01:45 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-23 15:01:45 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-23 15:43:31 [info]: ✅ PostgreSQL connected
+2026-03-23 15:43:31 [info]: ✅ Redis connected
+2026-03-23 15:43:31 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-23 15:43:31 [info]: ✅ WebSocket server initialised
+2026-03-23 15:43:31 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-23 15:43:31 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-23 15:43:31 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-23 15:45:07 [info]: SIGINT received — shutting down gracefully
+2026-03-23 15:45:16 [info]: ✅ PostgreSQL connected
+2026-03-23 15:45:16 [info]: ✅ Redis connected
+2026-03-23 15:45:16 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-23 15:45:16 [info]: ✅ WebSocket server initialised
+2026-03-23 15:45:17 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-23 15:45:17 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-23 15:45:17 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-23 17:19:20 [info]: ✅ PostgreSQL connected
+2026-03-23 17:19:20 [info]: ✅ Redis connected
+2026-03-23 17:19:20 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-23 17:19:20 [info]: ✅ WebSocket server initialised
+2026-03-23 17:19:20 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-23 17:19:20 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-23 17:19:20 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-23 17:31:38 [info]: ✅ PostgreSQL connected
+2026-03-23 17:31:38 [info]: ✅ Redis connected
+2026-03-23 17:31:38 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-23 17:31:38 [info]: ✅ WebSocket server initialised
+2026-03-23 17:31:38 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-23 17:31:38 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-23 17:31:38 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 11:23:58 [info]: ✅ PostgreSQL connected
+2026-03-26 11:23:58 [info]: ✅ Redis connected
+2026-03-26 11:23:58 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 11:23:58 [info]: ✅ WebSocket server initialised
+2026-03-26 11:23:58 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 11:23:58 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 11:23:58 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 11:26:46 [info]: SIGINT received — shutting down gracefully
+2026-03-26 11:26:59 [info]: ✅ PostgreSQL connected
+2026-03-26 11:26:59 [info]: ✅ Redis connected
+2026-03-26 11:26:59 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 11:26:59 [info]: ✅ WebSocket server initialised
+2026-03-26 11:26:59 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 11:26:59 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 11:26:59 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 11:40:40 [info]: ✅ PostgreSQL connected
+2026-03-26 11:40:40 [info]: ✅ Redis connected
+2026-03-26 11:40:40 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 11:40:40 [info]: ✅ WebSocket server initialised
+2026-03-26 11:40:40 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 11:40:40 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 11:40:40 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 14:21:52 [info]: ✅ PostgreSQL connected
+2026-03-26 14:21:52 [info]: ✅ Redis connected
+2026-03-26 14:21:52 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 14:21:52 [info]: ✅ WebSocket server initialised
+2026-03-26 14:21:52 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 14:21:52 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 14:21:52 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 14:31:06 [info]: ✅ PostgreSQL connected
+2026-03-26 14:31:06 [info]: ✅ Redis connected
+2026-03-26 14:31:06 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 14:31:06 [info]: ✅ WebSocket server initialised
+2026-03-26 14:31:06 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 14:31:06 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 14:31:06 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 14:43:54 [info]: Running migrations...
+2026-03-26 14:43:54 [info]: All tables, indexes, triggers and views created successfully
+2026-03-26 14:44:02 [info]: Seeding demo data...
+2026-03-26 14:44:03 [error]: insert or update on table "violations" violates foreign key constraint "violations_camera_id_fkey"
+2026-03-26 14:45:12 [info]: Running migrations...
+2026-03-26 14:45:12 [info]: All tables, indexes, triggers and views created successfully
+2026-03-26 14:49:06 [info]: Running migrations...
+2026-03-26 14:49:07 [info]: All tables, indexes, triggers and views created successfully
+2026-03-26 14:49:14 [info]: Seeding demo data...
+2026-03-26 14:49:14 [error]: insert or update on table "violations" violates foreign key constraint "violations_camera_id_fkey"
+2026-03-26 15:03:18 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:04:06 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:11:08 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:13:41 [info]: ✅ PostgreSQL connected
+2026-03-26 15:13:41 [info]: ✅ Redis connected
+2026-03-26 15:13:41 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:13:41 [info]: ✅ WebSocket server initialised
+2026-03-26 15:13:41 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:13:41 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:13:41 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:14:32 [error]: AI stream start error: connect ECONNREFUSED ::1:5002
+2026-03-26 15:17:46 [info]: ✅ PostgreSQL connected
+2026-03-26 15:17:46 [info]: ✅ Redis connected
+2026-03-26 15:17:46 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:17:46 [info]: ✅ WebSocket server initialised
+2026-03-26 15:17:46 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:17:46 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:17:46 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:18:56 [error]: AI stream start error: connect ECONNREFUSED ::1:5001
+2026-03-26 15:36:36 [info]: ✅ PostgreSQL connected
+2026-03-26 15:36:36 [info]: ✅ Redis connected
+2026-03-26 15:36:36 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:36:36 [info]: ✅ WebSocket server initialised
+2026-03-26 15:36:36 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:36:36 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:36:36 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:49:40 [info]: ✅ PostgreSQL connected
+2026-03-26 15:49:40 [info]: ✅ Redis connected
+2026-03-26 15:49:40 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:49:40 [info]: ✅ WebSocket server initialised
+2026-03-26 15:49:40 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:49:40 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:49:40 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:50:02 [info]: ✅ PostgreSQL connected
+2026-03-26 15:50:02 [info]: ✅ Redis connected
+2026-03-26 15:50:02 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:50:02 [info]: ✅ WebSocket server initialised
+2026-03-26 15:50:03 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:50:03 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:50:03 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:50:19 [info]: ✅ PostgreSQL connected
+2026-03-26 15:50:19 [info]: ✅ Redis connected
+2026-03-26 15:50:19 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:50:19 [info]: ✅ WebSocket server initialised
+2026-03-26 15:50:19 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:50:19 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:50:19 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:51:09 [info]: SIGINT received — shutting down gracefully
+2026-03-26 15:51:14 [info]: ✅ PostgreSQL connected
+2026-03-26 15:51:14 [info]: ✅ Redis connected
+2026-03-26 15:51:14 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:51:14 [info]: ✅ WebSocket server initialised
+2026-03-26 15:51:14 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:51:14 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:51:14 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:57:29 [info]: ✅ PostgreSQL connected
+2026-03-26 15:57:29 [info]: ✅ Redis connected
+2026-03-26 15:57:29 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:57:29 [info]: ✅ WebSocket server initialised
+2026-03-26 15:57:29 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:57:29 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:57:29 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 15:57:34 [info]: SIGINT received — shutting down gracefully
+2026-03-26 15:57:43 [info]: ✅ PostgreSQL connected
+2026-03-26 15:57:43 [info]: ✅ Redis connected
+2026-03-26 15:57:43 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 15:57:43 [info]: ✅ WebSocket server initialised
+2026-03-26 15:57:43 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 15:57:43 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 15:57:43 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-26 16:08:33 [info]: ✅ PostgreSQL connected
+2026-03-26 16:08:33 [info]: ✅ Redis connected
+2026-03-26 16:08:33 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-26 16:08:33 [info]: ✅ WebSocket server initialised
+2026-03-26 16:08:33 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-26 16:08:33 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-26 16:08:33 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-27 10:52:35 [info]: ✅ PostgreSQL connected
+2026-03-27 10:52:35 [info]: ✅ Redis connected
+2026-03-27 10:52:35 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-27 10:52:35 [info]: ✅ WebSocket server initialised
+2026-03-27 10:52:35 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-27 10:52:35 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-27 10:52:35 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-27 11:34:11 [info]: SIGINT received — shutting down gracefully
+2026-03-27 11:34:23 [info]: ✅ PostgreSQL connected
+2026-03-27 11:34:23 [info]: ✅ Redis connected
+2026-03-27 11:34:23 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-27 11:34:23 [info]: ✅ WebSocket server initialised
+2026-03-27 11:34:23 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-27 11:34:23 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-27 11:34:23 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-30 10:26:08 [error]: Error: connect ECONNREFUSED ::1:5432
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
+    at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)
+2026-03-30 10:27:29 [info]: ✅ PostgreSQL connected
+2026-03-30 10:27:29 [info]: ✅ Redis connected
+2026-03-30 10:27:29 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-30 10:27:29 [info]: ✅ WebSocket server initialised
+2026-03-30 10:27:29 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-30 10:27:29 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-30 10:27:29 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-03-31 10:35:28 [info]: ✅ PostgreSQL connected
+2026-03-31 10:35:28 [info]: ✅ Redis connected
+2026-03-31 10:35:28 [info]: WebSocket server ready at ws://localhost/ws
+2026-03-31 10:35:28 [info]: ✅ WebSocket server initialised
+2026-03-31 10:35:28 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-03-31 10:35:28 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-03-31 10:35:28 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-02 12:19:08 [info]: ✅ PostgreSQL connected
+2026-04-02 12:19:08 [info]: ✅ Redis connected
+2026-04-02 12:19:08 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-02 12:19:08 [info]: ✅ WebSocket server initialised
+2026-04-02 12:19:08 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-02 12:19:08 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-02 12:19:08 [info]: 🔍 Health check: http://localhost:4000/api/health
