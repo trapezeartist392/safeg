@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import CameraDiscovery from '../../components/CameraDiscovery';
 
 const CSS = `
-
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes gridMove{from{transform:translateY(0)}to{transform:translateY(60px)}}
@@ -281,7 +282,7 @@ function StepCameras({ plants, zones, cameras, setCameras, onNext, onBack, setEr
     <div style={{animation:"fadeUp .5s ease both"}}>
       <div style={{marginBottom:24}}>
         <div style={{fontFamily:"'Bebas Neue'",fontSize:32,color:T.white,letterSpacing:2}}>REGISTER CAMERAS</div>
-        <div style={{color:T.g1,fontSize:13,marginTop:4}}>Connect your existing IP cameras to Safeguards IQ</div>
+        <div style={{color:T.g1,fontSize:13,marginTop:4}}>Connect your existing IP cameras to SafeG AI</div>
       </div>
 
       {plants.length>1 && (
@@ -541,8 +542,7 @@ export default function SignupPage({ onLogin }) {
           {step===0&&<StepCompany  form={form}    setForm={setForm}   onNext={next}            setError={setError}/>}
           {step===1&&<StepPlant    plants={plants} setPlants={setPlants} onNext={next} onBack={back} setError={setError}/>}
           {step===2&&<StepZones    plants={plants} zones={zones}   setZones={setZones}   onNext={next} onBack={back} setError={setError}/>}
-          {step===3&&<StepCameras  plants={plants} zones={zones}   cameras={cameras} setCameras={setCameras} onNext={next} onBack={back} setError={setError}/>}
-          {step===4&&<StepActivate form={form} plants={plants} zones={zones} cameras={cameras} loading={loading} success={success} onBack={back} onActivate={handleActivate}/>}
+          {step===3&&<CameraDiscovery zones={zones} cameras={cameras} setCameras={setCameras} onNext={next} onBack={back} setError={setError}/>}          {step===4&&<StepActivate form={form} plants={plants} zones={zones} cameras={cameras} loading={loading} success={success} onBack={back} onActivate={handleActivate}/>}
         </div>
 
         <div style={{marginTop:20,fontSize:13,color:T.g2,zIndex:1}}>
@@ -553,5 +553,3 @@ export default function SignupPage({ onLogin }) {
     </>
   );
 }
-
-

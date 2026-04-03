@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import AIMonitorPanel from './AIMonitorPanel';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -7,7 +8,7 @@ const CAMERAS = [
   { id: 4, name: "Chemical Storage", zone: "Zone 4" },
 ];
 
-// Palette tokens — change here to retheme everything
+// Palette tokens — change here to retheme everything   
 const T = {
   bg:         "#0e1117",   // page background
   bgCard:     "#161b24",   // camera tile / card
@@ -362,6 +363,7 @@ export default function App() {
       <div style={{ display: "flex", flex: 1, overflow: "hidden", height: "calc(100vh - 57px)" }}>
         {/* Main grid area */}
         <div style={{ flex: 1, padding: 14, overflowY: "auto" }}>
+          <AIMonitorPanel />
           {focusIdx !== null ? (
             <div>
               <button onClick={() => setFocusIdx(null)} style={{

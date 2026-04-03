@@ -24,7 +24,7 @@ const C = {
 
 // ─── GLOBAL STYLES ──────────────────────────────────────────────
 const globalCSS = `
-  
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Syne:wght@400;600;700;800&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:${C.bg};color:${C.white};font-family:'Syne',sans-serif;overflow-x:hidden}
   ::-webkit-scrollbar{width:4px;height:4px}
@@ -961,5 +961,3 @@ export default function App() {
     </>
   );
 }
-
-

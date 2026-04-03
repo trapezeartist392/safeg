@@ -1,12 +1,12 @@
 /**
- * Safeguards IQ — Razorpay Payment Portal
+ * SafeG AI — Razorpay Payment Portal
  * Full-stack payment integration: plan selection → checkout → confirmation
  * Connects to Node.js backend at /api/v1/payments/*
  */
 import { useState, useEffect, useRef } from "react";
 
 /* ─── GOOGLE FONTS ─────────────────────────────────── */
-const FONTS = ``;
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap');`;
 
 /* ─── DESIGN TOKENS ────────────────────────────────── */
 const T = {
@@ -631,7 +631,7 @@ export default function PaymentPortal() {
           amount:     totalPaise,
           currency:   "INR",
           key:        "rzp_test_YOUR_KEY_ID", // Replace with your Razorpay test key
-          name:       "Safeguards IQ",
+          name:       "SafeG AI",
           description:`${plan.name} Plan — ${billing === "annual" ? "Annual" : "Monthly"}`,
         };
       }
@@ -1116,5 +1116,3 @@ export default function PaymentPortal() {
     </>
   );
 }
-
-
