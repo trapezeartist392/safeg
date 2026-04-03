@@ -1,3 +1,67 @@
+# Environment files
 .env
 .env.*
 backend/.env
+ai/.env
+frontend/.env
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+frontend/dist/
+frontend/build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# AI Models — large files not needed in git
+ai/*.pt
+ai/runs/
+ai/Construction-Site-Safety-1/
+ai/ppe_new/
+ai/ppe_kaggle/
+ai/ppe_dataset*/
+ai/test_frame.jpg
+ai/huggingface/
+
+# Logs
+*.log
+logs/
+backend/logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker volumes
+postgres_data/
+redis_data/
+
+# Uploads and evidence
+backend/uploads/
+backend/evidence/
+
+# Cache
+.cache/
+ai/.cache/
