@@ -7,7 +7,9 @@
 
 import { useState, useEffect } from 'react';
 
-const AI_URL = 'http://localhost:5050';
+const AI_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+  ? 'https://safeguardsiq.com/ai'
+  : 'http://localhost:5050';
 
 const T = {
   bg:"#05080F", card:"#0C1422", card2:"#101828",
