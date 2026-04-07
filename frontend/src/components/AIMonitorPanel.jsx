@@ -517,7 +517,7 @@ export default function AIMonitorPanel() {
                         );
                       })}
                       <div style={{ fontSize:9, color:T.g1, fontFamily:"'DM Mono'", textAlign:"right" }}>
-                        Last detected: {s.last_detection ? new Date(s.last_detection + 'Z').toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true}) : ""}
+                        Last detected: {s.last_detection ? new Date(s.last_detection).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true}) : ""}
                       </div>
                     </div>
                   )}
