@@ -20,11 +20,16 @@ const T = {
   green:"#22D468", red:"#FF3D3D", amber:"#FFB400",
 };
 
-const PPE_OPTIONS = ["Helmet","Safety Vest","Gloves","Safety Boots","Goggles","Face Mask"];
+const PPE_OPTIONS = [
+  "Helmet","Safety Vest","Gloves","Safety Boots","Goggles","Face Mask",
+  "Fire & Smoke","Chemical Hazard","Machinery Safety","Vehicle Safety","Working at Height","Housekeeping",
+];
 const PPE_ICONS = {
   "Helmet":"⛑️","Safety Vest":"🦺","Gloves":"🧤",
   "Safety Boots":"👢","Goggles":"🥽","Face Mask":"😷",
-  "Pathway Violation":"🚧","Zone Violation":"⛔","Exit Blocked":"🚪","Floor Marking":"⚠️",
+  "Fire & Smoke":"🔥","Chemical Hazard":"🧪","Machinery Safety":"⚙️",
+  "Vehicle Safety":"🚗","Working at Height":"🏗️","Housekeeping":"🚧",
+  "Pathway Violation":"🚧","Zone Violation":"⛔","Exit Blocked":"🚪",
 };
 
 export default function AIMonitorPanel() {
