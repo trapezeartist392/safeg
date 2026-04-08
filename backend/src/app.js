@@ -59,12 +59,11 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // -- Form 18 routes (mounted before auth since some endpoints are public)
-const form18Routes = require('./routes/form18.routes');
+app.use(express.json({ limit: "10mb" }));
 app.use('/api/v1/form18', form18Routes);
 
 // ── Body parsing
 app.use(compression());
-app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── Request logging
