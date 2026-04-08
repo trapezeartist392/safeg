@@ -59,8 +59,11 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // -- Form 18 routes (mounted before auth since some endpoints are public)
+<<<<<<< Updated upstream
 app.use(express.json({ limit: "10mb" }));
 app.use('/api/v1/form18', form18Routes);
+=======
+>>>>>>> Stashed changes
 
 // ── Body parsing
 app.use(compression());
