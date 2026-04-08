@@ -125,6 +125,24 @@ export default function LoginPage({ onLogin }) {
                 />
               </div>
 
+              {/* Demo credentials autofill */}
+              <button
+                type="button"
+                onClick={() => setForm({ email: "suresh@puneauto.com", password: "Demo@SafeG2024" })}
+                style={{
+                  width:"100%", background:"none",
+                  border:`1px dashed ${T.orange}60`,
+                  borderRadius:10, padding:"10px",
+                  color:T.orange, fontSize:12,
+                  fontWeight:700, cursor:"pointer",
+                  fontFamily:"'Nunito',sans-serif",
+                  marginBottom:12, letterSpacing:0.5,
+                  display:"flex", alignItems:"center",
+                  justifyContent:"center", gap:8,
+                }}
+              >
+                ⚡ AUTOFILL DEMO CREDENTIALS
+              </button>
               {/* Submit */}
               <button
                 type="submit"
