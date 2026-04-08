@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import AIMonitorPanel from './AIMonitorPanel';
+import Form18Generator from './Form18Generator';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -381,6 +382,7 @@ export default function App() {
                   <CameraTile key={cam.id} cam={cam} isMain={false} onClick={() => setFocusIdx(i)} />
                 ))}
               </div>
+              <Form18Generator />
               <div style={{ marginTop: 12, padding: "10px 14px",
                 border: `1px solid ${T.border}`, borderRadius: 4,
                 background: T.bgCard, fontSize: 9, color: T.textSub, lineHeight: 2 }}>
