@@ -638,3 +638,10 @@
 2026-04-10 16:50:08 [info]: 🚀 SafeG AI Backend running on port 4000
 2026-04-10 16:50:08 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
 2026-04-10 16:50:08 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-10 16:50:34 [info]: ✅ PostgreSQL connected
+2026-04-10 16:50:34 [info]: ✅ Redis connected
+2026-04-10 16:50:34 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-10 16:50:34 [info]: ✅ WebSocket server initialised
+2026-04-10 16:50:34 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-10 16:50:34 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-10 16:50:34 [info]: 🔍 Health check: http://localhost:4000/api/health
