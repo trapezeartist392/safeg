@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { useLang } from "../../i18n/LanguageContext";
+import LanguageToggle from "../../components/LanguageToggle";
+
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
@@ -22,6 +25,7 @@ export default function LoginPage({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { t, lang } = useLang();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +41,7 @@ export default function LoginPage({ onLogin }) {
       onLogin?.(user);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid email or password");
+      setError(err.response?.data?.message || t('invalid_login'));
     } finally {
       setLoading(false);
     }
@@ -47,6 +51,11 @@ export default function LoginPage({ onLogin }) {
     <>
       <style>{CSS}</style>
       <div style={{ minHeight: "100vh", background: T.bg, display: "flex", fontFamily: "'Nunito',sans-serif", position: "relative", overflow: "hidden" }}>
+
+        {/* Language toggle — top right */}
+        <div style={{ position:"absolute", top:20, right:20, zIndex:10 }}>
+          <LanguageToggle />
+        </div>
 
         {/* Animated grid background */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(${T.border} 1px,transparent 1px),linear-gradient(90deg,${T.border} 1px,transparent 1px)`, backgroundSize: "60px 60px", animation: "gridMove 4s linear infinite", opacity: 0.4 }} />
@@ -59,20 +68,31 @@ export default function LoginPage({ onLogin }) {
               <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg,${T.orange},#FF8C52)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue'" }}>S</div>
               <div>
                 <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, letterSpacing: 3, color: T.white }}>Safeguards IQ</div>
-                <div style={{ fontSize: 11, color: T.g1, letterSpacing: 2 }}>FACTORY SAFETY INTELLIGENCE</div>
+                <div style={{ fontSize: 11, color: T.g1, letterSpacing: 2 }}>
+                  {lang === 'hi' ? 'फ़ैक्टरी सुरक्षा इंटेलिजेंस' : 'FACTORY SAFETY INTELLIGENCE'}
+                </div>
               </div>
             </div>
 
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 56, lineHeight: 1, color: T.white, marginBottom: 16 }}>
-              PROTECTING<br /><span style={{ color: T.orange }}>INDIA'S</span><br />WORKERS
+            <div style={{ fontFamily: "'Bebas Neue'", fontSize: lang === 'hi' ? 36 : 56, lineHeight: 1.1, color: T.white, marginBottom: 16 }}>
+              {lang === 'hi'
+                ? <>{t('workers')} की<br /><span style={{ color: T.orange }}>सुरक्षा</span><br />हमारी जिम्मेदारी</>
+                : <>PROTECTING<br /><span style={{ color: T.orange }}>INDIA'S</span><br />WORKERS</>
+              }
             </div>
             <p style={{ color: T.g1, fontSize: 15, lineHeight: 1.7, maxWidth: 420, marginBottom: 48 }}>
-              AI-powered PPE compliance monitoring for factories. Real-time alerts, Factories Act Form 18 automation, and 98.7% detection accuracy.
+              {lang === 'hi'
+                ? 'AI-संचालित PPE अनुपालन निगरानी। रियल-टाइम अलर्ट, फैक्ट्री अधिनियम फॉर्म 18 ऑटोमेशन, और 98.7% सटीकता।'
+                : 'AI-powered PPE compliance monitoring for factories. Real-time alerts, Factories Act Form 18 automation, and 98.7% detection accuracy.'}
             </p>
 
             {/* Stats */}
             <div style={{ display: "flex", gap: 32 }}>
-              {[["98.7%","AI Accuracy"],["<3s","Detection"],["363K+","Factories"]].map(([v,l])=>(
+              {[
+                ["98.7%", lang === 'hi' ? "AI सटीकता" : "AI Accuracy"],
+                ["<3s",   lang === 'hi' ? "पहचान समय" : "Detection"],
+                ["363K+", lang === 'hi' ? "फैक्ट्रियां" : "Factories"],
+              ].map(([v,l])=>(
                 <div key={l}>
                   <div style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: T.orange, letterSpacing: 1 }}>{v}</div>
                   <div style={{ fontSize: 11, color: T.g1, letterSpacing: 1.5 }}>{l}</div>
@@ -87,8 +107,12 @@ export default function LoginPage({ onLogin }) {
           <div style={{ width: "100%", maxWidth: 420, background: T.card, border: `1px solid ${T.border}`, borderRadius: 20, padding: 40, animation: "fadeUp .7s ease both" }}>
 
             <div style={{ marginBottom: 32 }}>
-              <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: T.white, letterSpacing: 2, marginBottom: 6 }}>WELCOME BACK</div>
-              <div style={{ color: T.g1, fontSize: 14 }}>Sign in to your SafeG AI dashboard</div>
+              <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: T.white, letterSpacing: 2, marginBottom: 6 }}>
+                {lang === 'hi' ? 'वापस स्वागत है' : 'WELCOME BACK'}
+              </div>
+              <div style={{ color: T.g1, fontSize: 14 }}>
+                {lang === 'hi' ? 'SafeguardsIQ में साइन इन करें' : 'Sign in to your SafeG AI dashboard'}
+              </div>
             </div>
 
             {error && (
@@ -100,7 +124,9 @@ export default function LoginPage({ onLogin }) {
             <form onSubmit={handleSubmit}>
               {/* Email */}
               <div style={{ marginBottom: 16 }}>
-                <label style={{ fontSize: 12, color: T.g1, letterSpacing: 1.5, display: "block", marginBottom: 8, fontWeight: 600 }}>EMAIL ADDRESS</label>
+                <label style={{ fontSize: 12, color: T.g1, letterSpacing: 1.5, display: "block", marginBottom: 8, fontWeight: 600 }}>
+                  {t('email').toUpperCase()}
+                </label>
                 <input
                   type="email" required
                   value={form.email}
@@ -113,8 +139,12 @@ export default function LoginPage({ onLogin }) {
               {/* Password */}
               <div style={{ marginBottom: 24 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <label style={{ fontSize: 12, color: T.g1, letterSpacing: 1.5, fontWeight: 600 }}>PASSWORD</label>
-                  <Link to="/forgot-password" style={{ fontSize: 12, color: T.orange, textDecoration: "none" }}>Forgot password?</Link>
+                  <label style={{ fontSize: 12, color: T.g1, letterSpacing: 1.5, fontWeight: 600 }}>
+                    {t('password').toUpperCase()}
+                  </label>
+                  <Link to="/forgot-password" style={{ fontSize: 12, color: T.orange, textDecoration: "none" }}>
+                    {t('forgot_password')}
+                  </Link>
                 </div>
                 <input
                   type="password" required
@@ -141,8 +171,9 @@ export default function LoginPage({ onLogin }) {
                   justifyContent:"center", gap:8,
                 }}
               >
-                ⚡ AUTOFILL DEMO CREDENTIALS
+                {t('autofill_demo')}
               </button>
+
               {/* Submit */}
               <button
                 type="submit"
@@ -152,22 +183,26 @@ export default function LoginPage({ onLogin }) {
                 {loading ? (
                   <>
                     <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin .8s linear infinite" }} />
-                    Signing in...
+                    {t('logging_in')}
                   </>
-                ) : "Sign In →"}
+                ) : t('login_btn') + ' →'}
               </button>
             </form>
 
             {/* Demo credentials */}
             <div style={{ marginTop: 20, background: "rgba(0,212,180,.06)", border: `1px solid rgba(0,212,180,.2)`, borderRadius: 10, padding: "12px 16px" }}>
-              <div style={{ fontSize: 11, color: T.teal, letterSpacing: 1.5, fontWeight: 700, marginBottom: 6 }}>DEMO CREDENTIALS</div>
+              <div style={{ fontSize: 11, color: T.teal, letterSpacing: 1.5, fontWeight: 700, marginBottom: 6 }}>
+                {lang === 'hi' ? 'डेमो क्रेडेंशियल' : 'DEMO CREDENTIALS'}
+              </div>
               <div style={{ fontSize: 12, color: T.g1, fontFamily: "'DM Mono'" }}>suresh@puneauto.com</div>
               <div style={{ fontSize: 12, color: T.g1, fontFamily: "'DM Mono'" }}>Demo@SafeG2024</div>
             </div>
 
             <div style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: T.g1 }}>
-              Don't have an account?{" "}
-              <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>Start free trial →</Link>
+              {lang === 'hi' ? 'खाता नहीं है? ' : "Don't have an account? "}
+              <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>
+                {t('signup_title')} →
+              </Link>
             </div>
           </div>
         </div>
@@ -175,3 +210,6 @@ export default function LoginPage({ onLogin }) {
     </>
   );
 }
+
+
+
