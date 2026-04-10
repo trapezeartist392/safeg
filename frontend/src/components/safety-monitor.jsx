@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import AIMonitorPanel from './AIMonitorPanel';
 import Form18Generator from './Form18Generator';
+import ViolationArchive from './ViolationArchive';
+import ComplianceReportGenerator from './ComplianceReportGenerator';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -365,6 +367,8 @@ export default function App() {
         {/* Main grid area */}
         <div style={{ flex: 1, padding: 14, overflowY: "auto" }}>
           <AIMonitorPanel />
+          <ViolationArchive />
+          <ComplianceReportGenerator />
           {focusIdx !== null ? (
             <div>
               <button onClick={() => setFocusIdx(null)} style={{

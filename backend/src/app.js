@@ -34,6 +34,8 @@ const onboardingRoutes  = require('./routes/onboarding.routes');
 const healthRoutes      = require('./routes/health.routes');
 const paymentRoutes     = require('./routes/payment.routes');
 const adminRoutes       = require('./routes/admin.routes');
+const archiveRoutes    = require('./routes/violations.archive.routes');
+const complianceRoutes = require('./routes/compliance.routes');
 const discoveryRoutes = require('./routes/camera.discovery.routes');
 const aiRoutes = require('./routes/ai.routes');
 const app = express();
@@ -58,15 +60,10 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// -- Form 18 routes (mounted before auth since some endpoints are public)
-<<<<<<< Updated upstream
-app.use(express.json({ limit: "10mb" }));
-app.use('/api/v1/form18', form18Routes);
-=======
->>>>>>> Stashed changes
 
 // ── Body parsing
 app.use(compression());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── Request logging
@@ -107,6 +104,8 @@ app.use(`${v1}/dashboard`,       dashboardRoutes);
 app.use(`${v1}/webhooks`,        webhookRoutes);
 app.use(`${v1}/onboarding`,     onboardingRoutes);
 app.use(`${v1}/payments`,        paymentRoutes);
+app.use(`${v1}/violations`, archiveRoutes);
+app.use(`${v1}/compliance`, complianceRoutes);
 app.use('/api/admin',            adminRoutes);
 
 // ── 404 + Error handlers

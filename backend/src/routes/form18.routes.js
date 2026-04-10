@@ -64,26 +64,6 @@ router.post('/generate', authenticate, async (req, res) => {
     const outputPath = path.join(FORM18_DIR, reportNo + '.pdf');
 
     const formData = {
-<<<<<<< Updated upstream
-      factory_name: factory_name || tenantInfo.company_name || '',
-      factory_address: factory_address || [tenantInfo.address, tenantInfo.city, tenantInfo.state].filter(Boolean).join(', '),
-      registration_no, industry_type, accident_date, accident_time,
-      accident_location, shift, nature_of_injury, machine_involved,
-      activity_at_time, cause_of_accident, severity: severity || 'minor',
-      injured_name, age, sex: sex || 'Male', designation, department,
-      employment_type: employment_type || 'Permanent', experience_years,
-      body_part, ppe_violations, ai_confidence, camera_id,
-      violations_evidence: violationsEvidence,
-      first_aid_given, hospital_name, doctor_name,
-      immediate_action_taken, corrective_action, preventive_action,
-      action_target_date,
-      reported_by: 'SafeguardsIQ AI + ' + (manager_name || ''),
-      manager_name, manager_designation: manager_designation || 'EHS Manager',
-      inspector_jurisdiction, report_no: reportNo, report_date: reportDate,
-    };
-
-    const pyScript = `
-=======
       factory_name:           factory_name || tenantInfo.company_name || '',
       factory_address:        factory_address || [tenantInfo.address, tenantInfo.city, tenantInfo.state].filter(Boolean).join(', '),
       registration_no,        industry_type,
@@ -113,74 +93,22 @@ router.post('/generate', authenticate, async (req, res) => {
     const tmpScript = path.join(FORM18_DIR, 'gen_'  + Date.now() + '.py');
 
     fs.writeFileSync(dataFile, JSON.stringify(formData));
-    fs.writeFileSync(tmpScript, `
->>>>>>> Stashed changes
-import sys, json
-sys.path.insert(0, r'${path.dirname(FORM18_SCRIPT)}')
-from form18_gen import generate_form18
-<<<<<<< Updated upstream
-data = json.loads(open('/tmp/form18_data_${Date.now()}.json').read())
-=======
-with open(r'${dataFile}') as f:
-    data = json.load(f)
->>>>>>> Stashed changes
-pdf = generate_form18(data)
-with open(r'${outputPath}', 'wb') as f:
-    f.write(pdf)
-print('OK')
-<<<<<<< Updated upstream
-`;
-    const dataFile  = '/tmp/form18_data_' + Date.now() + '.json';
-    const tmpScript = '/tmp/form18_gen_' + Date.now() + '.py';
-    fs.writeFileSync(dataFile, JSON.stringify(formData));
-
-    const pyCode = `
-import sys, json
-sys.path.insert(0, '${path.dirname(FORM18_SCRIPT)}')
-from form18_gen import generate_form18
-with open('${dataFile}') as f:
-    data = json.load(f)
-pdf = generate_form18(data)
-with open('${outputPath}', 'wb') as f:
-    f.write(pdf)
-print('OK')
-`;
-    fs.writeFileSync(tmpScript, pyCode);
+    fs.writeFileSync(tmpScript, [
+      'import sys, json',
+      "sys.path.insert(0, r'" + path.dirname(FORM18_SCRIPT).replace(/\\/g,'\\\\') + "')",
+      'from form18_gen import generate_form18',
+      "with open(r'" + dataFile.replace(/\\/g,'\\\\') + "') as f:",
+      '    data = json.load(f)',
+      'pdf = generate_form18(data)',
+      "with open(r'" + outputPath.replace(/\\/g,'\\\\') + "', 'wb') as f:",
+      '    f.write(pdf)',
+      "print('OK')",
+    ].join('\n'));
 
     try {
-      execSync('python3 ' + tmpScript, { timeout: 30000 });
-      if (fs.existsSync(dataFile)) fs.unlinkSync(dataFile);
-      if (fs.existsSync(tmpScript)) fs.unlinkSync(tmpScript);
-
-      if (!fs.existsSync(outputPath)) throw new Error('PDF not created');
-
-      try {
-        await pool.query(
-          'INSERT INTO form18_reports (tenant_id, report_no, violation_id, file_path, factory_name, severity) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING',
-          [tenantId, reportNo, violation_id || null, outputPath, formData.factory_name, formData.severity]
-        );
-      } catch(e) { logger.warn('DB insert failed:', e.message); }
-
-      logger.info('Form 18 generated: ' + reportNo);
-      const pdfBuffer = fs.readFileSync(outputPath);
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename="' + reportNo + '.pdf"');
-      res.send(pdfBuffer);
-
-    } catch(e) {
-      if (fs.existsSync(dataFile)) fs.unlinkSync(dataFile);
-      if (fs.existsSync(tmpScript)) fs.unlinkSync(tmpScript);
-      throw new Error('PDF generation failed: ' + e.message);
-    }
-
-=======
-`);
-
-    try {
-      execSync('python3 ' + tmpScript, { timeout: 30000 });
-    } catch(e) {
-      // Windows fallback
       execSync('python ' + tmpScript, { timeout: 30000 });
+    } catch(e) {
+      execSync('python3 ' + tmpScript, { timeout: 30000 });
     }
 
     if (fs.existsSync(dataFile))  fs.unlinkSync(dataFile);
@@ -201,7 +129,6 @@ print('OK')
     res.setHeader('Content-Disposition', 'attachment; filename="' + reportNo + '.pdf"');
     res.send(pdfBuffer);
 
->>>>>>> Stashed changes
   } catch(error) {
     logger.error('Form18 error:', error);
     res.status(500).json({ success: false, message: error.message });

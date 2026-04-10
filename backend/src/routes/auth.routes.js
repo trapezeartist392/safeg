@@ -14,8 +14,8 @@ router.post('/register', [
 
 // POST /api/v1/auth/login
 router.post('/login', [
-  body('email').isEmail().normalizeEmail(),
-  body('password').notEmpty(),
+  body('email').isEmail().withMessage('Valid email required'),
+  body('password').notEmpty().withMessage('Password required'),
 ], validate, ctrl.login);
 
 // POST /api/v1/auth/refresh-token
