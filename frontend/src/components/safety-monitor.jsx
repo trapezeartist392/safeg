@@ -3,6 +3,8 @@ import AIMonitorPanel from './AIMonitorPanel';
 import Form18Generator from './Form18Generator';
 import ViolationArchive from './ViolationArchive';
 import ComplianceReportGenerator from './ComplianceReportGenerator';
+import ROICalculator from './ROICalculator';
+import LanguageToggle from './LanguageToggle';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -360,6 +362,7 @@ export default function App() {
           <span style={{ color: "#ffb020" }}>⚠ {highCount + medCount} ALERTS</span>
           <span style={{ color: "#4f8ef7" }}>■ LIVE</span>
           <span style={{ color: T.textSub }}>{clockStr}</span>
+          <LanguageToggle />
         </div>
       </header>
 
@@ -369,6 +372,7 @@ export default function App() {
           <AIMonitorPanel />
           <ViolationArchive />
           <ComplianceReportGenerator />
+          <ROICalculator />
           {focusIdx !== null ? (
             <div>
               <button onClick={() => setFocusIdx(null)} style={{
