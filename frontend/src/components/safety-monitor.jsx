@@ -5,6 +5,7 @@ import ViolationArchive from './ViolationArchive';
 import ComplianceReportGenerator from './ComplianceReportGenerator';
 import ROICalculator from './ROICalculator';
 import LanguageToggle from './LanguageToggle';
+import MultiPlantDashboard from './MultiPlantDashboard';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -370,6 +371,7 @@ export default function App() {
         {/* Main grid area */}
         <div style={{ flex: 1, padding: 14, overflowY: "auto" }}>
           <AIMonitorPanel />
+          <MultiPlantDashboard />
           <ViolationArchive />
           <ComplianceReportGenerator />
           <ROICalculator />

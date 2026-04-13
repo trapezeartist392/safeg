@@ -26,6 +26,82 @@ const iStyle = {
   fontFamily:"'Nunito',sans-serif", outline:"none",
 };
 
+
+function ExpandedViolation({ v, cc, lang, token }) {
+  const [photo, setPhoto]   = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showPhoto, setShowPhoto] = useState(false);
+
+  const loadPhoto = async () => {
+    if (photo) { setShowPhoto(s => !s); return; }
+    setLoading(true);
+    try {
+      const res = await axios.get(`/api/v1/violations/archive/photo/${v.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPhoto(res.data.image);
+      setShowPhoto(true);
+    } catch { setPhoto('none'); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div style={{ margin:"0 0 8px 0", padding:16, background:`${cc}06`,
+      border:`1px solid ${cc}20`, borderRadius:8, fontSize:12 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:10 }}>
+        <div>
+          <div style={{ fontSize:10, color:T.g2, marginBottom:3 }}>
+            {lang === 'hi' ? 'विवरण' : 'DESCRIPTION'}
+          </div>
+          <div style={{ color:T.white }}>{v.description || (lang === 'hi' ? 'कोई विवरण नहीं' : 'No description available')}</div>
+        </div>
+        <div>
+          <div style={{ fontSize:10, color:T.g2, marginBottom:3 }}>
+            {lang === 'hi' ? 'तत्काल कार्रवाई' : 'IMMEDIATE ACTION'}
+          </div>
+          <div style={{ color:T.white }}>{v.immediate_action || "—"}</div>
+        </div>
+      </div>
+
+      {/* Photo evidence button */}
+      <div style={{ marginTop:10 }}>
+        <button onClick={loadPhoto} disabled={loading} style={{
+          background:`${cc}20`, border:`1px solid ${cc}40`,
+          borderRadius:8, padding:"6px 14px", color:cc,
+          fontSize:11, fontWeight:700, cursor:"pointer",
+          display:"flex", alignItems:"center", gap:6,
+        }}>
+          {loading ? "⏳ Loading..." : showPhoto ? "🖼 Hide Photo" : "📷 View Evidence Photo"}
+        </button>
+
+        {showPhoto && photo && photo !== 'none' && (
+          <div style={{ marginTop:10 }}>
+            <div style={{ fontSize:10, color:T.g2, marginBottom:6 }}>
+              {lang === 'hi' ? 'AI द्वारा कैप्चर किया गया फ्रेम' : 'Frame captured by AI at time of violation'}
+            </div>
+            <img
+              src={`data:image/jpeg;base64,${photo}`}
+              alt="Violation evidence"
+              style={{ maxWidth:"100%", maxHeight:300, borderRadius:8,
+                border:`1px solid ${cc}40`, display:"block" }}
+            />
+            <a href={`data:image/jpeg;base64,${photo}`} download={`violation_${v.id}.jpg`}
+              style={{ fontSize:10, color:cc, marginTop:6, display:"inline-block",
+                textDecoration:"none", fontWeight:700 }}>
+              ⬇ {lang === 'hi' ? 'फोटो डाउनलोड करें' : 'Download Photo'}
+            </a>
+          </div>
+        )}
+        {showPhoto && photo === 'none' && (
+          <div style={{ marginTop:8, fontSize:11, color:T.g2 }}>
+            {lang === 'hi' ? 'इस उल्लंघन के लिए कोई फोटो उपलब्ध नहीं है' : 'No photo evidence available for this violation'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function ViolationArchive() {
   const { t, lang } = useLang();
   const [violations, setViolations] = useState([]);
@@ -288,23 +364,7 @@ export default function ViolationArchive() {
                       <div style={{ color:T.g2, fontSize:14 }}>{isExp ? "▲" : "▼"}</div>
                     </div>
                     {isExp && (
-                      <div style={{ margin:"0 0 8px 0", padding:16, background:`${cc}06`,
-                        border:`1px solid ${cc}20`, borderRadius:8, fontSize:12 }}>
-                        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:10 }}>
-                          <div>
-                            <div style={{ fontSize:10, color:T.g2, marginBottom:3 }}>
-                              {lang === 'hi' ? 'विवरण' : 'DESCRIPTION'}
-                            </div>
-                            <div style={{ color:T.white }}>{v.description || (lang === 'hi' ? 'कोई विवरण नहीं' : 'No description available')}</div>
-                          </div>
-                          <div>
-                            <div style={{ fontSize:10, color:T.g2, marginBottom:3 }}>
-                              {lang === 'hi' ? 'तत्काल कार्रवाई' : 'IMMEDIATE ACTION'}
-                            </div>
-                            <div style={{ color:T.white }}>{v.immediate_action || "—"}</div>
-                          </div>
-                        </div>
-                      </div>
+                      <ExpandedViolation v={v} cc={cc} lang={lang} token={token} />
                     )}
                   </div>
                 );
