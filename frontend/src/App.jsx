@@ -7,6 +7,7 @@ import AdminDashboard    from "./pages/admin/AdminDashboard.jsx";
 import SafetyMonitor     from "./components/safety-monitor.jsx";
 import FactoryCompliance from "./components/factory-compliance.jsx";
 import BillingDashboard  from "./pages/payment/BillingDashboard.jsx";
+import ThemeToggle from "./components/ThemeToggle";
 
 const T = {
   bg:"#05080F", nav:"#080D18", border:"#1A2540",
@@ -46,6 +47,7 @@ function AppNav({ user, onLogout }) {
             <div style={{ fontSize:12, color:T.white, fontWeight:700 }}>{user.fullName || user.email}</div>
             <div style={{ fontSize:10, color:T.g2, letterSpacing:1 }}>{user.role?.replace("_"," ").toUpperCase()}</div>
           </div>
+          <ThemeToggle />
           <button onClick={onLogout} style={{ background:"transparent", border:`1px solid ${T.border}`, borderRadius:8, padding:"7px 14px", color:T.g1, fontSize:12, fontWeight:600, cursor:"pointer" }}>Sign Out</button>
         </>}
       </div>
