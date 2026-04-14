@@ -6,6 +6,9 @@ import ComplianceReportGenerator from './ComplianceReportGenerator';
 import ROICalculator from './ROICalculator';
 import LanguageToggle from './LanguageToggle';
 import MultiPlantDashboard from './MultiPlantDashboard';
+import PPEComplianceBar from './PPEComplianceBar';
+import ShiftComplianceReport from './ShiftComplianceReport';
+import WorkerViolationHistory from './WorkerViolationHistory';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -370,9 +373,12 @@ export default function App() {
       <div style={{ display: "flex", flex: 1, overflow: "hidden", height: "calc(100vh - 57px)" }}>
         {/* Main grid area */}
         <div style={{ flex: 1, padding: 14, overflowY: "auto" }}>
+          <PPEComplianceBar />
           <AIMonitorPanel />
           <MultiPlantDashboard />
           <ViolationArchive />
+          <ShiftComplianceReport />
+          <WorkerViolationHistory />
           <ComplianceReportGenerator />
           <ROICalculator />
           {focusIdx !== null ? (
