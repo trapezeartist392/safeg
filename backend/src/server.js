@@ -48,3 +48,7 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+const trialSvc = require('./services/trial.service');
+setTimeout(() => trialSvc.processTrials(), 5000);
+setInterval(() => trialSvc.processTrials(), 6 * 60 * 60 * 1000);

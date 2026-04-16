@@ -39,6 +39,7 @@ const complianceRoutes = require('./routes/compliance.routes');
 const discoveryRoutes = require('./routes/camera.discovery.routes');
 const aiRoutes = require('./routes/ai.routes');
 const roiRoutes = require('./routes/roi.routes');
+const trialRoutes = require('./routes/trial.routes');
 const app = express();
 
 // ── Security
@@ -108,6 +109,7 @@ app.use(`${v1}/onboarding`,     onboardingRoutes);
 app.use(`${v1}/payments`,        paymentRoutes);
 app.use(`${v1}/compliance`, complianceRoutes);
 app.use(`${v1}/roi`, roiRoutes);
+app.use(`${v1}/trial`, trialRoutes);
 app.use('/api/admin',            adminRoutes);
 
 // ── 404 + Error handlers

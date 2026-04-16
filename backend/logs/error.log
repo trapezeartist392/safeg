@@ -242,3 +242,21 @@
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async connectDB (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\config\database.js:22:18)
     at async bootstrap (C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\server.js:18:5)
+2026-04-16 16:08:57 [error]: [TRIAL] processTrials error: column t.company_name does not exist
+2026-04-16 16:09:13 [error]: [TRIAL] processTrials error: column t.company_name does not exist
+2026-04-16 16:17:29 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22
+2026-04-16 16:17:30 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22
+2026-04-16 16:35:57 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22
+2026-04-16 16:35:57 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22

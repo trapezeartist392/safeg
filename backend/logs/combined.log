@@ -708,3 +708,106 @@
 2026-04-14 15:06:18 [info]: 🚀 SafeG AI Backend running on port 4000
 2026-04-14 15:06:18 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
 2026-04-14 15:06:18 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-14 18:01:18 [info]: ✅ PostgreSQL connected
+2026-04-14 18:01:18 [info]: ✅ Redis connected
+2026-04-14 18:01:18 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-14 18:01:18 [info]: ✅ WebSocket server initialised
+2026-04-14 18:01:18 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-14 18:01:18 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-14 18:01:18 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 12:28:32 [info]: ✅ PostgreSQL connected
+2026-04-16 12:28:32 [info]: ✅ Redis connected
+2026-04-16 12:28:32 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 12:28:32 [info]: ✅ WebSocket server initialised
+2026-04-16 12:28:32 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 12:28:32 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 12:28:32 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 14:17:12 [warn]: Camera test failed for CAM-04: connect ECONNREFUSED ::1:5001
+2026-04-16 15:27:02 [info]: ✅ PostgreSQL connected
+2026-04-16 15:27:02 [info]: ✅ Redis connected
+2026-04-16 15:27:02 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 15:27:02 [info]: ✅ WebSocket server initialised
+2026-04-16 15:27:02 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 15:27:02 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 15:27:02 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 15:27:07 [info]: ✅ PostgreSQL connected
+2026-04-16 15:27:07 [info]: ✅ Redis connected
+2026-04-16 15:27:07 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 15:27:07 [info]: ✅ WebSocket server initialised
+2026-04-16 15:27:07 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 15:27:07 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 15:27:07 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 15:57:14 [info]: ✅ PostgreSQL connected
+2026-04-16 15:57:14 [info]: ✅ Redis connected
+2026-04-16 15:57:14 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 15:57:14 [info]: ✅ WebSocket server initialised
+2026-04-16 15:57:14 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 15:57:14 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 15:57:14 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 15:57:24 [info]: ✅ PostgreSQL connected
+2026-04-16 15:57:24 [info]: ✅ Redis connected
+2026-04-16 15:57:24 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 15:57:24 [info]: ✅ WebSocket server initialised
+2026-04-16 15:57:24 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 15:57:24 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 15:57:24 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 15:59:26 [info]: ✅ PostgreSQL connected
+2026-04-16 15:59:26 [info]: ✅ Redis connected
+2026-04-16 15:59:26 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 15:59:26 [info]: ✅ WebSocket server initialised
+2026-04-16 15:59:26 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 15:59:26 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 15:59:26 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 15:59:47 [info]: ✅ PostgreSQL connected
+2026-04-16 15:59:47 [info]: ✅ Redis connected
+2026-04-16 15:59:47 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 15:59:47 [info]: ✅ WebSocket server initialised
+2026-04-16 15:59:47 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 15:59:47 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 15:59:47 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 16:03:41 [info]: ✅ PostgreSQL connected
+2026-04-16 16:03:41 [info]: ✅ Redis connected
+2026-04-16 16:03:41 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 16:03:41 [info]: ✅ WebSocket server initialised
+2026-04-16 16:03:41 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 16:03:41 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 16:03:41 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 16:04:56 [info]: ✅ PostgreSQL connected
+2026-04-16 16:04:56 [info]: ✅ Redis connected
+2026-04-16 16:04:56 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 16:04:56 [info]: ✅ WebSocket server initialised
+2026-04-16 16:04:56 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 16:04:56 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 16:04:56 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 16:08:53 [info]: ✅ PostgreSQL connected
+2026-04-16 16:08:53 [info]: ✅ Redis connected
+2026-04-16 16:08:53 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 16:08:53 [info]: ✅ WebSocket server initialised
+2026-04-16 16:08:53 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 16:08:53 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 16:08:53 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 16:08:57 [error]: [TRIAL] processTrials error: column t.company_name does not exist
+2026-04-16 16:09:08 [info]: ✅ PostgreSQL connected
+2026-04-16 16:09:08 [info]: ✅ Redis connected
+2026-04-16 16:09:08 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-16 16:09:08 [info]: ✅ WebSocket server initialised
+2026-04-16 16:09:08 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-16 16:09:08 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-16 16:09:08 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-16 16:09:13 [error]: [TRIAL] processTrials error: column t.company_name does not exist
+2026-04-16 16:17:29 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22
+2026-04-16 16:17:30 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22
+2026-04-16 16:35:57 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22
+2026-04-16 16:35:57 [error]: error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\trial.routes.js:20:22

@@ -7,9 +7,9 @@ const validate = require('../middleware/validate');
 // POST /api/v1/auth/register  — onboarding activation creates tenant + admin user
 router.post('/register', [
   body('companyName').trim().notEmpty().withMessage('Company name required'),
-  body('email').isEmail().normalizeEmail(),
+  body('email').isEmail().withMessage('Valid email required'),
   body('password').isLength({ min: 8 }).withMessage('Password min 8 chars'),
-  body('fullName').trim().notEmpty(),
+  body('fullName').trim().notEmpty().withMessage('Full name required'),
 ], validate, ctrl.register);
 
 // POST /api/v1/auth/login
