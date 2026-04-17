@@ -342,6 +342,15 @@ export default function App() {
   const highCount = logs.filter(l => l.risk === "HIGH").length;
   const medCount  = logs.filter(l => l.risk === "MEDIUM").length;
 
+  useEffect(() => {
+  const total = highCount + medCount;
+  if (total > 0) {
+    document.title = `⚠️ ${total} VIOLATIONS — SafeguardsIQ`;
+  } else {
+    document.title = '✅ All Safe — SafeguardsIQ';
+  }
+}, [highCount, medCount]);
+
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.text,
       fontFamily: "'Courier New', Courier, monospace", display: "flex", flexDirection: "column" }}>
