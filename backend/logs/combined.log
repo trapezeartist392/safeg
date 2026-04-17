@@ -1045,3 +1045,11 @@
 2026-04-17 15:41:48 [info]: [TRIAL] Processed 8 trial tenants
 2026-04-17 15:52:28 [info]: Order created: order_SeWdF1qnqitdbP — ₹67968 for 26e85aa7-0a14-498f-9af0-3bc2f6262e57
 2026-04-17 16:24:43 [info]: Order created: order_SeXBJWiASFsKGI — ₹67968 for 26e85aa7-0a14-498f-9af0-3bc2f6262e57
+2026-04-17 16:54:12 [info]: ✅ PostgreSQL connected
+2026-04-17 16:54:12 [info]: ✅ Redis connected
+2026-04-17 16:54:12 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-17 16:54:12 [info]: ✅ WebSocket server initialised
+2026-04-17 16:54:12 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-17 16:54:12 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-17 16:54:12 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-17 16:54:17 [info]: [TRIAL] Processed 8 trial tenants
