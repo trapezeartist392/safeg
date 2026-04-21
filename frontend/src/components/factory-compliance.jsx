@@ -78,6 +78,11 @@ const globalCSS = `
     #compliance-nav>div{display:flex!important;flex-direction:row!important;align-items:center!important;padding:0 8px!important;flex-shrink:0!important}
     #compliance-nav>div>div:first-child{display:none!important}
     #compliance-main{padding:12px!important}
+    #compliance-content [style]{max-width:100%!important}
+    #compliance-content div[style*="fontSize:40"]{font-size:24px!important;line-height:1.2!important}
+    #compliance-content div[style*="padding:\"18px 16px\""]{padding:12px 10px!important}
+    #compliance-content div[style*="borderRadius:12"][style*="overflow:\"hidden\""]{overflow:visible!important}
+    #compliance-content .kpi-val{font-size:24px!important}
     #compliance-content div[style*="gridTemplateColumns:repeat(4,1fr)"]{grid-template-columns:1fr 1fr!important}
     #compliance-content div[style*="gridTemplateColumns:repeat(3,1fr)"]{grid-template-columns:1fr 1fr!important}
     #compliance-content div[style*="gridTemplateColumns:repeat(5,1fr)"]{grid-template-columns:1fr 1fr!important}
@@ -213,10 +218,10 @@ function MiniBar({label,pct,color}) {
 
 function KpiCard({label,value,unit,trend,trendUp,color=C.orange}) {
   const trendColor = trendUp === true ? C.green : trendUp === false ? C.red : C.amber;
-  return <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"18px 16px",position:"relative",overflow:"hidden",transition:"transform .2s"}}>
+  return <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"clamp(8px,2vw,18px) clamp(6px,1.5vw,16px)",position:"relative",overflow:"visible",transition:"transform .2s",minWidth:0}}>
     <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:color}} />
     <div style={{fontSize:10,color:C.g2,textTransform:"uppercase",letterSpacing:2,marginBottom:8,fontFamily:"'Barlow Condensed',sans-serif"}}>{label}</div>
-    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:40,color:value===undefined?C.white:color===C.red?C.red:C.white,lineHeight:1}}>{value}</div>
+    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"clamp(20px,4vw,40px)",color:value===undefined?C.white:color===C.red?C.red:C.white,lineHeight:1,wordBreak:"break-word",overflowWrap:"break-word"}}>{value}</div>
     {unit && <div style={{fontSize:11,color:C.g2,marginTop:4}}>{unit}</div>}
     {trend && <div style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:8,padding:"2px 9px",borderRadius:20,background:`${trendColor}18`,color:trendColor,fontSize:11}}>{trend}</div>}
   </div>;
