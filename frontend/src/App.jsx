@@ -94,13 +94,14 @@ export default function App() {
 
             async function openRazorpay(token) {
               try {
-                const res = await fetch('/api/v1/payments/create-order', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify({ planId: 'growth', billing: 'monthly', addOns: [] }),
-                });
-                const data = await res.json();
-                const { orderId, amount, currency, key } = data.data;
+                const res  = await fetch('/api/v1/payments/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ planId: 'growth', billing: 'monthly', addOns: [] }),
+              });
+              const data = await res.json();
+              if (!data.success) throw new Error(data.message || 'Order creation failed');
+              const { orderId, amount, currency, key } = data.data;
                 const rzp = new window.Razorpay({
                   key, amount, currency, order_id: orderId,
                   name: 'SafeguardsIQ',

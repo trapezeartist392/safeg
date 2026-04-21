@@ -14,11 +14,11 @@ const T = {
 export default function TrialExpiredBanner() {
   const [trialInfo,  setTrialInfo]  = useState(null);
   const [paying,     setPaying]     = useState(false);
-  const token = localStorage.getItem('safeg_token') || '';
 
   useEffect(() => {
     const check = async () => {
       try {
+        const token = localStorage.getItem('safeg_token') || '';
         const res = await axios.get('/api/v1/trial/status', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -30,6 +30,17 @@ export default function TrialExpiredBanner() {
 
   const openRazorpay = async () => {
     setPaying(true);
+    // Refresh token if needed
+    let token = localStorage.getItem('safeg_token') || '';
+    try {
+      const refreshToken = localStorage.getItem('safeg_refresh') || '';
+      const refreshRes = await axios.post('/api/v1/auth/refresh-token', { refreshToken });
+      token = refreshRes.data.data.accessToken;
+      localStorage.setItem('safeg_token', token);
+    } catch(e) {
+      // Use existing token if refresh fails
+      token = localStorage.getItem('safeg_token') || '';
+    }
     try {
       // Load Razorpay script if needed
       if (!window.Razorpay) {
@@ -47,7 +58,12 @@ export default function TrialExpiredBanner() {
         planId: 'growth', billing: 'monthly', addOns: [],
       }, { headers: { Authorization: `Bearer ${token}` }});
 
-      const { orderId, amount, currency, key } = res.data.data;
+      const d = res.data.data;
+      if (!d) throw new Error('Order creation failed');
+      const orderId  = d.orderId;
+      const amount   = d.amount;
+      const currency = d.currency;
+      const key      = d.key || import.meta.env.VITE_RAZORPAY_KEY_ID;
       const user = JSON.parse(localStorage.getItem('safeg_user') || '{}');
 
       const rzp = new window.Razorpay({
