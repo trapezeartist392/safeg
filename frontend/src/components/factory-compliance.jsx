@@ -44,6 +44,54 @@ const globalCSS = `
   @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateX(120%)}}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   @keyframes ringFill{from{stroke-dashoffset:440}to{stroke-dashoffset:var(--target)}}
+  @media(max-width:768px){
+    .safeg-compliance-wrap{flex-direction:column!important}
+    .safeg-compliance-nav{width:100%!important;flex-direction:row!important;overflow-x:auto!important;flex-wrap:wrap!important}
+    .safeg-compliance-content{width:100%!important;min-width:0!important}
+    .safeg-kpi-grid{grid-template-columns:1fr 1fr!important}
+    .safeg-kpi-grid-5{grid-template-columns:1fr 1fr!important}
+    .safeg-report-grid{grid-template-columns:1fr 1fr!important}
+    table{min-width:500px!important}
+    .safeg-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+    .safeg-header-title{font-size:24px!important}
+    .safeg-page-pad{padding:12px!important}
+  }
+  @media(max-width:480px){
+    .safeg-kpi-grid{grid-template-columns:1fr!important}
+    .safeg-report-grid{grid-template-columns:1fr!important}
+  }
+  @media(max-width:768px){
+    body{overflow-x:hidden}
+    #compliance-shell{flex-direction:column!important}
+    #compliance-nav{width:100%!important;flex-direction:row!important;overflow-x:auto!important;padding:8px!important;gap:4px!important}
+    #compliance-nav button{font-size:10px!important;padding:6px 10px!important;white-space:nowrap!important}
+    #compliance-main{padding:10px!important}
+    #compliance-content{width:100%!important}
+    #compliance-topbar{flex-wrap:wrap!important;height:auto!important;padding:8px 12px!important;gap:8px!important}
+    #compliance-topbar>div:nth-child(2){display:none!important}
+    #compliance-topbar>div:nth-child(3){width:100%!important;overflow-x:auto!important;flex-wrap:nowrap!important;padding-bottom:4px!important}
+    #compliance-topbar>div:nth-child(3) button{font-size:10px!important;padding:4px 8px!important;white-space:nowrap!important;flex-shrink:0!important}
+  }
+  @media(max-width:768px){
+    #compliance-shell{flex-direction:column!important}
+    #compliance-nav{width:100%!important;height:auto!important;position:relative!important;top:0!important;flex-direction:row!important;overflow-x:auto!important;overflow-y:hidden!important;display:flex!important;flex-wrap:nowrap!important;padding:8px 0!important;border-right:none!important;border-bottom:1px solid #1C2238!important}
+    #compliance-nav>div{display:flex!important;flex-direction:row!important;align-items:center!important;padding:0 8px!important;flex-shrink:0!important}
+    #compliance-nav>div>div:first-child{display:none!important}
+    #compliance-main{padding:12px!important}
+    #compliance-content div[style*="gridTemplateColumns:repeat(4,1fr)"]{grid-template-columns:1fr 1fr!important}
+    #compliance-content div[style*="gridTemplateColumns:repeat(3,1fr)"]{grid-template-columns:1fr 1fr!important}
+    #compliance-content div[style*="gridTemplateColumns:repeat(5,1fr)"]{grid-template-columns:1fr 1fr!important}
+    #compliance-content div[style*="gridTemplateColumns:repeat(2,1fr)"]{grid-template-columns:1fr!important}
+    #compliance-content div[style*="fontSize:38"]{font-size:22px!important}
+    #compliance-content div[style*="display:flex"][style*="justifyContent:space-between"]{flex-wrap:wrap!important;gap:10px!important}
+    #compliance-content table{min-width:500px!important}
+    #compliance-content div[style*="overflowX:auto"]{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+  }
+  @media(max-width:480px){
+    #compliance-content div[style*="gridTemplateColumns:repeat(4,1fr)"]{grid-template-columns:1fr!important}
+    #compliance-content div[style*="gridTemplateColumns:repeat(3,1fr)"]{grid-template-columns:1fr!important}
+    #compliance-content div[style*="gridTemplateColumns:repeat(5,1fr)"]{grid-template-columns:1fr!important}
+  }
 `;
 
 // ─── DATA ───────────────────────────────────────────────────────
@@ -618,7 +666,7 @@ export default function App() {
       <style>{globalCSS}</style>
 
       {/* TOPBAR */}
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 24px",height:56,background:C.bg2,borderBottom:`1px solid ${C.border}`,position:"sticky",top:0,zIndex:100}}>
+      <div id="compliance-topbar" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 24px",height:56,background:C.bg2,borderBottom:`1px solid ${C.border}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <div style={{width:34,height:34,background:C.orange,clipPath:"polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:"#fff",animation:"pulse 3s infinite",flexShrink:0}}>✓</div>
           <div>
@@ -639,9 +687,9 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{display:"flex",minHeight:"calc(100vh - 56px)"}}>
+      <div id="compliance-shell" style={{display:"flex",minHeight:"calc(100vh - 56px)"}}>
         {/* SIDEBAR */}
-        <div style={{width:210,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"16px 0",position:"sticky",top:56,height:"calc(100vh - 56px)",overflowY:"auto"}}>
+        <div id="compliance-nav" style={{width:210,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"16px 0",position:"sticky",top:56,height:"calc(100vh - 56px)",overflowY:"auto"}}>
           {sideNav.map(sec=>(
             <div key={sec.label} style={{padding:"0 12px 8px"}}>
               <div style={{fontSize:9,color:C.g3,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif",padding:"8px 4px 4px",textTransform:"uppercase"}}>
@@ -659,7 +707,8 @@ export default function App() {
         </div>
 
         {/* CONTENT */}
-        <div style={{flex:1,overflowY:"auto",padding:24}}>
+        <div id="compliance-main" style={{flex:1,overflowY:"auto",padding:24}}>
+          <div id="compliance-content">
 
           {/* ── DASHBOARD ── */}
           {page==="dashboard" && (
@@ -951,6 +1000,7 @@ export default function App() {
             </div>
           )}
 
+          </div>
         </div>
       </div>
 
