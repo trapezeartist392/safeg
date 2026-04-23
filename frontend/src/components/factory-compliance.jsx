@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useComplianceData } from "../hooks/useComplianceData";
 
 // ─── PALETTE ───────────────────────────────────────────────────
 const C = {
@@ -636,9 +637,11 @@ function InspectionPage({toast}) {
 
 // ─── MAIN APP ────────────────────────────────────────────────────
 export default function App() {
+  const { violations: realViols, ppeTypes: realPpe, zones: realZones,
+          timeline: realTimeline, zoneBars: realZoneBars, stats } = useComplianceData();
   const [page, setPage] = useState("dashboard");
   const [toasts, setToasts] = useState([]);
-  const maxZ = Math.max(...ZONE_BARS.map(d=>d.val));
+  const maxZ = Math.max(...(realZoneBars || ZONE_BARS).map(d=>d.val));
 
   const toast = (msg, type="success") => {
     const id = Date.now();
@@ -753,7 +756,7 @@ export default function App() {
                 <Card>
                   <CardTitle>Violations by Zone — This Week</CardTitle>
                   <div style={{display:"flex",alignItems:"flex-end",gap:8,height:130,padding:"0 4px"}}>
-                    {ZONE_BARS.map((d,i)=>(
+                    {(realZoneBars || ZONE_BARS).map((d,i)=>(
                       <div key={d.label} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
                         <div style={{flex:1,width:"100%",display:"flex",alignItems:"flex-end"}}>
                           <div style={{width:"100%",height:`${d.val/maxZ*100}%`,background:d.c,borderRadius:"4px 4px 0 0",minHeight:4,transition:"height 1s",animation:"barUp 1s ease",animationDelay:`${i*0.08}s`,transformOrigin:"bottom",cursor:"pointer",position:"relative"}}
@@ -777,9 +780,9 @@ export default function App() {
                 <Card style={{overflowY:"auto",maxHeight:260}}>
                   <CardTitle color={C.teal}>Today's Events</CardTitle>
                   <div style={{display:"flex",flexDirection:"column",gap:0}}>
-                    {TIMELINE.map((e,i)=>(
+                    {(realTimeline || TIMELINE).map((e,i)=>(
                       <div key={i} style={{display:"flex",gap:12,paddingBottom:14,position:"relative"}}>
-                        {i<TIMELINE.length-1 && <div style={{position:"absolute",left:16,top:32,width:2,bottom:0,background:C.border}}/>}
+                        {i<(realTimeline || TIMELINE).length-1 && <div style={{position:"absolute",left:16,top:32,width:2,bottom:0,background:C.border}}/>}
                         <div style={{width:32,height:32,borderRadius:"50%",background:`${e.color}18`,border:`2px solid ${e.color}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,flexShrink:0}}>{e.icon}</div>
                         <div>
                           <div style={{fontSize:12,color:C.white,fontWeight:600}}>{e.title}</div>
@@ -795,12 +798,12 @@ export default function App() {
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
                 <Card>
                   <CardTitle color={C.orange}>PPE Compliance by Type</CardTitle>
-                  {PPE_TYPES.map(p=><MiniBar key={p.name} label={`${p.icon} ${p.name}`} pct={p.pct} color={p.c}/>)}
+                  {(realPpe || PPE_TYPES).map(p=><MiniBar key={p.name} label={`${p.icon} ${p.name}`} pct={p.pct} color={p.c}/>)}
                 </Card>
                 <Card>
                   <CardTitle color={C.purple}>Zone-wise PPE Status</CardTitle>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                    {ZONES.map(z=>(
+                    {(realZones || ZONES).map(z=>(
                       <div key={z.name} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}}>
                         <div style={{fontSize:22}}>{z.icon}</div>
                         <div style={{flex:1}}>
@@ -873,7 +876,7 @@ export default function App() {
               <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3,marginBottom:4}}>PPE COMPLIANCE TRACKER</div>
               <div style={{fontSize:12,color:C.g2,marginBottom:20,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>REAL-TIME PERSONAL PROTECTIVE EQUIPMENT MONITORING — ALL ZONES</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:20}}>
-                {PPE_TYPES.map(p=>(
+                {(realPpe || PPE_TYPES).map(p=>(
                   <div key={p.name} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"16px 18px",position:"relative",overflow:"hidden"}}>
                     <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:p.c}}/>
                     <div style={{display:"flex",alignItems:"center",gap:14}}>
@@ -893,7 +896,7 @@ export default function App() {
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
                 <Card>
                   <CardTitle>Zone-wise PPE Status</CardTitle>
-                  {ZONES.map(z=><MiniBar key={z.name} label={`${z.icon} ${z.name}`} pct={z.pct} color={z.c}/>)}
+                  {(realZones || ZONES).map(z=><MiniBar key={z.name} label={`${z.icon} ${z.name}`} pct={z.pct} color={z.c}/>)}
                 </Card>
                 <Card>
                   <CardTitle color={C.red}>PPE Violation Log — Today</CardTitle>
@@ -944,7 +947,7 @@ export default function App() {
                   <table style={{width:"100%",borderCollapse:"collapse"}}>
                     <thead><tr>{["ID","Date/Time","Type","Zone","Worker","Severity","Corrective Action","Status",""].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 12px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
                     <tbody>
-                      {VIOLATIONS.map((v,i)=>(
+                      {(realViols || VIOLATIONS).map((v,i)=>(
                         <tr key={i} style={{borderBottom:`1px solid ${C.border}44`}}>
                           <td style={{padding:"11px 12px",fontSize:12,color:C.orange,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:600}}>{v.id}</td>
                           <td style={{padding:"11px 12px",fontSize:12,color:C.g1}}>{v.date}</td>

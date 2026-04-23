@@ -90,6 +90,7 @@ function StepCompany({ form, setForm, onNext, setError }) {
           {k:"city",         l:"CITY *",                t:"text",     p:"Pune"},
           {k:"state",        l:"STATE *",               t:"text",     p:"Maharashtra"},
           {k:"address",      l:"REGISTERED ADDRESS",    t:"text",     p:"123, MIDC, Pune", full:true},
+          {k:"whatsapp", l:"WHATSAPP NUMBER FOR ALERTS", t:"tel", p:"+91 98765 43210", full:true},
         ].map(f=>(
           <div key={f.k} style={{gridColumn:f.full?"1/-1":"auto"}}>
             <label style={lbl}>{f.l}</label>
@@ -102,6 +103,22 @@ function StepCompany({ form, setForm, onNext, setError }) {
         <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
           <input type="checkbox" checked={form.agreeTerms||false} onChange={e=>F("agreeTerms",e.target.checked)}/>
           <span style={{fontSize:12,color:T.g1}}>I agree to the <a href="#" style={{color:T.orange}}>Terms of Service</a></span>
+        </label>
+        <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginTop:10,
+          background:`${T.green}08`, border:`1px solid ${T.green}25`,
+          borderRadius:10, padding:"12px 14px"}}>
+          <input type="checkbox" checked={form.agreeWhatsapp||false}
+            onChange={e=>F("agreeWhatsapp",e.target.checked)}
+            style={{width:16,height:16,accentColor:T.green}}/>
+          <div>
+            <div style={{fontSize:13,color:T.white,fontWeight:700}}>
+              📱 Get violation alerts on WhatsApp
+            </div>
+            <div style={{fontSize:11,color:T.g1,marginTop:2}}>
+              Receive instant alerts when AI detects PPE violations at your factory.
+              Messages sent within 28 seconds of detection.
+            </div>
+          </div>
         </label>
       </div>
       <button onClick={()=>{
@@ -474,15 +491,17 @@ export default function SignupPage({ onLogin }) {
     try {
       // Step 1 — Register account
       const regRes = await axios.post("/api/v1/auth/register", {
-        companyName: form.companyName,
-        email:       form.email,
-        password:    form.password,
-        fullName:    form.companyName + " Admin",
-        phone:       form.phone,
-        gstin:       form.gstin,
-        city:        form.city,
-        state:       form.state,
-        trialDays:   billing === "trial" ? 28 : 0,
+        companyName:   form.companyName,
+        email:         form.email,
+        password:      form.password,
+        fullName:      form.companyName + " Admin",
+        phone:         form.phone,
+        whatsapp:      form.whatsapp || form.phone,
+        whatsappOptIn: form.agreeWhatsapp || false,
+        gstin:         form.gstin,
+        city:          form.city,
+        state:         form.state,
+        trialDays:     billing === "trial" ? 28 : 0,
         plants, zones, cameras,
       });
 
