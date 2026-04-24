@@ -1132,3 +1132,34 @@
 2026-04-23 17:50:45 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
 2026-04-23 17:50:45 [info]: 🔍 Health check: http://localhost:4000/api/health
 2026-04-23 17:50:50 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-24 11:01:44 [info]: ✅ PostgreSQL connected
+2026-04-24 11:01:44 [info]: ✅ Redis connected
+2026-04-24 11:01:44 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-24 11:01:44 [info]: ✅ WebSocket server initialised
+2026-04-24 11:01:44 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-24 11:01:44 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-24 11:01:44 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-24 11:01:49 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-24 11:03:47 [error]: [3075bedd-76ec-4cc9-8777-70670db1f286] error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 0)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:203:50
+2026-04-24 11:05:29 [error]: [77ee8495-9070-4c9b-b06e-e7e6fbda0a04] error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 2)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:24:71
+2026-04-24 11:05:29 [error]: [2819c1da-16aa-4fe0-a4cf-9347177a5307] error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 2)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:24:71
+2026-04-24 11:05:29 [error]: [5a9d1837-3a88-46fd-b104-785e1101abab] error: column p.camera_count does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:92:18
+2026-04-24 11:05:29 [error]: [bf45dce7-9867-45ee-9696-0316daec28b4] error: column p.camera_count does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:92:18
