@@ -255,4 +255,30 @@ router.get('/customers', asyncHandler(async (req, res) => {
   res.json({ status:'success', data: result.rows });
 }));
 
+// GET /api/admin/tenants — all signups
+router.get('/tenants', asyncHandler(async (req, res) => {
+  const db     = getDB();
+  const limit  = Math.min(Number(req.query.limit) || 50, 200);
+  const offset = Number(req.query.offset) || 0;
+
+  const result = await db.query(`
+    SELECT
+      t.id, t.company_name, t.subscription_status, t.plan_id,
+      t.trial_ends_at, t.created_at,
+      u.full_name, u.email
+    FROM tenants t
+    LEFT JOIN users u ON u.tenant_id = t.id AND u.role = 'customer_admin'
+    ORDER BY t.created_at DESC
+    LIMIT $1 OFFSET $2
+  `, [limit, offset]);
+
+  const countRes = await db.query(`SELECT COUNT(*) AS total FROM tenants`);
+
+  res.json({
+    success: true,
+    data:    result.rows,
+    total:   Number(countRes.rows[0].total),
+  });
+}));
+
 module.exports = router;

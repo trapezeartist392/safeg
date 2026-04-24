@@ -382,3 +382,15 @@
 535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-361410b998fsm1735730a91.13 - gsmtp
 2026-04-17 15:41:48 [error]: Email failed to abcde@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
 535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-36143b0dc2fsm1076836a91.3 - gsmtp
+2026-04-23 17:43:34 [error]: [137ee5ba-d304-4f68-8955-ea57f19f2216] error: column u.mobile does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:264:18
+2026-04-23 17:43:37 [error]: [6b3d3a14-4b06-4130-848e-0d70490e98bc] error: column u.mobile does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:264:18
+2026-04-23 17:45:54 [error]: [017ac733-fc5a-4a64-a08a-f60571d4ddbf] error: column u.mobile does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:264:18

@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { Routes, Route, NavLink, Navigate } from "react-router-dom";
+import { Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 
 import LoginPage         from "./pages/auth/LoginPage.jsx";
 import SignupPage        from "./pages/auth/SignupPage.jsx";
@@ -56,6 +56,7 @@ function AppNav({ user, onLogout }) {
 }
 
 export default function App() {
+  const location = useLocation();
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem("safeg_user")); } catch { return null; }
   });
@@ -68,7 +69,20 @@ export default function App() {
   return (
     <div style={{ minHeight:"100vh", background:T.bg }}>
       {/* Only show main nav when NOT on admin route */}
-      {user && !window.location.pathname.startsWith("/admin") && <AppNav user={user} onLogout={handleLogout} />}
+      {user && !location.pathname.startsWith("/admin") && <AppNav user={user} onLogout={handleLogout} />}
+      {user && (
+        <div
+          style={{
+            display: location.pathname === "/dashboard" ? "block" : "none",
+            position: location.pathname === "/dashboard" ? "relative" : "fixed",
+            visibility: location.pathname === "/dashboard" ? "visible" : "hidden",
+            height: location.pathname === "/dashboard" ? "auto" : 0,
+            overflow: "hidden",
+          }}
+        >
+          <SafetyMonitor />
+        </div>
+      )}
       <Routes>
         {/* Public */}
         <Route path="/login"  element={user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />} />
@@ -76,7 +90,7 @@ export default function App() {
         <Route path="/"       element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
 
         {/* Main app â€” protected */}
-        <Route path="/dashboard"  element={<PrivateRoute user={user}><SafetyMonitor /></PrivateRoute>} />
+        <Route path="/dashboard"  element={<PrivateRoute user={user}><div /></PrivateRoute>} />
         <Route path="/compliance" element={<PrivateRoute user={user}><FactoryCompliance /></PrivateRoute>} />
         <Route path="/billing" element={
         <PrivateRoute user={user}>

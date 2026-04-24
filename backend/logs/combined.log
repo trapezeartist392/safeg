@@ -1063,3 +1063,72 @@
 2026-04-21 10:33:48 [info]: [TRIAL] Processed 8 trial tenants
 2026-04-21 11:20:39 [info]: Order created: order_Sg28a24TxMBqcg — ₹67968 for eb979fac-7206-421f-a66f-6ebe064e277d
 2026-04-21 16:33:43 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 15:56:40 [info]: ✅ PostgreSQL connected
+2026-04-23 15:56:40 [info]: ✅ Redis connected
+2026-04-23 15:56:40 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 15:56:40 [info]: ✅ WebSocket server initialised
+2026-04-23 15:56:40 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 15:56:40 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 15:56:40 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 15:56:44 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 17:25:35 [info]: ✅ PostgreSQL connected
+2026-04-23 17:25:35 [info]: ✅ Redis connected
+2026-04-23 17:25:35 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 17:25:35 [info]: ✅ WebSocket server initialised
+2026-04-23 17:25:35 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 17:25:35 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 17:25:35 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 17:25:40 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 17:30:58 [info]: ✅ PostgreSQL connected
+2026-04-23 17:30:58 [info]: ✅ Redis connected
+2026-04-23 17:30:58 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 17:30:58 [info]: ✅ WebSocket server initialised
+2026-04-23 17:30:58 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 17:30:58 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 17:30:58 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 17:31:03 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 17:40:13 [info]: ✅ PostgreSQL connected
+2026-04-23 17:40:14 [info]: ✅ Redis connected
+2026-04-23 17:40:14 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 17:40:14 [info]: ✅ WebSocket server initialised
+2026-04-23 17:40:14 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 17:40:14 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 17:40:14 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 17:40:18 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 17:43:08 [info]: ✅ PostgreSQL connected
+2026-04-23 17:43:08 [info]: ✅ Redis connected
+2026-04-23 17:43:08 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 17:43:08 [info]: ✅ WebSocket server initialised
+2026-04-23 17:43:08 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 17:43:08 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 17:43:08 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 17:43:13 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 17:43:34 [error]: [137ee5ba-d304-4f68-8955-ea57f19f2216] error: column u.mobile does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:264:18
+2026-04-23 17:43:37 [error]: [6b3d3a14-4b06-4130-848e-0d70490e98bc] error: column u.mobile does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:264:18
+2026-04-23 17:45:54 [error]: [017ac733-fc5a-4a64-a08a-f60571d4ddbf] error: column u.mobile does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:264:18
+2026-04-23 17:49:54 [info]: ✅ PostgreSQL connected
+2026-04-23 17:49:54 [info]: ✅ Redis connected
+2026-04-23 17:49:54 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 17:49:54 [info]: ✅ WebSocket server initialised
+2026-04-23 17:49:54 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 17:49:54 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 17:49:54 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 17:49:59 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-23 17:50:37 [info]: SIGINT received — shutting down gracefully
+2026-04-23 17:50:45 [info]: ✅ PostgreSQL connected
+2026-04-23 17:50:45 [info]: ✅ Redis connected
+2026-04-23 17:50:45 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-23 17:50:45 [info]: ✅ WebSocket server initialised
+2026-04-23 17:50:45 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-23 17:50:45 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-23 17:50:45 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-23 17:50:50 [info]: [TRIAL] Processed 8 trial tenants

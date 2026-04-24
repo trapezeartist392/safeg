@@ -534,6 +534,172 @@ function CustomerTable({ token }) {
   );
 }
 
+function CustomersSection({ token }) {
+  const [customers, setCustomers] = useState([]);
+  const [loading,   setLoading]   = useState(true);
+  const [total,     setTotal]     = useState(0);
+  const [search,    setSearch]    = useState("");
+
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get("/api/admin/tenants?limit=100", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setCustomers(res.data.data || []);
+        setTotal(res.data.total || 0);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
+  }, []);
+
+  const filtered = customers.filter((c) =>
+    !search ||
+    c.company_name?.toLowerCase().includes(search.toLowerCase()) ||
+    c.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const statusColor = (s) =>
+    s === "active" ? "#22D468" :
+    s === "trial" ? "#FFB400" :
+    s === "expired" ? "#FF3D3D" : "#7B90B8";
+
+  return (
+    <div style={{ padding:28 }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
+        <div>
+          <div style={{ fontSize:20, fontWeight:800, color:"#EEF2FF", marginBottom:4 }}>
+            👥 Customer Signups
+          </div>
+          <div style={{ fontSize:12, color:"#7B90B8" }}>
+            {total} total signups · all plans
+          </div>
+        </div>
+        <input
+          placeholder="Search company or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            background:"#0D1120",
+            border:"1px solid #141E32",
+            borderRadius:8,
+            padding:"8px 14px",
+            color:"#EEF2FF",
+            fontSize:12,
+            fontFamily:"Syne,sans-serif",
+            outline:"none",
+            width:240
+          }}
+        />
+      </div>
+
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:12, marginBottom:20 }}>
+        {[
+          { label:"Total Signups",  val:total, color:"#3D8AFF" },
+          { label:"Trial",          val:customers.filter((c) => c.subscription_status === "trial").length, color:"#FFB400" },
+          { label:"Active",         val:customers.filter((c) => c.subscription_status === "active").length, color:"#22D468" },
+          { label:"Expired",        val:customers.filter((c) => c.subscription_status === "expired").length, color:"#FF3D3D" },
+        ].map(({ label, val, color }) => (
+          <div
+            key={label}
+            style={{
+              background:"#0D1120",
+              border:"1px solid #141E32",
+              borderRadius:10,
+              padding:"16px",
+              textAlign:"center"
+            }}
+          >
+            <div style={{ fontSize:28, fontWeight:800, color, fontFamily:"Share Tech Mono,monospace" }}>{val}</div>
+            <div style={{ fontSize:10, color:"#344A6E", letterSpacing:1, marginTop:4 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {loading ? (
+        <div style={{ textAlign:"center", padding:"40px 0", color:"#7B90B8" }}>Loading...</div>
+      ) : (
+        <div style={{ background:"#0D1120", border:"1px solid #141E32", borderRadius:12, overflow:"hidden" }}>
+          <div
+            style={{
+              display:"grid",
+              gridTemplateColumns:"2fr 2fr 1fr 1fr 1fr 1fr",
+              gap:8,
+              padding:"10px 16px",
+              fontSize:9,
+              color:"#344A6E",
+              fontWeight:700,
+              letterSpacing:1.5,
+              borderBottom:"1px solid #141E32",
+              fontFamily:"Share Tech Mono,monospace"
+            }}
+          >
+            <div>COMPANY</div><div>EMAIL</div><div>PLAN</div>
+            <div>STATUS</div><div>TRIAL ENDS</div><div>JOINED</div>
+          </div>
+          {filtered.length === 0 ? (
+            <div style={{ textAlign:"center", padding:"40px 0", color:"#344A6E" }}>
+              No customers found
+            </div>
+          ) : filtered.map((c, i) => (
+            <div
+              key={c.id}
+              style={{
+                display:"grid",
+                gridTemplateColumns:"2fr 2fr 1fr 1fr 1fr 1fr",
+                gap:8,
+                padding:"12px 16px",
+                fontSize:12,
+                background:i % 2 === 0 ? "#101520" : "transparent",
+                borderBottom:"1px solid #141E3220",
+                alignItems:"center"
+              }}
+            >
+              <div style={{ color:"#EEF2FF", fontWeight:700 }}>
+                {c.company_name || "—"}
+              </div>
+              <div style={{ color:"#7B90B8", fontSize:11 }}>{c.email || "—"}</div>
+              <div style={{ color:"#FF5B18", fontWeight:700, textTransform:"uppercase", fontSize:10 }}>
+                {c.plan_id || "starter"}
+              </div>
+              <div>
+                <span
+                  style={{
+                    fontSize:10,
+                    fontWeight:700,
+                    color:statusColor(c.subscription_status),
+                    background:`${statusColor(c.subscription_status)}15`,
+                    border:`1px solid ${statusColor(c.subscription_status)}30`,
+                    padding:"2px 8px",
+                    borderRadius:6
+                  }}
+                >
+                  {c.subscription_status?.toUpperCase() || "TRIAL"}
+                </span>
+              </div>
+              <div style={{ fontSize:10, color:"#7B90B8", fontFamily:"Share Tech Mono,monospace" }}>
+                {c.trial_ends_at
+                  ? new Date(c.trial_ends_at).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
+                  : "—"}
+              </div>
+              <div style={{ fontSize:10, color:"#344A6E", fontFamily:"Share Tech Mono,monospace" }}>
+                {c.created_at
+                  ? new Date(c.created_at).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
+                  : "—"}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── MOCK DATA (fallback when API not ready) ─────── */
 const MOCK_STATS = {
   totalRevenue:4850000, monthRevenue:960000, activePlans:12, pendingRefunds:2,
@@ -663,6 +829,7 @@ function AdminLogin({ onLogin }) {
 const NAV = [
   { id:"architecture", label:"Architecture", icon:"🗺️" },
   { id:"payments",     label:"Payments",     icon:"💳" },
+  { id:"customers",    label:"Customers",    icon:"👥" },
 ];
 
 export default function AdminDashboard() {
@@ -760,9 +927,9 @@ export default function AdminDashboard() {
 
           {section === "architecture" && <ArchSection sysInfo={sysInfo} />}
           {section === "payments"     && <PaySection token={token} />}
+          {section === "customers"    && <CustomersSection token={token} />}
         </div>
       </div>
     </>
   );
 }
-
