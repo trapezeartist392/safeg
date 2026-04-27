@@ -639,9 +639,44 @@ function InspectionPage({toast}) {
 export default function App() {
   const { violations: realViols, ppeTypes: realPpe, zones: realZones,
           timeline: realTimeline, zoneBars: realZoneBars, stats } = useComplianceData();
+  const [liveCameras, setLiveCameras] = useState([]);
   const [page, setPage] = useState("dashboard");
   const [toasts, setToasts] = useState([]);
   const maxZ = Math.max(...(realZoneBars || ZONE_BARS).map(d=>d.val));
+
+  useEffect(() => {
+    const fetchCameras = async () => {
+      try {
+        const token = localStorage.getItem("safeg_token") || "";
+        const res = await fetch("/api/v1/cameras", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const cams = data.data || [];
+        try {
+          const AI_URL = window.location.hostname !== "localhost"
+            ? "https://safeguardsiq.com/ai" : "http://localhost:5050";
+          const sr = await fetch(`${AI_URL}/stream/status`);
+          const sd = await sr.json();
+          const streams = sd.streams || {};
+          const merged = cams.map(c => ({
+            ...c,
+            alert: (streams[c.cam_label]?.violations_today || 0) > 0,
+            violations_today: streams[c.cam_label]?.violations_today || 0,
+            status: streams[c.cam_label]?.status === "running" ? "online" : c.status || "offline",
+          }));
+          setLiveCameras(merged);
+        } catch {
+          setLiveCameras(cams);
+        }
+      } catch (e) {
+        console.error("Camera fetch error:", e);
+      }
+    };
+    fetchCameras();
+    const interval = setInterval(fetchCameras, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const toast = (msg, type="success") => {
     const id = Date.now();
@@ -736,12 +771,17 @@ export default function App() {
               {/* Alert Ticker */}
               <div style={{overflow:"hidden",background:"rgba(255,59,59,.07)",border:`1px solid rgba(255,59,59,.18)`,borderRadius:8,padding:"7px 0",marginBottom:20}}>
                 <div style={{display:"flex",gap:48,animation:"ticker 28s linear infinite",whiteSpace:"nowrap"}}>
-                  {[...Array(2)].map((_,ri)=>[
-                    {t:"🔴 ALERT: No helmet — Zone B Welding · 14:23:07"},
-                    {t:"⚠️ Danger zone breach — Forklift area · 14:19:44"},
-                    {t:"🔴 Safety vest missing — Paint Shop · 14:15:02"},
-                    {t:"✅ PPE compliance restored — Assembly A · 14:10:55"},
-                  ].map((a,i)=><span key={`${ri}-${i}`} style={{fontSize:11,color:C.red,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,display:"inline-flex",alignItems:"center",gap:16}}>{a.t}<span style={{color:C.g3}}>///</span></span>))}
+                  {[...Array(2)].map((_,ri)=>
+                    (realViols || VIOLATIONS).slice(0,4).map((v,i)=>(
+                      <span key={`${ri}-${i}`} style={{fontSize:11,
+                        color: v.sev==="High"||v.status==="Open" ? C.red : C.green,
+                        fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,
+                        display:"inline-flex",alignItems:"center",gap:16}}>
+                        {v.sev==="High"||v.status==="Open" ? "🔴" : "✅"} {v.type} — {v.zone} · {v.date}
+                        <span style={{color:C.g3}}>///</span>
+                      </span>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -839,41 +879,50 @@ export default function App() {
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>LIVE CAMERA FEEDS</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>16 CAMERAS · AI DETECTION ACTIVE · <span style={{color:C.green}}>ALL ONLINE</span></div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>
+                    {liveCameras.length} CAMERAS · AI DETECTION ACTIVE
+                  </div>
                 </div>
-                <button onClick={()=>toast("Clip exported","success")} style={{padding:"9px 18px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>📥 Export Clip</button>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-                {[
+                {(liveCameras.length > 0 ? liveCameras : [
                   {id:"CAM-01",loc:"Assembly A — Gate",alert:false},
                   {id:"CAM-02",loc:"Assembly A — Mid",alert:false},
                   {id:"CAM-03",loc:"Welding B — Entry",alert:false},
                   {id:"CAM-04",loc:"Welding B — Bay 3",alert:true},
-                  {id:"CAM-05",loc:"Paint Shop — Inlet",alert:false},
-                  {id:"CAM-06",loc:"Paint Shop — Exit",alert:false},
-                  {id:"CAM-07",loc:"Paint Shop — Spray",alert:true},
-                  {id:"CAM-08",loc:"Forklift Bay N",alert:false},
-                  {id:"CAM-09",loc:"Forklift Bay S",alert:true},
-                  {id:"CAM-10",loc:"Press Room A",alert:false},
-                  {id:"CAM-11",loc:"Press Room B",alert:false},
-                  {id:"CAM-12",loc:"Electrical Room",alert:false},
-                  {id:"CAM-13",loc:"Store — Gate",alert:false},
-                  {id:"CAM-14",loc:"Store — Internal",alert:false},
-                  {id:"CAM-15",loc:"Main Entrance",alert:false},
-                  {id:"CAM-16",loc:"Emergency Exit",alert:false},
-                ].map(cam=>(
-                  <div key={cam.id} onClick={()=>toast(`${cam.id}: ${cam.alert?"Violation active":"All clear"}`, cam.alert?"error":"success")} style={{background:"#000",borderRadius:8,overflow:"hidden",border:`1px solid ${cam.alert?C.red:C.border}`,position:"relative",aspectRatio:"16/9",cursor:"pointer",animation:cam.alert?"alertPulse 1.2s infinite":"none",transition:"border-color .2s"}}>
+                ]).map(cam=>(
+                  <div key={cam.id} style={{background:"#000",borderRadius:8,overflow:"hidden",
+                    border:`1px solid ${cam.alert||cam.violations_today>0?C.red:C.border}`,
+                    position:"relative",aspectRatio:"16/9",cursor:"pointer",
+                    animation:cam.alert||cam.violations_today>0?"alertPulse 1.2s infinite":"none"}}>
                     <CamFeed cam={cam}/>
-                    <div style={{position:"absolute",inset:0,padding:7,display:"flex",flexDirection:"column",justifyContent:"space-between",pointerEvents:"none"}}>
+                    <div style={{position:"absolute",inset:0,padding:7,display:"flex",
+                      flexDirection:"column",justifyContent:"space-between",pointerEvents:"none"}}>
                       <div style={{display:"flex",justifyContent:"space-between"}}>
-                        <div style={{background:"rgba(0,0,0,.7)",color:C.white,fontSize:9,padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:.5}}>{cam.id}</div>
-                        <div style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,.7)",padding:"2px 6px",borderRadius:4,fontSize:9,color:C.red,fontFamily:"'Barlow Condensed',sans-serif"}}>
-                          <Dot color={C.red} blink size={5}/> REC
+                        <div style={{background:"rgba(0,0,0,.7)",color:C.white,fontSize:9,
+                          padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>
+                          {cam.cam_label || cam.id}
+                        </div>
+                        <div style={{display:"flex",alignItems:"center",gap:4,
+                          background:"rgba(0,0,0,.7)",padding:"2px 6px",borderRadius:4,
+                          fontSize:9,color:cam.status==='online'?C.green:C.red,
+                          fontFamily:"'Barlow Condensed',sans-serif"}}>
+                          <Dot color={cam.status==='online'?C.green:C.red} blink={cam.status==='online'} size={5}/>
+                          {cam.status==='online'?'LIVE':'OFFLINE'}
                         </div>
                       </div>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
-                        <div style={{background:"rgba(0,0,0,.7)",color:C.g1,fontSize:9,padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>{cam.loc}</div>
-                        {cam.alert && <div style={{background:"rgba(255,59,59,.85)",color:"#fff",fontSize:9,padding:"3px 8px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,animation:"blink .7s infinite"}}>⚠ VIOLATION</div>}
+                        <div style={{background:"rgba(0,0,0,.7)",color:C.g1,fontSize:9,
+                          padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>
+                          {cam.area_name || cam.loc || "Zone"}
+                        </div>
+                        {(cam.alert||cam.violations_today>0) && (
+                          <div style={{background:"rgba(255,59,59,.85)",color:"#fff",fontSize:9,
+                            padding:"3px 8px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",
+                            fontWeight:700,animation:"blink .7s infinite"}}>
+                            ⚠ {cam.violations_today||""} VIOLATION{cam.violations_today>1?"S":""}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -915,19 +964,14 @@ export default function App() {
                   <table style={{width:"100%",borderCollapse:"collapse"}}>
                     <thead><tr>{["Time","Worker","Violation","Zone","Severity","Status"].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 10px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
                     <tbody>
-                      {[
-                        ["14:23","W-4821","No Hard Hat","Welding B","High","Open"],
-                        ["14:19","W-2341","Zone Breach","Forklift","High","Pending"],
-                        ["13:55","W-8823","No Vest","Paint Shop","Medium","Closed"],
-                        ["12:30","W-3301","No Eye Prot.","Assembly A","Medium","Closed"],
-                        ["11:18","W-5512","No Gloves","Press Room","Low","Closed"],
-                      ].map((r,i)=>(
-                        <tr key={i}><td style={{padding:"10px",fontSize:12,color:C.g1,borderBottom:`1px solid ${C.border}44`,fontFamily:"'Barlow Condensed',sans-serif"}}>{r[0]}</td>
-                          <td style={{padding:"10px",fontSize:11,color:C.g2,borderBottom:`1px solid ${C.border}44`,fontFamily:"'Barlow Condensed',sans-serif"}}>{r[1]}</td>
-                          <td style={{padding:"10px",fontSize:12,color:C.g1,borderBottom:`1px solid ${C.border}44`}}>{r[2]}</td>
-                          <td style={{padding:"10px",fontSize:12,color:C.g2,borderBottom:`1px solid ${C.border}44`}}>{r[3]}</td>
-                          <td style={{padding:"10px",borderBottom:`1px solid ${C.border}44`}}><Badge text={r[4]}/></td>
-                          <td style={{padding:"10px",borderBottom:`1px solid ${C.border}44`}}><Badge text={r[5]}/></td>
+                      {(realViols || VIOLATIONS).slice(0,5).map((v,i)=>(
+                        <tr key={i}>
+                          <td style={{padding:"10px",fontSize:12,color:C.g1,borderBottom:`1px solid ${C.border}44`,fontFamily:"'Barlow Condensed',sans-serif"}}>{v.date}</td>
+                          <td style={{padding:"10px",fontSize:11,color:C.g2,borderBottom:`1px solid ${C.border}44`,fontFamily:"'Barlow Condensed',sans-serif"}}>{v.worker||"—"}</td>
+                          <td style={{padding:"10px",fontSize:12,color:C.g1,borderBottom:`1px solid ${C.border}44`}}>{v.type}</td>
+                          <td style={{padding:"10px",fontSize:12,color:C.g2,borderBottom:`1px solid ${C.border}44`}}>{v.zone}</td>
+                          <td style={{padding:"10px",borderBottom:`1px solid ${C.border}44`}}><Badge text={v.sev}/></td>
+                          <td style={{padding:"10px",borderBottom:`1px solid ${C.border}44`}}><Badge text={v.status}/></td>
                         </tr>
                       ))}
                     </tbody>
@@ -948,10 +992,10 @@ export default function App() {
                 <button onClick={()=>toast("VIO-236 created and assigned","success")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>+ Log Violation</button>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="Open" value="7" unit="Require action" trend="↑ 2 new today" trendUp={false} color={C.red}/>
-                <KpiCard label="Pending Review" value="4" unit="Awaiting sign-off" trend="→ Same as yesterday" color={C.amber}/>
-                <KpiCard label="Closed Today" value="12" unit="Resolved" trend="↑ +3 vs yesterday" trendUp={true} color={C.green}/>
-                <KpiCard label="This Month" value="47" unit="Total" trend="↓ −23% vs last month" trendUp={true} color={C.blue}/>
+                <KpiCard label="Open" value={stats.openCount||"7"} unit="Require action" trend="↑ 2 new today" trendUp={false} color={C.red}/>
+                <KpiCard label="Pending Review" value={stats.pendingCount||"4"} unit="Awaiting sign-off" trend="→ Same as yesterday" color={C.amber}/>
+                <KpiCard label="Closed Today" value={stats.closedToday||"12"} unit="Resolved" trend="↑ +3 vs yesterday" trendUp={true} color={C.green}/>
+                <KpiCard label="This Month" value={stats.totalMonth||"47"} unit="Total" trend="↓ −23% vs last month" trendUp={true} color={C.blue}/>
               </div>
               <Card>
                 <CardTitle>All Violations</CardTitle>
