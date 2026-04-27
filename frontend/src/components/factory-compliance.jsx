@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { useComplianceData } from "../hooks/useComplianceData";
 
 // ─── PALETTE ───────────────────────────────────────────────────
@@ -660,13 +660,25 @@ export default function App() {
   ];
 
   const sideNav = [
-    {label:"Factory",items:[{icon:"🏭",name:"Pune Auto Plant",active:true},{icon:"🏭",name:"Chennai Unit 2"},{icon:"🏭",name:"Ahmedabad Plant"}]},
-    {label:"Compliance",items:[
-      {icon:"📊",name:"Overview",pg:"dashboard"},{icon:"📹",name:"Camera Feeds",pg:"cameras"},
-      {icon:"🦺",name:"PPE Tracking",pg:"ppe"},{icon:"⚠️",name:"Violations",pg:"violations",badge:7},
-      {icon:"📋",name:"Form 18",pg:"form18",badge:2},{icon:"✅",name:"Inspection",pg:"inspection"},
+    {label:"Factory",items:[
+      {icon:"🏭",name:"Pune Auto Plant",active:true},
+      {icon:"🏭",name:"Chennai Unit 2"},
+      {icon:"🏭",name:"Ahmedabad Plant"}
     ]},
-    {label:"Reports",items:[{icon:"📄",name:"ISO 45001"},{icon:"📄",name:"ESIC Returns"},{icon:"📄",name:"BRSR Safety"},{icon:"📄",name:"OSH Code"}]},
+    {label:"Compliance",items:[
+      {icon:"📊",name:"Overview",pg:"dashboard"},
+      {icon:"📹",name:"Camera Feeds",pg:"cameras"},
+      {icon:"🦺",name:"PPE Tracking",pg:"ppe"},
+      {icon:"⚠️",name:"Violations",pg:"violations",badge:7},
+      {icon:"📋",name:"Form 18",pg:"form18",badge:2},
+      {icon:"✅",name:"Inspection",pg:"inspection"},
+    ]},
+    {label:"Reports",items:[
+      {icon:"📄",name:"ISO 45001"},
+      {icon:"📄",name:"ESIC Returns"},
+      {icon:"📄",name:"BRSR Safety"},
+      {icon:"📄",name:"OSH Code"},
+    ]},
   ];
 
   return (

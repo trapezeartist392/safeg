@@ -122,9 +122,17 @@ export default function AIMonitorPanel() {
     try {
       canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
       const b64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-      const res  = await fetch(`${AI_URL}/detect`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_base64: b64, camera_id: camIdRef.current, ppe_types: ppeTypesRef.current }),
+      const res = await fetch(`/api/v1/ai/detect`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('safeg_token')}`,
+        },
+        body: JSON.stringify({
+          imageBase64: b64,
+          cameraId: camIdRef.current,
+          ppeTypes: ppeTypesRef.current,
+        }),
       });
       const data = await res.json();
       const id   = camIdRef.current;

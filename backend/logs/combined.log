@@ -1163,3 +1163,16 @@
     at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:92:18
+2026-04-24 11:50:09 [error]: [9962073c-0fde-43ea-a3f5-fbbe099cc3fa] error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 0)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:203:50
+2026-04-24 17:03:23 [info]: ✅ PostgreSQL connected
+2026-04-24 17:03:23 [info]: ✅ Redis connected
+2026-04-24 17:03:23 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-24 17:03:23 [info]: ✅ WebSocket server initialised
+2026-04-24 17:03:23 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-24 17:03:23 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-24 17:03:23 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-24 17:03:29 [info]: [TRIAL] Processed 8 trial tenants

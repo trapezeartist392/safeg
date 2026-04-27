@@ -417,3 +417,8 @@
     at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:92:18
+2026-04-24 11:50:09 [error]: [9962073c-0fde-43ea-a3f5-fbbe099cc3fa] error: column "subscription_status" does not exist
+    at C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 0)
+    at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:203:50
