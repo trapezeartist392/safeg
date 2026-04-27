@@ -113,29 +113,33 @@ router.post('/detect', authenticate, async (req, res) => {
       confidence:   req.body.confidence || 0.5,
     });
 
-    // Save violations to DB
-    if (data.violations && data.violations.length > 0) {
-      const db = require('../config/database').getDB();
-      for (const v of data.violations) {
-        try {
-          await db.query(`
-            INSERT INTO violations
-              (tenant_id, camera_id, violation_type, category, severity,
-               confidence, description, status, occurred_at)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,'open',NOW())
-          `, [
-            req.user.tenantId,
-            req.body.cameraId || 'browser-webcam',
-            v.type || v.ppe_type || 'Unknown',
-            v.category || 'ppe',
-            v.severity || 'medium',
-            v.confidence || 80,
-            v.description || '',
-          ]);
-        } catch(dbErr) {
-          logger.warn('Violation save error:', dbErr.message);
+    try {
+      // Save violations to DB
+      if (data.violations && data.violations.length > 0) {
+        const db = require('../config/database').getDB();
+        for (const v of data.violations) {
+          try {
+            await db.query(`
+              INSERT INTO violations
+                (tenant_id, camera_id, violation_type, category, severity,
+                 confidence, description, status, occurred_at)
+              VALUES ($1,$2,$3,$4,$5,$6,$7,'open',NOW())
+            `, [
+              req.user.tenantId,
+              req.body.cameraId || 'browser-webcam',
+              v.type || v.ppe_type || 'Unknown',
+              v.category || 'ppe',
+              v.severity || 'medium',
+              v.confidence || 80,
+              v.description || '',
+            ]);
+          } catch(dbErr) {
+            logger.warn('Violation save error: ' + dbErr.message + ' | ' + dbErr.stack);
+          }
         }
       }
+    } catch (saveErr) {
+      logger.warn('Violation save block error: ' + saveErr.message + ' | ' + saveErr.stack);
     }
 
     res.json({ success: true, data });
