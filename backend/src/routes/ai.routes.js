@@ -121,7 +121,7 @@ router.post('/detect', authenticate, async (req, res) => {
           try {
             await db.query(`
               INSERT INTO violations
-                (tenant_id, camera_id, violation_type, category, severity,
+                (tenant_id, violation_cam, violation_type, category, severity,
                  confidence, description, status, occurred_at)
               VALUES ($1,$2,$3,$4,$5,$6,$7,'open',NOW())
             `, [
