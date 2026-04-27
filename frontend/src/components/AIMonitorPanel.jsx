@@ -49,14 +49,14 @@ export default function AIMonitorPanel() {
   const [rtspUrl,   setRtspUrl]   = useState('webcam:0');
   const [ppeTypes,  setPpeTypes]  = useState(['Helmet','Safety Vest','Gloves']);
   const [violLog,   setViolLog]   = useState([]);
-  const [capturing, setCapturing] = useState(false);
 
-  const mediaStreamRef = useRef(null);
-  const videoRef       = useRef(null);
   const canvasRef      = useRef(null);
   const intervalRef    = useRef(null);
   const ppeTypesRef    = useRef(ppeTypes);
   const camIdRef       = useRef(camId);
+  const videoRef       = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const [capturing,    setCapturing]   = useState(false);
 
   useEffect(() => { ppeTypesRef.current = ppeTypes; }, [ppeTypes]);
   useEffect(() => { camIdRef.current = camId; }, [camId]);
