@@ -174,29 +174,40 @@ export default function AIMonitorPanel() {
     setLoading(true); setError('');
     if (IS_PRODUCTION) {
       try {
-        const media = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        // Stop any existing stream
+        if (mediaStreamRef.current) {
+          mediaStreamRef.current.getTracks().forEach(t => t.stop());
+        }
+        // Remove old video elements
+        document.querySelectorAll('video[data-safeg]').forEach(v => v.remove());
+
+        const media = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480 }, audio: false });
         mediaStreamRef.current = media;
+
         const video = document.createElement('video');
+        video.setAttribute('data-safeg', 'monitor');
         video.srcObject = media;
         video.muted = true;
         video.playsInline = true;
         video.autoplay = true;
         video.width = 640;
         video.height = 480;
+        video.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;';
         document.body.appendChild(video);
-        video.style.position = 'fixed';
-        video.style.opacity = '0';
-        video.style.pointerEvents = 'none';
-        video.style.top = '-9999px';
         videoRef.current = video;
-        await new Promise((resolve) => {
+
+        await new Promise((resolve, reject) => {
           video.onloadedmetadata = resolve;
-          video.play();
+          video.onerror = reject;
+          setTimeout(resolve, 3000); // fallback
         });
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await video.play();
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         const canvas = document.createElement('canvas');
         canvas.width = 640; canvas.height = 480;
         canvasRef.current = canvas;
+
         setCapturing(true); setExpanded(false);
         setStreams(prev => ({
           ...prev,
@@ -211,7 +222,9 @@ export default function AIMonitorPanel() {
         }));
         await analyseBrowserFrame();
         intervalRef.current = setInterval(analyseBrowserFrame, 15000);
-      } catch(e) { setError((lang==='hi'?'कैमरा त्रुटि: ':'Camera error: ') + e.message); }
+      } catch(e) {
+        setError('Camera error: ' + e.message);
+      }
     } else {
       try {
         const r = await fetch(`${AI_URL}/stream/start`, {
