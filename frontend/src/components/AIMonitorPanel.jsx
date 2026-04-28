@@ -134,11 +134,12 @@ export default function AIMonitorPanel() {
           ppeTypes: ppeTypesRef.current,
         }),
       });
-      const data = await res.json();
+      const json = await res.json();
+      const data = json.data || json;
       const id   = camIdRef.current;
       setStreams(prev => ({
-        ...prev,
-        [id]: {
+          ...prev,
+          [id]: {
           ...prev[id], status: 'running', rtsp_url: 'browser-webcam',
           last_detection: new Date().toISOString(),
           persons_detected: data.persons_detected || 0,
