@@ -2,7 +2,7 @@
  * AIMonitorPanel.jsx — with Hindi/English support
  * Production: Browser captures webcam frames and sends to server Claude AI
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLang } from '../i18n/LanguageContext';
 
 const AI_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
@@ -115,7 +115,7 @@ export default function AIMonitorPanel() {
     return () => clearInterval(t);
   }, []);
 
-  const analyseBrowserFrame = async () => {
+  const analyseBrowserFrame = useCallback(async () => {
     const video  = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas || video.readyState < 2) return;
@@ -168,7 +168,7 @@ export default function AIMonitorPanel() {
         });
       }
     } catch(e) { console.error('Analysis error:', e); }
-  };
+  }, []);
 
   const startStream = async () => {
     setLoading(true); setError('');
