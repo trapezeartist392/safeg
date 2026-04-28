@@ -177,9 +177,23 @@ export default function AIMonitorPanel() {
         const media = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         mediaStreamRef.current = media;
         const video = document.createElement('video');
-        video.srcObject = media; video.muted = true; video.playsInline = true;
+        video.srcObject = media;
+        video.muted = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        video.width = 640;
+        video.height = 480;
+        document.body.appendChild(video);
+        video.style.position = 'fixed';
+        video.style.opacity = '0';
+        video.style.pointerEvents = 'none';
+        video.style.top = '-9999px';
         videoRef.current = video;
-        await video.play();
+        await new Promise((resolve) => {
+          video.onloadedmetadata = resolve;
+          video.play();
+        });
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const canvas = document.createElement('canvas');
         canvas.width = 640; canvas.height = 480;
         canvasRef.current = canvas;
@@ -216,7 +230,11 @@ export default function AIMonitorPanel() {
     if (IS_PRODUCTION) {
       if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
       if (mediaStreamRef.current) { mediaStreamRef.current.getTracks().forEach(t => t.stop()); mediaStreamRef.current = null; }
-      if (videoRef.current) { videoRef.current.srcObject = null; videoRef.current = null; }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+        if (videoRef.current.parentNode) videoRef.current.parentNode.removeChild(videoRef.current);
+        videoRef.current = null;
+      }
       setCapturing(false);
       setStreams(prev => ({ ...prev, [id]: { ...prev[id], status: 'stopped' } }));
     } else {
