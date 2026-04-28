@@ -688,8 +688,8 @@ export default function App() {
     {id:"dashboard",label:"Dashboard",icon:"📊"},
     {id:"cameras",label:"Live Cameras",icon:"📹"},
     {id:"ppe",label:"PPE Compliance",icon:"🦺"},
-    {id:"violations",label:"Violations",icon:"⚠️",badge:7},
-    {id:"form18",label:"Form 18",icon:"📋",badge:2},
+    {id:"violations",label:"Violations",icon:"⚠️",badge:stats.openCount||0},
+    {id:"form18",label:"Form 18",icon:"📋",badge:stats.pendingCount||0},
     {id:"inspection",label:"Inspection",icon:"✅"},
     {id:"reports",label:"Reports",icon:"📄"},
   ];
@@ -704,8 +704,8 @@ export default function App() {
       {icon:"📊",name:"Overview",pg:"dashboard"},
       {icon:"📹",name:"Camera Feeds",pg:"cameras"},
       {icon:"🦺",name:"PPE Tracking",pg:"ppe"},
-      {icon:"⚠️",name:"Violations",pg:"violations",badge:7},
-      {icon:"📋",name:"Form 18",pg:"form18",badge:2},
+      {icon:"⚠️",name:"Violations",pg:"violations",badge:stats.openCount||0},
+      {icon:"📋",name:"Form 18",pg:"form18",badge:stats.pendingCount||0},
       {icon:"✅",name:"Inspection",pg:"inspection"},
     ]},
     {label:"Reports",items:[
@@ -730,7 +730,7 @@ export default function App() {
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:7,background:"rgba(34,212,106,.08)",border:`1px solid rgba(34,212,106,.25)`,borderRadius:20,padding:"5px 14px",fontSize:11,color:C.green,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}}>
-          <Dot color={C.green} blink size={7}/> MONITORING ACTIVE · 16 CAMERAS
+          <Dot color={C.green} blink size={7}/> MONITORING ACTIVE · {liveCameras.length||0} CAMERAS
         </div>
         <div style={{display:"flex",gap:4}}>
           {navItems.map(n=>(
@@ -1054,11 +1054,11 @@ export default function App() {
               <Card>
                 <CardTitle>Annual Compliance Summary — FY 2024</CardTitle>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14}}>
-                  <KpiCard label="Total Violations" value="47" trend="↓ −23% vs last year" trendUp={true} color={C.green}/>
-                  <KpiCard label="Near-Misses" value="12" trend="↓ −40% YoY" trendUp={true} color={C.green}/>
-                  <KpiCard label="Lost Work Days" value="18" trend="→ No change" color={C.amber}/>
+                  <KpiCard label="Total Violations" value={stats.totalMonth||0} trend="↓ vs last year" trendUp={true} color={C.green}/>
+                  <KpiCard label="Near-Misses" value={stats.openCount||0} trend="↓ YoY" trendUp={true} color={C.green}/>
+                  <KpiCard label="Lost Work Days" value={stats.pendingCount||0} trend="→ No change" color={C.amber}/>
                   <KpiCard label="Fatalities" value="0" trend="● Zero record maintained" trendUp={true} color={C.green}/>
-                  <KpiCard label="Compliance Rate" value="97%" trend="↑ +4% YoY" trendUp={true} color={C.green}/>
+                  <KpiCard label="Compliance Rate" value={`${stats.compliance||97}%`} trend="↑ YoY" trendUp={true} color={C.green}/>
                 </div>
               </Card>
             </div>
