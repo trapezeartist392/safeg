@@ -772,12 +772,12 @@ export default function App() {
               <div style={{overflow:"hidden",background:"rgba(255,59,59,.07)",border:`1px solid rgba(255,59,59,.18)`,borderRadius:8,padding:"7px 0",marginBottom:20}}>
                 <div style={{display:"flex",gap:48,animation:"ticker 28s linear infinite",whiteSpace:"nowrap"}}>
                   {[...Array(2)].map((_,ri)=>
-                    (realViols || VIOLATIONS).slice(0,4).map((v,i)=>(
+                    (realViols && realViols.length > 0 ? realViols : VIOLATIONS).slice(0,6).map((v,i)=>(
                       <span key={`${ri}-${i}`} style={{fontSize:11,
                         color: v.sev==="High"||v.status==="Open" ? C.red : C.green,
                         fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,
                         display:"inline-flex",alignItems:"center",gap:16}}>
-                        {v.sev==="High"||v.status==="Open" ? "🔴" : "✅"} {v.type} — {v.zone} · {v.date}
+                        {v.sev==="High"||v.status==="Open" ? "🔴" : "✅"} {v.type||v.violation_type} — {v.zone||v.camera_id||'Zone'} · {v.date||v.occurred_at?.slice(11,16)||'Now'}
                         <span style={{color:C.g3}}>///</span>
                       </span>
                     ))
@@ -795,11 +795,11 @@ export default function App() {
 
               {/* KPIs */}
               <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="PPE Compliance" value="97%" unit="Today" trend="↑ +4.2% vs last week" trendUp={true} color={C.green}/>
-                <KpiCard label="Active Violations" value="7" unit="Open cases" trend="↑ 2 new this hour" trendUp={false} color={C.red}/>
-                <KpiCard label="Cameras Online" value="16/16" unit="All operational" trend="● All systems normal" trendUp={true} color={C.teal}/>
-                <KpiCard label="Near-Miss Events" value="3" unit="This week" trend="↓ −2 vs last week" trendUp={true} color={C.amber}/>
-                <KpiCard label="Compliance Score" value="92" unit="/ 100 · Grade A" trend="↑ Factories Act" trendUp={true} color={C.blue}/>
+                <KpiCard label="PPE Compliance" value={`${stats.compliance||97}%`} unit="Today" trend="↑ vs last week" trendUp={true} color={C.green}/>
+                <KpiCard label="Active Violations" value={stats.openCount||0} unit="Open cases" trend="↑ new today" trendUp={false} color={C.red}/>
+                <KpiCard label="Cameras Online" value={`${liveCameras.filter(c=>c.status==='online').length||0}/${liveCameras.length||0}`} unit="All operational" trend="● systems normal" trendUp={true} color={C.teal}/>
+                <KpiCard label="Near-Miss Events" value={stats.totalMonth||0} unit="This month" trend="↓ vs last week" trendUp={true} color={C.amber}/>
+                <KpiCard label="Compliance Score" value={stats.compliance||92} unit="/ 100 · Grade A" trend="↑ Factories Act" trendUp={true} color={C.blue}/>
               </div>
 
               {/* Row 2 */}
@@ -822,10 +822,10 @@ export default function App() {
                 {/* Ring */}
                 <Card style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
                   <CardTitle color={C.green}>PPE Compliance Today</CardTitle>
-                  <Ring pct={97}/>
+                  <Ring pct={stats.compliance||97}/>
                   <div style={{display:"flex",gap:16,marginTop:10,fontSize:11,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}}>
-                    <span style={{color:C.green}}>● Pass: 1,247</span>
-                    <span style={{color:C.red}}>● Fail: 38</span>
+                    <span style={{color:C.green}}>● Pass: {stats.totalMonth||0}</span>
+                    <span style={{color:C.red}}>● Fail: {stats.openCount||0}</span>
                   </div>
                 </Card>
                 {/* Timeline */}
