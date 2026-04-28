@@ -314,8 +314,8 @@ function CamFeed({cam}) {
 function Form18({toast}) {
   const today=new Date().toISOString().slice(0,10);
   const [f,setF]=useState({
-    factoryName:"Pune Auto Components Pvt Ltd",
-    regNo:"MH/PUN/F/2019/00423",
+    factoryName: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.companyName || "Pune Auto Components Pvt Ltd",
+    regNo: "MH/PUN/F/2019/00423",
     industry:"Automobile Components Manufacturing",
     address:"Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune – 411018",
     district:"Pune", state:"Maharashtra",
@@ -640,6 +640,7 @@ export default function App() {
   const { violations: realViols, ppeTypes: realPpe, zones: realZones,
           timeline: realTimeline, zoneBars: realZoneBars, stats } = useComplianceData();
   const [liveCameras, setLiveCameras] = useState([]);
+  const [livePlants, setLivePlants] = useState([]);
   const [page, setPage] = useState("dashboard");
   const [toasts, setToasts] = useState([]);
   const maxZ = Math.max(...(realZoneBars || ZONE_BARS).map(d=>d.val));
@@ -666,8 +667,18 @@ export default function App() {
             status: streams[c.cam_label]?.status === "running" ? "online" : c.status || "offline",
           }));
           setLiveCameras(merged);
+          try {
+            const pr = await fetch('/api/v1/plants', { headers: { Authorization: `Bearer ${token}` } });
+            const pd = await pr.json();
+            setLivePlants(pd.data || []);
+          } catch {}
         } catch {
           setLiveCameras(cams);
+          try {
+            const pr = await fetch('/api/v1/plants', { headers: { Authorization: `Bearer ${token}` } });
+            const pd = await pr.json();
+            setLivePlants(pd.data || []);
+          } catch {}
         }
       } catch (e) {
         console.error("Camera fetch error:", e);
@@ -695,11 +706,10 @@ export default function App() {
   ];
 
   const sideNav = [
-    {label:"Factory",items:[
-      {icon:"🏭",name:"Pune Auto Plant",active:true},
-      {icon:"🏭",name:"Chennai Unit 2"},
-      {icon:"🏭",name:"Ahmedabad Plant"}
-    ]},
+    {label:"Factory",items: livePlants.length > 0
+      ? livePlants.map((p,i) => ({icon:"🏭", name:p.plant_name||p.name, pg:undefined, active:i===0}))
+      : [{icon:"🏭",name:"Pune Auto Plant",active:true},{icon:"🏭",name:"Chennai Unit 2"},{icon:"🏭",name:"Ahmedabad Plant"}]
+    },
     {label:"Compliance",items:[
       {icon:"📊",name:"Overview",pg:"dashboard"},
       {icon:"📹",name:"Camera Feeds",pg:"cameras"},
@@ -730,7 +740,8 @@ export default function App() {
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:7,background:"rgba(34,212,106,.08)",border:`1px solid rgba(34,212,106,.25)`,borderRadius:20,padding:"5px 14px",fontSize:11,color:C.green,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}}>
-          <Dot color={C.green} blink size={7}/> MONITORING ACTIVE · {liveCameras.length||0} CAMERAS
+          <Dot color={liveCameras.length>0?C.green:C.amber} blink={liveCameras.length>0} size={7}/>
+          {liveCameras.length>0 ? `MONITORING ACTIVE · ${liveCameras.length} CAMERAS` : 'NO CAMERAS CONNECTED'}
         </div>
         <div style={{display:"flex",gap:4}}>
           {navItems.map(n=>(
@@ -1036,12 +1047,12 @@ export default function App() {
               <div style={{fontSize:12,color:C.g2,marginBottom:24,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>AUTO-GENERATED STATUTORY REPORTS — ISO 45001 · ESIC · BRSR · FACTORIES ACT</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:20}}>
                 {[
-                  {icon:"📋",title:"ISO 45001 Monthly Report",desc:"OHS Management System — January 2024",status:"Closed",badge:"Ready to export"},
-                  {icon:"🏥",title:"ESIC Half-Yearly Return",desc:"Employee State Insurance — H1 2024",status:"Pending",badge:"Due in 12 days"},
+                  {icon:"📋",title:"ISO 45001 Monthly Report",desc:`OHS Management System — ${new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})}`,status:"Closed",badge:"Ready to export"},
+                  {icon:"🏥",title:"ESIC Half-Yearly Return",desc:`Employee State Insurance — H${new Date().getMonth()<6?1:2} ${new Date().getFullYear()}`,status:stats.totalMonth>0?"Closed":"Pending",badge:stats.totalMonth>0?"Ready to export":"No data yet"},
                   {icon:"📊",title:"SEBI BRSR Safety Data",desc:"Business Responsibility & Sustainability",status:"Closed",badge:"Ready to export"},
-                  {icon:"⚠️",title:"Accident Summary Report",desc:"Form 18 & 19 Register — 2024",status:"Closed",badge:"3 incidents filed"},
+                  {icon:"⚠️",title:"Accident Summary Report",desc:`Form 18 & 19 Register — ${new Date().getFullYear()}`,status:stats.openCount>0?"Pending":"Closed",badge:`${stats.totalMonth||0} incidents filed`},
                   {icon:"🏛️",title:"Shram Suvidha Portal Sync",desc:"Labour compliance — Ministry of Labour",status:"Pending",badge:"Sync pending"},
-                  {icon:"📜",title:"OSH Code 2020 Compliance",desc:"Occupational Safety Health — Quarterly",status:"Closed",badge:"Compliant"},
+                  {icon:"📜",title:"OSH Code 2020 Compliance",desc:"Occupational Safety Health — Quarterly",status:stats.compliance>=90?"Closed":"Pending",badge:stats.compliance>=90?"Compliant":`${stats.compliance||0}% — Review needed`},
                 ].map((r,i)=>(
                   <Card key={i} style={{cursor:"pointer"}} onClick={()=>toast(`${r.title} — ${r.badge}`,"success")}>
                     <div style={{fontSize:32,marginBottom:12}}>{r.icon}</div>
