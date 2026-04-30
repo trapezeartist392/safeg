@@ -262,11 +262,41 @@ function Ring({pct,color=C.green,size=160,label="COMPLIANT"}) {
 // ─── CAMERA FEED (Canvas) ────────────────────────────────────────
 function CamFeed({cam}) {
   const ref=useRef();
+  const videoRef=useRef(null);
+  const [monitorStream,setMonitorStream]=useState(null);
+  const isMonitorCam = cam.id === "laptop-webcam" || cam.cam_label === "laptop-webcam";
+
+  useEffect(() => {
+    if (!isMonitorCam) {
+      setMonitorStream(null);
+      return;
+    }
+
+    const syncMonitorStream = () => {
+      const video = document.querySelector('video[data-safeg="monitor"]');
+      const nextStream = video?.srcObject || null;
+      setMonitorStream(prev => prev === nextStream ? prev : nextStream);
+    };
+
+    syncMonitorStream();
+    const intervalId = setInterval(syncMonitorStream, 1000);
+    return () => clearInterval(intervalId);
+  }, [isMonitorCam]);
+
   useEffect(()=>{
+    if (videoRef.current && videoRef.current.srcObject !== monitorStream) {
+      videoRef.current.srcObject = monitorStream || null;
+      if (monitorStream) videoRef.current.play().catch(() => {});
+    }
+  }, [monitorStream]);
+
+  useEffect(()=>{
+    if (isMonitorCam && monitorStream) return;
     const canvas=ref.current; if(!canvas) return;
     const ctx=canvas.getContext("2d");
     const w=canvas.width, h=canvas.height;
-    const hue=(parseInt(cam.id.split("-")[1])*37)%360;
+    const camNum = parseInt((cam.id || "").split("-")[1], 10);
+    const hue=Number.isFinite(camNum)?(camNum*37)%360:200;
     function draw(){
       ctx.fillStyle=`hsl(${hue},15%,6%)`;
       ctx.fillRect(0,0,w,h);
@@ -306,7 +336,18 @@ function CamFeed({cam}) {
     draw();
     const id=setInterval(draw,800);
     return ()=>clearInterval(id);
-  },[cam]);
+  },[cam,isMonitorCam,monitorStream]);
+
+  if (isMonitorCam && monitorStream) {
+    return <video
+      ref={videoRef}
+      autoPlay
+      muted
+      playsInline
+      style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
+    />;
+  }
+
   return <canvas ref={ref} width={320} height={180} style={{width:"100%",height:"100%",display:"block"}} />;
 }
 
