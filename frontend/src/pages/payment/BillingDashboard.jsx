@@ -239,6 +239,7 @@ export default function BillingDashboard({ onUpgrade }) {
   const [refundModal, setRefundModal] = useState(null);
   const [toast,    setToast]      = useState(null);
   const [currentPlan, setCurrentPlan] = useState(null);
+  const [trialEndsAt, setTrialEndsAt] = useState(null);
 
   // ── Load data
   useEffect(() => {
@@ -258,6 +259,7 @@ export default function BillingDashboard({ onUpgrade }) {
 
       if (meRes.status === "fulfilled" && meRes.value.success) {
         setCurrentPlan(meRes.value.data.plan || "growth");
+        setTrialEndsAt(meRes.value.data.trialEndsAt || null);
       }
 
       // Compute stats
@@ -349,7 +351,7 @@ export default function BillingDashboard({ onUpgrade }) {
                 }}>ACTIVE</span>
               </div>
               <div style={{ fontSize: 13, color: T.fog, marginTop: 3 }}>
-                {plan.limit} · Renews {new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")}
+                {plan.limit} · {trialEndsAt ? `Trial ends ${new Date(trialEndsAt).toLocaleDateString("en-IN")}` : `Renews ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")}`}
               </div>
             </div>
           </div>
@@ -526,5 +528,4 @@ const DEMO_PAYMENTS = [
     razorpay_payment_id:"pay_MABCDEF246810",
   },
 ];
-
 
