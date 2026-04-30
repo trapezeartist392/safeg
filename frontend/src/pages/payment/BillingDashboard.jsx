@@ -26,7 +26,7 @@ body{background:${T.void};color:${T.snow};font-family:'Instrument Sans',sans-ser
 `;
 
 const API = import.meta?.env?.VITE_API_URL || "http://localhost:4000/api/v1";
-const authHeader = () => ({ Authorization: `Bearer ${window._safegToken}` });
+const authHeader = () => ({ Authorization: `Bearer ${localStorage.getItem('safeg_token') || ''}` });
 
 const PLAN_META = {
   starter:    { color: T.jade,   icon: "◈", label: "Starter",    limit: "8 cameras" },
