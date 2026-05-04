@@ -539,6 +539,7 @@ function CustomersSection({ token }) {
   const [loading,   setLoading]   = useState(true);
   const [total,     setTotal]     = useState(0);
   const [search,    setSearch]    = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -649,9 +650,11 @@ function CustomersSection({ token }) {
           ) : filtered.map((c, i) => (
             <div
               key={c.id}
+              onClick={() => setSelectedCustomer(c)}
               style={{
                 display:"grid",
                 gridTemplateColumns:"2fr 2fr 1fr 1fr 1fr 1fr",
+                cursor:"pointer",
                 gap:8,
                 padding:"12px 16px",
                 fontSize:12,
@@ -694,6 +697,122 @@ function CustomersSection({ token }) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {selectedCustomer && (
+        <div
+          style={{
+            position:"fixed",
+            inset:0,
+            background:"rgba(0,0,0,.7)",
+            zIndex:1000,
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center"
+          }}
+          onClick={() => setSelectedCustomer(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background:"#0D1120",
+              border:"1px solid #141E32",
+              borderRadius:16,
+              padding:28,
+              width:520,
+              maxHeight:"80vh",
+              overflowY:"auto"
+            }}
+          >
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:20 }}>
+              <div style={{ fontSize:18, fontWeight:800, color:"#EEF2FF" }}>
+                {selectedCustomer.company_name || "—"}
+              </div>
+              <button
+                onClick={() => setSelectedCustomer(null)}
+                style={{ background:"none", border:"none", color:"#7B90B8", cursor:"pointer", fontSize:18 }}
+              >
+                ✕
+              </button>
+            </div>
+            {[
+              { l:"Email",      v:selectedCustomer.email },
+              { l:"Full Name",  v:selectedCustomer.full_name },
+              { l:"Plan",       v:selectedCustomer.plan_id?.toUpperCase() },
+              { l:"Status",     v:selectedCustomer.subscription_status?.toUpperCase() },
+              { l:"Trial Ends", v:selectedCustomer.trial_ends_at ? new Date(selectedCustomer.trial_ends_at).toLocaleDateString("en-IN") : "—" },
+              { l:"Joined",     v:selectedCustomer.created_at ? new Date(selectedCustomer.created_at).toLocaleDateString("en-IN") : "—" },
+              { l:"Plants",     v:selectedCustomer.plant_count || 0 },
+              { l:"Tenant ID",  v:selectedCustomer.id },
+            ].map(({ l, v }) => (
+              <div
+                key={l}
+                style={{
+                  display:"flex",
+                  justifyContent:"space-between",
+                  padding:"10px 0",
+                  borderBottom:"1px solid #141E3220"
+                }}
+              >
+                <span style={{ fontSize:12, color:"#7B90B8" }}>{l}</span>
+                <span
+                  style={{
+                    fontSize:12,
+                    color:"#EEF2FF",
+                    fontWeight:600,
+                    fontFamily:"Share Tech Mono,monospace"
+                  }}
+                >
+                  {v || "—"}
+                </span>
+              </div>
+            ))}
+            <div style={{ marginTop:20, display:"flex", gap:10 }}>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(selectedCustomer.email || "");
+                  alert("Email copied!");
+                }}
+                style={{
+                  flex:1,
+                  padding:"10px",
+                  background:"#101520",
+                  border:"1px solid #141E32",
+                  borderRadius:8,
+                  color:"#7B90B8",
+                  cursor:"pointer",
+                  fontSize:12
+                }}
+              >
+                📋 Copy Email
+              </button>
+              <button
+                onClick={() => {
+                  const d = selectedCustomer;
+                  const csv = `Company,Email,Plan,Status,Trial Ends,Joined\n${d.company_name},${d.email},${d.plan_id},${d.subscription_status},${d.trial_ends_at},${d.created_at}`;
+                  const blob = new Blob([csv], { type:"text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${d.company_name || "customer"}.csv`;
+                  a.click();
+                }}
+                style={{
+                  flex:1,
+                  padding:"10px",
+                  background:"#FF5B1820",
+                  border:"1px solid #FF5B1844",
+                  borderRadius:8,
+                  color:"#FF5B18",
+                  cursor:"pointer",
+                  fontSize:12,
+                  fontWeight:700
+                }}
+              >
+                ⬇ Export CSV
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

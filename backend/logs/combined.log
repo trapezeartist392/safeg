@@ -1216,3 +1216,12 @@
 2026-04-27 14:05:16 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
 2026-04-27 14:05:16 [info]: 🔍 Health check: http://localhost:4000/api/health
 2026-04-27 14:05:21 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-30 11:01:25 [info]: ✅ PostgreSQL connected
+2026-04-30 11:01:25 [info]: ✅ Redis connected
+2026-04-30 11:01:25 [info]: WebSocket server ready at ws://localhost/ws
+2026-04-30 11:01:25 [info]: ✅ WebSocket server initialised
+2026-04-30 11:01:25 [info]: 🚀 SafeG AI Backend running on port 4000
+2026-04-30 11:01:25 [info]: 📖 Swagger docs: http://localhost:4000/api/docs
+2026-04-30 11:01:25 [info]: 🔍 Health check: http://localhost:4000/api/health
+2026-04-30 11:01:30 [info]: [TRIAL] Processed 8 trial tenants
+2026-04-30 17:01:25 [info]: [TRIAL] Processed 8 trial tenants

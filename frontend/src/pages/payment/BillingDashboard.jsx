@@ -282,8 +282,64 @@ export default function BillingDashboard({ onUpgrade }) {
   };
 
   const handleDownload = (inv) => {
-    // In production: fetch /api/v1/payments/:id/invoice-pdf
-    showToast(`Downloading ${inv.invoice_no}…`);
+    showToast(`Generating ${inv.invoice_no}�`);
+    const user = JSON.parse(localStorage.getItem("safeg_user") || "{}");
+    const plan = PLAN_META[inv.plan_id] || PLAN_META.growth;
+    const html = `
+      <html><head><style>
+        body{font-family:Arial,sans-serif;padding:40px;color:#111}
+        .header{display:flex;justify-content:space-between;margin-bottom:40px}
+        .logo{font-size:24px;font-weight:900;color:#FF4D00}
+        .title{font-size:32px;font-weight:900;margin-bottom:4px}
+        .table{width:100%;border-collapse:collapse;margin-top:24px}
+        .table th{background:#f5f5f5;padding:10px 14px;text-align:left;font-size:12px}
+        .table td{padding:10px 14px;border-bottom:1px solid #eee;font-size:13px}
+        .total{font-size:18px;font-weight:900;text-align:right;margin-top:20px}
+        .badge{background:#FF4D0010;color:#FF4D00;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
+        .footer{margin-top:40px;font-size:11px;color:#888;border-top:1px solid #eee;padding-top:20px}
+      </style></head><body>
+        <div class="header">
+          <div><div class="logo">SafeguardsIQ</div><div style="font-size:11px;color:#888">by Syyaim Enterprises</div></div>
+          <div style="text-align:right">
+            <div class="title">INVOICE</div>
+            <div style="font-size:13px;color:#888">${inv.invoice_no || `INV-${Date.now()}`}</div>
+            <div style="font-size:12px;color:#888;margin-top:4px">${new Date(inv.created_at).toLocaleDateString("en-IN", { day:"2-digit", month:"long", year:"numeric" })}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:40px;margin-bottom:32px">
+          <div><div style="font-size:11px;color:#888;margin-bottom:6px">BILLED TO</div>
+            <div style="font-weight:700">${inv.company_name || user.companyName || "�"}</div>
+            <div style="font-size:12px;color:#555">${user.email || "�"}</div>
+          </div>
+          <div><div style="font-size:11px;color:#888;margin-bottom:6px">STATUS</div>
+            <span class="badge">${inv.status?.toUpperCase()}</span>
+          </div>
+        </div>
+        <table class="table">
+          <thead><tr><th>Description</th><th>Plan</th><th>Billing</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>SafeguardsIQ ${plan.label} Plan</td>
+              <td>${plan.label}</td>
+              <td>${inv.billing_cycle === "annual" ? "Annual" : "Monthly"}</td>
+              <td style="font-weight:700">&#8377;${((inv.total_amount || 0) / 100).toLocaleString("en-IN")}</td>
+            </tr>
+            <tr><td colspan="3" style="text-align:right;font-size:12px;color:#888">GST (18%)</td>
+              <td>&#8377;${Math.round((inv.total_amount || 0) / 118).toLocaleString("en-IN")}</td></tr>
+          </tbody>
+        </table>
+        <div class="total">Total: &#8377;${((inv.total_amount || 0) / 100).toLocaleString("en-IN")}</div>
+        <div class="footer">
+          SafeguardsIQ � Syyaim Enterprises � mazhar.imam@syyaim.com � +91 96744 08408<br>
+          Kolkata, West Bengal � safeguardsiq.com<br>
+          Payment ID: ${inv.razorpay_payment_id || "�"}
+        </div>
+      </body></html>
+    `;
+    const blob = new Blob([html], { type:"text/html" });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, "_blank");
+    setTimeout(() => { win?.print(); }, 500);
   };
 
   const handleRefund = async ({ paymentId, reason, amount }) => {
@@ -528,4 +584,6 @@ const DEMO_PAYMENTS = [
     razorpay_payment_id:"pay_MABCDEF246810",
   },
 ];
+
+
 
