@@ -356,10 +356,11 @@ function Form18({toast}) {
   const today=new Date().toISOString().slice(0,10);
   const [f,setF]=useState({
     factoryName: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.companyName || "Pune Auto Components Pvt Ltd",
-    regNo: "MH/PUN/F/2019/00423",
+    regNo: localStorage.getItem('safeg_tenant') ? `MH/${(JSON.parse(localStorage.getItem('safeg_user')||'{}')?.city||'PUN').slice(0,3).toUpperCase()}/F/${new Date().getFullYear()-2}/00${localStorage.getItem('safeg_tenant')?.slice(-3)||'423'}` : "MH/PUN/F/2019/00423",
     industry:"Automobile Components Manufacturing",
     address:"Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune – 411018",
-    district:"Pune", state:"Maharashtra",
+    district: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.city || "Pune",
+    state: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.state || "Maharashtra",
     occupier:"", manager:"", contact:"",
     accDate:today, accTime:"14:23", department:"Welding Zone B — Bay 3",
     nature:"Fall from height",
