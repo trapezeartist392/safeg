@@ -76,19 +76,19 @@ function ArchSection({ sysInfo }) {
   const [open, setOpen] = useState(null);
 
   const STACK = [
-    { id:"camera",   icon:"??", label:"CAMERA LAYER",    color:T.blue,
+    { id:"camera",   icon:"📷", label:"CAMERA LAYER",    color:T.blue,
       chips:["Hikvision IP","Dahua PTZ","CP Plus","ONVIF Generic","RTSP Feed"],
       detail:"16�32 cameras per plant. RTSP/ONVIF protocol. 1080p @ 4�8 FPS. PoE powered over CAT6. Offline buffering up to 4 hours." },
-    { id:"edge",     icon:"?", label:"EDGE AI LAYER",   color:T.orange,
+    { id:"edge",     icon:"⚡", label:"EDGE AI LAYER",   color:T.orange,
       chips:["Frame Capture 4 FPS","YOLOv8 PPE Model","Confidence = 85%","Violation Trigger","Alert Queue"],
       detail:"Local edge server processes streams � no cloud dependency. < 3s detection latency. Works fully offline. GPU optional (Jetson Nano / x86 with CUDA)." },
-    { id:"backend",  icon:"??", label:"BACKEND API",     color:T.teal,
+    { id:"backend",  icon:"⚙️", label:"BACKEND API",     color:T.teal,
       chips:["Node.js 22","Express 4","PostgreSQL 16","Redis 7","WebSocket"],
       detail:"50+ REST endpoints under /api/v1. JWT + Refresh token auth. Rate limiting. Real-time events over WebSocket. Razorpay payment integration." },
-    { id:"notify",   icon:"??", label:"NOTIFICATION",    color:T.amber,
+    { id:"notify",   icon:"🔔", label:"NOTIFICATION",    color:T.amber,
       chips:["WhatsApp MSG91","SMTP Email","SMS","Dashboard Push","Form 18 Auto"],
       detail:"< 28s alert delivery from camera to WhatsApp. Multi-channel simultaneous. Factories Act 1948 Form 18 auto-filled and emailed to HSE officer." },
-    { id:"frontend", icon:"???", label:"FRONTEND",        color:T.green,
+    { id:"frontend", icon:"🖥️", label:"FRONTEND",        color:T.green,
       chips:["React 18","Vite 5","Tailwind CSS","Recharts","Lucide Icons"],
       detail:"Single-page React 18 app. Real-time WebSocket dashboard. Mobile-responsive. Login/signup with 7-day trial flow. Admin portal (this screen)." },
   ];
@@ -105,14 +105,14 @@ function ArchSection({ sysInfo }) {
   ];
 
   const SERVICES = [
-    { name:"safeg-backend",   tech:"Node.js 22 + Express",  port:4000, status:"online",  icon:"??",  c:T.green  },
-    { name:"safeg-websocket", tech:"WS Server",             port:4000, status:"online",  icon:"??",  c:T.green  },
-    { name:"postgres",        tech:"PostgreSQL 16 Alpine",  port:5432, status:"online",  icon:"???",  c:T.green  },
-    { name:"redis",           tech:"Redis 7 Alpine",        port:6379, status:"online",  icon:"?",  c:T.green  },
-    { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5001, status:"standby", icon:"??",  c:T.amber  },
-    { name:"nginx",           tech:"Nginx 1.25 Alpine",     port:80,   status:"online",  icon:"??",  c:T.green  },
-    { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:5173, status:"online",  icon:"???",  c:T.green  },
-    { name:"admin-portal",    tech:"React � this screen",   port:5173, status:"active",  icon:"??",  c:T.teal   },
+    { name:"safeg-backend",   tech:"Node.js 22 + Express",  port:4000, status:"online",  icon:"⚙️",  c:T.green  },
+    { name:"safeg-websocket", tech:"WS Server",             port:4000, status:"online",  icon:"🔌",  c:T.green  },
+    { name:"postgres",        tech:"PostgreSQL 16 Alpine",  port:5432, status:"online",  icon:"🗄️",  c:T.green  },
+    { name:"redis",           tech:"Redis 7 Alpine",        port:6379, status:"online",  icon:"⚡",  c:T.green  },
+    { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5001, status:"standby", icon:"🤖",  c:T.amber  },
+    { name:"nginx",           tech:"Nginx 1.25 Alpine",     port:80,   status:"online",  icon:"🌐",  c:T.green  },
+    { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:5173, status:"online",  icon:"🖥️",  c:T.green  },
+    { name:"admin-portal",    tech:"React � this screen",   port:5173, status:"active",  icon:"🔐",  c:T.teal   },
   ];
 
   const tabs = [
@@ -132,10 +132,10 @@ function ArchSection({ sysInfo }) {
 
       {/* KPIs */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14, marginBottom:26 }}>
-        <KPI label="DETECTION LATENCY" value="< 3s"   sub="cam ? alert"         color={T.teal}   icon="?" i={0} />
-        <KPI label="AI ACCURACY"       value="98.7%"  sub="PPE detection rate"  color={T.green}  icon="??" i={1} />
-        <KPI label="ALERT DELIVERY"    value="< 28s"  sub="cam ? WhatsApp"      color={T.orange} icon="??" i={2} />
-        <KPI label="UPTIME SLA"        value="99.9%"  sub="guaranteed"          color={T.blue}   icon="??" i={3} />
+        <KPI label="DETECTION LATENCY" value="< 3s"   sub="cam ? alert"         color={T.teal}   icon="⚡" i={0} />
+        <KPI label="AI ACCURACY"       value="98.7%"  sub="PPE detection rate"  color={T.green}  icon="🎯" i={1} />
+        <KPI label="ALERT DELIVERY"    value="< 28s"  sub="cam ? WhatsApp"      color={T.orange} icon="📱" i={2} />
+        <KPI label="UPTIME SLA"        value="99.9%"  sub="guaranteed"          color={T.blue}   icon="✅" i={3} />
       </div>
 
       {/* Tab bar */}
@@ -738,7 +738,7 @@ function AdminLogin({ onLogin }) {
       <div style={{ width:400, background:T.card, border:`1px solid ${T.border}`, borderRadius:22, padding:42, position:"relative", zIndex:1, animation:"fadeUp .55s ease both" }}>
         {/* Logo */}
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
-          <div style={{ width:42, height:42, borderRadius:11, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>??</div>
+          <div style={{ width:42, height:42, borderRadius:11, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>🔐</div>
           <div>
             <div style={{ ...syne, fontSize:16, fontWeight:800, color:T.white, letterSpacing:1.5 }}>ADMIN PORTAL</div>
             <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>Safeguards IQ � INTERNAL</div>
@@ -800,9 +800,9 @@ function AdminLogin({ onLogin }) {
    ROOT ADMIN DASHBOARD
 ------------------------------------------------------ */
 const NAV = [
-  { id:"architecture", label:"Architecture", icon:"???" },
-  { id:"payments",     label:"Payments",     icon:"??" },
-  { id:"customers",    label:"Customers",    icon:"??" },
+  { id:"architecture", label:"Architecture", icon:"🗺️" },
+  { id:"payments",     label:"Payments",     icon:"💳" },
+  { id:"customers",    label:"Customers",    icon:"👥" },
 ];
 
 export default function AdminDashboard() {
@@ -840,7 +840,7 @@ export default function AdminDashboard() {
           {/* Logo */}
           <div style={{ padding:"22px 20px", borderBottom:`1px solid ${T.border}` }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:36, height:36, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>??</div>
+              <div style={{ width:36, height:36, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>🔐</div>
               <div>
                 <div style={{ ...syne, fontSize:13, fontWeight:800, color:T.white, letterSpacing:1.5 }}>ADMIN</div>
                 <div style={{ fontSize:9, color:T.g2, letterSpacing:2.5, ...mono }}>INTERNAL PORTAL</div>
@@ -910,5 +910,3 @@ export default function AdminDashboard() {
     </>
   );
 }
-
-
