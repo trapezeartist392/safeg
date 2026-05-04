@@ -75,6 +75,34 @@ function ArchSection({ sysInfo }) {
   const [tab, setTab]   = useState("stack");
   const [open, setOpen] = useState(null);
 
+  // Build real service status from sysInfo
+  const SERVICES = [
+    { name:"safeg-backend",   tech:"Node.js 22 + Express",  port:4000,
+      status: sysInfo ? "online" : "standby",
+      icon:"⚙️", c: sysInfo ? T.green : T.amber },
+    { name:"safeg-websocket", tech:"WS Server",             port:4000,
+      status: sysInfo ? "online" : "standby",
+      icon:"🔌", c: sysInfo ? T.green : T.amber },
+    { name:"postgres",        tech:"PostgreSQL 16",         port:5432,
+      status: sysInfo?.app ? "online" : "standby",
+      icon:"🗄️", c: sysInfo?.app ? T.green : T.amber },
+    { name:"redis",           tech:"Redis 7",               port:6379,
+      status: sysInfo?.server ? "online" : "standby",
+      icon:"⚡", c: sysInfo?.server ? T.green : T.amber },
+    { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5050,
+      status: sysInfo?.app?.violations24h >= 0 ? "online" : "standby",
+      icon:"🤖", c: sysInfo?.app?.violations24h >= 0 ? T.green : T.amber },
+    { name:"nginx",           tech:"Nginx 1.25",            port:443,
+      status: "online",
+      icon:"🌐", c: T.green },
+    { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:443,
+      status: "online",
+      icon:"🖥️", c: T.green },
+    { name:"admin-portal",    tech:"React — this screen",   port:443,
+      status: "active",
+      icon:"🔐", c: T.teal },
+  ];
+
   const STACK = [
     { id:"camera",   icon:"📷", label:"CAMERA LAYER",    color:T.blue,
       chips:["Hikvision IP","Dahua PTZ","CP Plus","ONVIF Generic","RTSP Feed"],
@@ -104,17 +132,6 @@ function ArchSection({ sysInfo }) {
     { n:"08", from:"WebSocket",     to:"React UI",       proto:"WS / Push",     lat:"< 100 ms", c:T.blue   },
   ];
 
-  const SERVICES = [
-    { name:"safeg-backend",   tech:"Node.js 22 + Express",  port:4000, status:"online",  icon:"⚙️",  c:T.green  },
-    { name:"safeg-websocket", tech:"WS Server",             port:4000, status:"online",  icon:"🔌",  c:T.green  },
-    { name:"postgres",        tech:"PostgreSQL 16 Alpine",  port:5432, status:"online",  icon:"🗄️",  c:T.green  },
-    { name:"redis",           tech:"Redis 7 Alpine",        port:6379, status:"online",  icon:"⚡",  c:T.green  },
-    { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5001, status:"standby", icon:"🤖",  c:T.amber  },
-    { name:"nginx",           tech:"Nginx 1.25 Alpine",     port:80,   status:"online",  icon:"🌐",  c:T.green  },
-    { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:5173, status:"online",  icon:"🖥️",  c:T.green  },
-    { name:"admin-portal",    tech:"React � this screen",   port:5173, status:"active",  icon:"🔐",  c:T.teal   },
-  ];
-
   const tabs = [
     { id:"stack",    label:"STACK LAYERS"  },
     { id:"dataflow", label:"DATA FLOW"     },
@@ -132,10 +149,10 @@ function ArchSection({ sysInfo }) {
 
       {/* KPIs */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14, marginBottom:26 }}>
-        <KPI label="DETECTION LATENCY" value="< 3s"   sub="cam ? alert"         color={T.teal}   icon="⚡" i={0} />
-        <KPI label="AI ACCURACY"       value="98.7%"  sub="PPE detection rate"  color={T.green}  icon="🎯" i={1} />
-        <KPI label="ALERT DELIVERY"    value="< 28s"  sub="cam ? WhatsApp"      color={T.orange} icon="📱" i={2} />
-        <KPI label="UPTIME SLA"        value="99.9%"  sub="guaranteed"          color={T.blue}   icon="✅" i={3} />
+        <KPI label="ACTIVE CUSTOMERS"  value={sysInfo?.app?.activeCustomers||0}  sub="subscribed"          color={T.teal}   icon="👥" i={0} />
+        <KPI label="TOTAL PLANTS"      value={sysInfo?.app?.totalPlants||0}       sub="monitored"           color={T.green}  icon="🏭" i={1} />
+        <KPI label="ONLINE CAMERAS"    value={sysInfo?.app?.onlineCameras||0}     sub="streaming"           color={T.orange} icon="📹" i={2} />
+        <KPI label="VIOLATIONS 24H"    value={sysInfo?.app?.violations24h||0}     sub="detected today"      color={T.blue}   icon="⚠️" i={3} />
       </div>
 
       {/* Tab bar */}
