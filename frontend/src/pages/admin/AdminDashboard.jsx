@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+ï»¿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -78,10 +78,10 @@ function ArchSection({ sysInfo }) {
   const STACK = [
     { id:"camera",   icon:"??", label:"CAMERA LAYER",    color:T.blue,
       chips:["Hikvision IP","Dahua PTZ","CP Plus","ONVIF Generic","RTSP Feed"],
-      detail:"16–32 cameras per plant. RTSP/ONVIF protocol. 1080p @ 4–8 FPS. PoE powered over CAT6. Offline buffering up to 4 hours." },
+      detail:"16ï¿½32 cameras per plant. RTSP/ONVIF protocol. 1080p @ 4ï¿½8 FPS. PoE powered over CAT6. Offline buffering up to 4 hours." },
     { id:"edge",     icon:"?", label:"EDGE AI LAYER",   color:T.orange,
       chips:["Frame Capture 4 FPS","YOLOv8 PPE Model","Confidence = 85%","Violation Trigger","Alert Queue"],
-      detail:"Local edge server processes streams — no cloud dependency. < 3s detection latency. Works fully offline. GPU optional (Jetson Nano / x86 with CUDA)." },
+      detail:"Local edge server processes streams ï¿½ no cloud dependency. < 3s detection latency. Works fully offline. GPU optional (Jetson Nano / x86 with CUDA)." },
     { id:"backend",  icon:"??", label:"BACKEND API",     color:T.teal,
       chips:["Node.js 22","Express 4","PostgreSQL 16","Redis 7","WebSocket"],
       detail:"50+ REST endpoints under /api/v1. JWT + Refresh token auth. Rate limiting. Real-time events over WebSocket. Razorpay payment integration." },
@@ -112,7 +112,7 @@ function ArchSection({ sysInfo }) {
     { name:"ai-engine",       tech:"Python 3.11 FastAPI",   port:5001, status:"standby", icon:"??",  c:T.amber  },
     { name:"nginx",           tech:"Nginx 1.25 Alpine",     port:80,   status:"online",  icon:"??",  c:T.green  },
     { name:"safeg-frontend",  tech:"Vite 5 + React 18",     port:5173, status:"online",  icon:"???",  c:T.green  },
-    { name:"admin-portal",    tech:"React — this screen",   port:5173, status:"active",  icon:"??",  c:T.teal   },
+    { name:"admin-portal",    tech:"React ï¿½ this screen",   port:5173, status:"active",  icon:"??",  c:T.teal   },
   ];
 
   const tabs = [
@@ -195,7 +195,7 @@ function ArchSection({ sysInfo }) {
               <span style={{ fontSize:26 }}>{s.icon}</span>
               <div style={{ flex:1 }}>
                 <div style={{ ...mono, fontSize:13, color:T.white, fontWeight:600 }}>{s.name}</div>
-                <div style={{ fontSize:11, color:T.g1, marginTop:3 }}>{s.tech} · :{s.port}</div>
+                <div style={{ fontSize:11, color:T.g1, marginTop:3 }}>{s.tech} ï¿½ :{s.port}</div>
               </div>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <Dot color={s.c} animate={s.status==="online"||s.status==="active"} />
@@ -273,10 +273,10 @@ function PaySection({ token }) {
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:14, marginBottom:24 }}>
         {[
-          { label:'TOTAL REVENUE',    val: loading ? '…' : fmt(stats?.totalRevenue),  color:'#22D468' },
-          { label:'THIS MONTH',       val: loading ? '…' : fmt(stats?.monthRevenue),  color:'#FF5B18' },
-          { label:'ACTIVE PLANS',     val: loading ? '…' : stats?.activePlans||0,     color:'#3D8AFF' },
-          { label:'PENDING REFUNDS',  val: loading ? '…' : stats?.pendingRefunds||0,  color:'#FFB400' },
+          { label:'TOTAL REVENUE',    val: loading ? 'ï¿½' : fmt(stats?.totalRevenue),  color:'#22D468' },
+          { label:'THIS MONTH',       val: loading ? 'ï¿½' : fmt(stats?.monthRevenue),  color:'#FF5B18' },
+          { label:'ACTIVE PLANS',     val: loading ? 'ï¿½' : stats?.activePlans||0,     color:'#3D8AFF' },
+          { label:'PENDING REFUNDS',  val: loading ? 'ï¿½' : stats?.pendingRefunds||0,  color:'#FFB400' },
         ].map(({ label, val, color }) => (
           <div key={label} style={{ background:'#0D1120', border:'1px solid #141E32',
             borderRadius:12, padding:20 }}>
@@ -325,10 +325,10 @@ function PaySection({ token }) {
             background: i%2===0 ? '#101520' : 'transparent',
             borderBottom:'1px solid #141E3220', alignItems:'center' }}>
             <div style={{ color:'#7B90B8', fontFamily:'Share Tech Mono,monospace',
-              fontSize:11 }}>{p.invoice_no||'—'}</div>
-            <div style={{ color:'#EEF2FF', fontWeight:600 }}>{p.customer_name||'—'}</div>
+              fontSize:11 }}>{p.invoice_no||'ï¿½'}</div>
+            <div style={{ color:'#EEF2FF', fontWeight:600 }}>{p.customer_name||'ï¿½'}</div>
             <div style={{ color:'#FF5B18', textTransform:'uppercase',
-              fontSize:10, fontWeight:700 }}>{p.plan_id||'—'}</div>
+              fontSize:10, fontWeight:700 }}>{p.plan_id||'ï¿½'}</div>
             <div style={{ color:'#EEF2FF', fontFamily:'Share Tech Mono,monospace' }}>
               {fmt(p.total_amount)}</div>
             <div>
@@ -374,11 +374,11 @@ function CustomerTable({ token }) {
           {customers.map((c, i) => (
             <tr key={i} style={{ borderTop:`1px solid ${T.border}` }}>
               <td style={{ padding:"12px 14px", fontSize:13, color:T.white, fontWeight:600, maxWidth:180, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.company_name}</td>
-              <td style={{ padding:"12px 14px" }}><Pill color={T.orange}>{c.plan_id||"—"}</Pill></td>
-              <td style={{ padding:"12px 14px", fontSize:13, color:T.g1, textAlign:"center" }}>{c.camera_count||"—"}</td>
-              <td style={{ padding:"12px 14px" }}><Pill color={STATUS_C[c.subscription_status]||T.g2}>{c.subscription_status||"—"}</Pill></td>
-              <td style={{ padding:"12px 14px", fontSize:11, color:T.amber, ...mono }}>{c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString("en-IN"):"—"}</td>
-              <td style={{ padding:"12px 14px", fontSize:11, color:T.g1, ...mono }}>{c.created_at?new Date(c.created_at).toLocaleDateString("en-IN"):"—"}</td>
+              <td style={{ padding:"12px 14px" }}><Pill color={T.orange}>{c.plan_id||"ï¿½"}</Pill></td>
+              <td style={{ padding:"12px 14px", fontSize:13, color:T.g1, textAlign:"center" }}>{c.camera_count||"ï¿½"}</td>
+              <td style={{ padding:"12px 14px" }}><Pill color={STATUS_C[c.subscription_status]||T.g2}>{c.subscription_status||"ï¿½"}</Pill></td>
+              <td style={{ padding:"12px 14px", fontSize:11, color:T.amber, ...mono }}>{c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString("en-IN"):"ï¿½"}</td>
+              <td style={{ padding:"12px 14px", fontSize:11, color:T.g1, ...mono }}>{c.created_at?new Date(c.created_at).toLocaleDateString("en-IN"):"ï¿½"}</td>
               <td style={{ padding:"12px 14px", fontSize:13, color:T.teal, textAlign:"center" }}>{c.plant_count||0}</td>
             </tr>
           ))}
@@ -432,7 +432,7 @@ function CustomersSection({ token }) {
             ?? Customer Signups
           </div>
           <div style={{ fontSize:12, color:"#7B90B8" }}>
-            {total} total signups · all plans
+            {total} total signups ï¿½ all plans
           </div>
         </div>
         <input
@@ -518,9 +518,9 @@ function CustomersSection({ token }) {
               }}
             >
               <div style={{ color:"#EEF2FF", fontWeight:700 }}>
-                {c.company_name || "—"}
+                {c.company_name || "ï¿½"}
               </div>
-              <div style={{ color:"#7B90B8", fontSize:11 }}>{c.email || "—"}</div>
+              <div style={{ color:"#7B90B8", fontSize:11 }}>{c.email || "ï¿½"}</div>
               <div style={{ color:"#FF5B18", fontWeight:700, textTransform:"uppercase", fontSize:10 }}>
                 {c.plan_id || "starter"}
               </div>
@@ -542,12 +542,12 @@ function CustomersSection({ token }) {
               <div style={{ fontSize:10, color:"#7B90B8", fontFamily:"Share Tech Mono,monospace" }}>
                 {c.trial_ends_at
                   ? new Date(c.trial_ends_at).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
-                  : "—"}
+                  : "ï¿½"}
               </div>
               <div style={{ fontSize:10, color:"#344A6E", fontFamily:"Share Tech Mono,monospace" }}>
                 {c.created_at
                   ? new Date(c.created_at).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
-                  : "—"}
+                  : "ï¿½"}
               </div>
             </div>
           ))}
@@ -580,7 +580,7 @@ function CustomersSection({ token }) {
           >
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:20 }}>
               <div style={{ fontSize:18, fontWeight:800, color:"#EEF2FF" }}>
-                {selectedCustomer.company_name || "—"}
+                {selectedCustomer.company_name || "ï¿½"}
               </div>
               <button
                 onClick={() => setSelectedCustomer(null)}
@@ -594,8 +594,8 @@ function CustomersSection({ token }) {
               { l:"Full Name",  v:selectedCustomer.full_name },
               { l:"Plan",       v:selectedCustomer.plan_id?.toUpperCase() },
               { l:"Status",     v:selectedCustomer.subscription_status?.toUpperCase() },
-              { l:"Trial Ends", v:selectedCustomer.trial_ends_at ? new Date(selectedCustomer.trial_ends_at).toLocaleDateString("en-IN") : "—" },
-              { l:"Joined",     v:selectedCustomer.created_at ? new Date(selectedCustomer.created_at).toLocaleDateString("en-IN") : "—" },
+              { l:"Trial Ends", v:selectedCustomer.trial_ends_at ? new Date(selectedCustomer.trial_ends_at).toLocaleDateString("en-IN") : "ï¿½" },
+              { l:"Joined",     v:selectedCustomer.created_at ? new Date(selectedCustomer.created_at).toLocaleDateString("en-IN") : "ï¿½" },
               { l:"Plants",     v:selectedCustomer.plant_count || 0 },
               { l:"Tenant ID",  v:selectedCustomer.id },
             ].map(({ l, v }) => (
@@ -617,7 +617,7 @@ function CustomersSection({ token }) {
                     fontFamily:"Share Tech Mono,monospace"
                   }}
                 >
-                  {v || "—"}
+                  {v || "ï¿½"}
                 </span>
               </div>
             ))}
@@ -716,7 +716,7 @@ function AdminLogin({ onLogin }) {
       const res = await axios.post("/api/v1/auth/login", form);
       const { user, accessToken } = res.data.data;
       if (!["superadmin","customer_admin"].includes(user.role)) {
-        setErr("Admin access only — contact your system administrator"); return;
+        setErr("Admin access only ï¿½ contact your system administrator"); return;
       }
       localStorage.setItem("safeg_admin_token", accessToken);
       localStorage.setItem("safeg_admin",       JSON.stringify(user));
@@ -741,13 +741,13 @@ function AdminLogin({ onLogin }) {
           <div style={{ width:42, height:42, borderRadius:11, background:"linear-gradient(135deg,#FF5B18,#FF8040)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>??</div>
           <div>
             <div style={{ ...syne, fontSize:16, fontWeight:800, color:T.white, letterSpacing:1.5 }}>ADMIN PORTAL</div>
-            <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>Safeguards IQ · INTERNAL</div>
+            <div style={{ fontSize:9, color:T.g1, letterSpacing:2.5, ...mono }}>Safeguards IQ ï¿½ INTERNAL</div>
           </div>
         </div>
 
         {/* Warning strip */}
         <div style={{ background:`${T.red}0E`, border:`1px solid ${T.red}25`, borderRadius:10, padding:"9px 14px", fontSize:11, color:`${T.red}CC`, marginBottom:28, marginTop:22, display:"flex", gap:8, alignItems:"center", ...mono }}>
-          ?? RESTRICTED · AUTHORISED PERSONNEL ONLY
+          ?? RESTRICTED ï¿½ AUTHORISED PERSONNEL ONLY
         </div>
 
         {err && (
@@ -757,7 +757,7 @@ function AdminLogin({ onLogin }) {
         <form onSubmit={submit}>
           {[
             { key:"email",    label:"ADMIN EMAIL",  type:"email",    ph:"admin@syyaimsafeg.ai" },
-            { key:"password", label:"PASSWORD",     type:"password", ph:"••••••••••••" },
+            { key:"password", label:"PASSWORD",     type:"password", ph:"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" },
           ].map(({ key, label, type, ph }) => (
             <div key={key} style={{ marginBottom:16 }}>
               <label style={{ fontSize:9, color:T.g1, letterSpacing:2.5, display:"block", marginBottom:7, fontWeight:700, ...mono }}>{label}</label>
@@ -895,7 +895,7 @@ export default function AdminDashboard() {
               {NAV.find(n=>n.id===section)?.icon} {NAV.find(n=>n.id===section)?.label}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-              {sysInfo && <span style={{ fontSize:11, color:T.g1, ...mono }}>Node {sysInfo.server.nodeVersion} · {sysInfo.server.memUsedMB}MB</span>}
+              {sysInfo && <span style={{ fontSize:11, color:T.g1, ...mono }}>Node {sysInfo.server.nodeVersion} ï¿½ {sysInfo.server.memUsedMB}MB</span>}
               <Dot color={T.green} animate />
               <span style={{ fontSize:10, color:T.green, ...mono }}>SYSTEM ONLINE</span>
               <Pill color={T.orange}>ADMIN</Pill>
