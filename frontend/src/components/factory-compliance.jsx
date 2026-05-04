@@ -355,8 +355,8 @@ function CamFeed({cam}) {
 function Form18({toast}) {
   const today=new Date().toISOString().slice(0,10);
   const [f,setF]=useState({
-    factoryName: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.companyName || "Pune Auto Components Pvt Ltd",
-    regNo: localStorage.getItem('safeg_tenant') ? `MH/${(JSON.parse(localStorage.getItem('safeg_user')||'{}')?.city||'PUN').slice(0,3).toUpperCase()}/F/${new Date().getFullYear()-2}/00${localStorage.getItem('safeg_tenant')?.slice(-3)||'423'}` : "MH/PUN/F/2019/00423",
+    factoryName: localStorage.getItem('safeg_factory_name') || JSON.parse(localStorage.getItem('safeg_user')||'{}')?.companyName || "Pune Auto Components Pvt Ltd",
+    regNo: localStorage.getItem('safeg_factory_reg') || "",
     industry:"Automobile Components Manufacturing",
     address:"Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune – 411018",
     district: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.city || "Pune",
@@ -381,7 +381,11 @@ function Form18({toast}) {
     {action:"Revise housekeeping SOP — reduce response SLA from 30 to 10 min",resp:"HSE Manager",date:today,status:"Pending"},
   ]);
 
-  const upd=(k,v)=>setF(prev=>({...prev,[k]:v}));
+  const upd=(k,v)=>{
+    setF(prev=>({...prev,[k]:v}));
+    if(k==='regNo') localStorage.setItem('safeg_factory_reg', v);
+    if(k==='factoryName') localStorage.setItem('safeg_factory_name', v);
+  };
   const autoFill=()=>{
     setF(prev=>({...prev,occupier:"Rajiv Kapoor",manager:"Suresh Nair",contact:"+91 98765 43210",declarant:"Suresh Nair",designation:"Plant Manager"}));
     toast("AI auto-filled plant profile data","success");
@@ -454,7 +458,7 @@ function Form18({toast}) {
             {secTitle("PART A — FACTORY & REGISTRATION DETAILS")}
             {row(
               field("Name of Factory", autoInp(f.factoryName,"factoryName")),
-              field("Factory Registration No.", autoInp(f.regNo,"regNo")),
+              field("Factory Registration No.", inp("regNo")),
               field("Type of Industry", autoInp(f.industry,"industry")),
             )}
             {row(
