@@ -170,11 +170,11 @@ export default function PPEComplianceBar() {
           {/* Category breakdown */}
           <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
             {[
-              { label:"PPE",      val:data.ppe_violations,      color:T.red,   icon:"⛑️" },
-              { label:"Pathway",  val:data.pathway_violations,   color:"#00BCD4",icon:"🚧" },
-              { label:"Unsafe",   val:data.unsafe_violations,    color:T.amber, icon:"⚠️" },
-              { label:"Accident", val:data.accident_violations,  color:"#FF0000",icon:"🚨" },
-              { label:"Near Miss",val:data.nearmiss_violations,  color:"#FF6B00",icon:"❗" },
+              { label:"PPE",      val:data.ppe_violations,      color:T.red,    icon:"\u26D1\uFE0F" },
+              { label:"Pathway",  val:data.pathway_violations,  color:"#00BCD4", icon:"\uD83D\uDEA7" },
+              { label:"Unsafe",   val:data.unsafe_violations,   color:T.amber,  icon:"\u26A0\uFE0F" },
+              { label:"Accident", val:data.accident_violations, color:"#FF0000", icon:"\uD83D\uDEA8" },
+              { label:"Near Miss",val:data.nearmiss_violations, color:"#FF6B00", icon:"\u25CF" },
             ].map(({ label, val, color, icon }) => (
               <div key={label} style={{ display:"flex", alignItems:"center", gap:6,
                 background:`${color}10`, border:`1px solid ${color}25`,
