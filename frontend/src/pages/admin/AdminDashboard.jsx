@@ -446,10 +446,10 @@ function CustomersSection({ token }) {
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
         <div>
           <div style={{ fontSize:20, fontWeight:800, color:"#EEF2FF", marginBottom:4 }}>
-            ?? Customer Signups
+            👥 Customer Signups
           </div>
           <div style={{ fontSize:12, color:"#7B90B8" }}>
-            {total} total signups � all plans
+            {total} total signups · all plans
           </div>
         </div>
         <input
