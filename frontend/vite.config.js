@@ -18,5 +18,18 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react':  ['react', 'react-dom', 'react-router-dom'],
+          'vendor-axios':  ['axios'],
+          'vendor-charts': ['recharts'],
+          'admin':         ['./src/pages/admin/AdminDashboard.jsx'],
+          'billing':       ['./src/pages/payment/BillingDashboard.jsx'],
+          'compliance':    ['./src/components/factory-compliance.jsx'],
+          'ai-monitor':    ['./src/components/AIMonitorPanel.jsx'],
+        }
+      }
+    }
   }
 })
