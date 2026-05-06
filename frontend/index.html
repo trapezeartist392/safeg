@@ -4,32 +4,37 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05080F" />
     <meta name="description" content="SafeguardsIQ — AI-powered factory safety monitoring. Real-time PPE detection, violation tracking and compliance reporting for Indian factories." />
     <meta name="robots" content="index, follow" />
-    <link rel="preconnect" href="https://safeguardsiq.com" />
-    <meta name="theme-color" content="#05080F" />
     <title>SafeguardsIQ — Factory Safety Monitor</title>
-
     <!-- Preconnect for faster font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" as="style" />
-
-    <!-- All fonts used across the app loaded once here -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
-
+    <!-- Load only critical fonts, defer rest -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Bebas+Neue&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    </noscript>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
-        font-family: 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
+        font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+        background: #05080F;
+        color: #EDF2FF;
         -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
       }
       #root { min-height: 100vh; }
+      /* Critical loading state */
+      .app-loading {
+        display: flex; align-items: center; justify-content: center;
+        height: 100vh; background: #05080F; color: #FF5B18; font-size: 14px;
+        font-family: system-ui, sans-serif;
+      }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div class="app-loading">Loading SafeguardsIQ...</div></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
