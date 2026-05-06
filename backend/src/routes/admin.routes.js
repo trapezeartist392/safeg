@@ -29,7 +29,7 @@ router.get('/payments/stats', asyncHandler(async (req, res) => {
     db.query(`SELECT COALESCE(SUM(total_amount),0) AS val FROM payments WHERE status='captured' AND created_at >= date_trunc('month', NOW())`),
 
     // active subscription count
-    db.query(`SELECT COUNT(*) AS val FROM customers WHERE subscription_status='active'`),
+    db.query(`SELECT COUNT(*) AS val FROM tenants WHERE subscription_status='active'`),
 
     // pending refunds
     db.query(`SELECT COUNT(*) AS val FROM payments WHERE status='refund_pending'`),
@@ -47,8 +47,8 @@ router.get('/payments/stats', asyncHandler(async (req, res) => {
     db.query(`
       SELECT plan_id,
              COUNT(*) AS cnt,
-             COALESCE(SUM(amount_per_unit * camera_count),0) AS mrr
-      FROM customers
+             0 AS mrr
+      FROM tenants
       WHERE subscription_status='active'
       GROUP BY plan_id
     `),
@@ -201,7 +201,7 @@ router.get('/system', asyncHandler(async (req, res) => {
   const db = getDB();
 
   const [custRes, plantsRes, camsRes, violRes] = await Promise.all([
-    db.query(`SELECT COUNT(*) AS val FROM customers WHERE subscription_status='active'`),
+    db.query(`SELECT COUNT(*) AS val FROM tenants WHERE subscription_status='active'`),
     db.query(`SELECT COUNT(*) AS val FROM plants`),
     db.query(`SELECT COUNT(*) AS val FROM cameras WHERE status='online'`),
     db.query(`SELECT COUNT(*) AS val FROM ppe_events WHERE created_at >= NOW() - INTERVAL '24 hours'`),
