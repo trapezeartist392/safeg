@@ -106,6 +106,9 @@ router.get('/stream/status', authenticate, async (req, res) => {
 ───────────────────────────────────────────── */
 router.post('/detect', authenticate, async (req, res) => {
   try {
+    if (!req.body.imageBase64 || req.body.imageBase64.length < 100) {
+      return res.json({ success: true, data: { violations: [], persons_detected: 0, risk_level: 'safe', compliant: true } });
+    }
     const data = await proxyToAI('POST', '/detect', {
       image_base64: req.body.imageBase64,
       camera_id:    req.body.cameraId,
