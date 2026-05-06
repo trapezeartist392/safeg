@@ -118,7 +118,7 @@ export default function AIMonitorPanel() {
   const analyseBrowserFrame = useCallback(async () => {
     const video  = videoRef.current;
     const canvas = canvasRef.current;
-    if (!video || !canvas || video.readyState < 2) return;
+    if (!video || !canvas || video.readyState < 3 || video.videoWidth === 0) return;
     try {
       canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
       const b64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
@@ -200,9 +200,20 @@ export default function AIMonitorPanel() {
         await new Promise((resolve, reject) => {
           video.onloadedmetadata = resolve;
           video.onerror = reject;
-          setTimeout(resolve, 3000); // fallback
+          setTimeout(resolve, 3000);
         });
-        await video.play();
+        await video.play().catch(() => {});
+        // Wait for video to actually have frames
+        await new Promise(resolve => {
+          let attempts = 0;
+          const check = setInterval(() => {
+            attempts++;
+            if (video.readyState >= 3 || video.videoWidth > 0 || attempts > 20) {
+              clearInterval(check);
+              resolve();
+            }
+          }, 200);
+        });
         await new Promise(resolve => setTimeout(resolve, 500));
 
         const canvas = document.createElement('canvas');
