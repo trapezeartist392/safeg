@@ -1,10 +1,10 @@
 import { lazy, Suspense, useState } from "react";
 import { Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 
-import LoginPage         from "./pages/auth/LoginPage.jsx";
-import SignupPage        from "./pages/auth/SignupPage.jsx";
-import SafetyMonitor     from "./components/safety-monitor.jsx";
 import ThemeToggle from "./components/ThemeToggle";
+const LoginPage         = lazy(() => import("./pages/auth/LoginPage.jsx"));
+const SignupPage        = lazy(() => import("./pages/auth/SignupPage.jsx"));
+const SafetyMonitor     = lazy(() => import("./components/safety-monitor.jsx"));
 const FactoryCompliance = lazy(() => import("./components/factory-compliance.jsx"));
 const BillingDashboard  = lazy(() => import("./pages/payment/BillingDashboard.jsx"));
 const AdminDashboard    = lazy(() => import("./pages/admin/AdminDashboard.jsx"));
@@ -67,23 +67,23 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight:"100vh", background:T.bg }}>
-      {/* Only show main nav when NOT on admin route */}
-      {user && !location.pathname.startsWith("/admin") && <AppNav user={user} onLogout={handleLogout} />}
-      {user && (
-        <div
-          style={{
-            display: location.pathname === "/dashboard" ? "block" : "none",
-            position: location.pathname === "/dashboard" ? "relative" : "fixed",
-            visibility: location.pathname === "/dashboard" ? "visible" : "hidden",
-            height: location.pathname === "/dashboard" ? "auto" : 0,
-            overflow: "hidden",
-          }}
-        >
-          <SafetyMonitor />
-        </div>
-      )}
-      <Suspense fallback={<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'#05080F',color:'#FF5B18',fontSize:14}}>Loading...</div>}>
+    <Suspense fallback={<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'#05080F',color:'#FF5B18',fontSize:14}}>Loading...</div>}>
+      <div style={{ minHeight:"100vh", background:T.bg }}>
+        {/* Only show main nav when NOT on admin route */}
+        {user && !location.pathname.startsWith("/admin") && <AppNav user={user} onLogout={handleLogout} />}
+        {user && (
+          <div
+            style={{
+              display: location.pathname === "/dashboard" ? "block" : "none",
+              position: location.pathname === "/dashboard" ? "relative" : "fixed",
+              visibility: location.pathname === "/dashboard" ? "visible" : "hidden",
+              height: location.pathname === "/dashboard" ? "auto" : 0,
+              overflow: "hidden",
+            }}
+          >
+            <SafetyMonitor />
+          </div>
+        )}
         <Routes>
           {/* Public */}
           <Route path="/login"  element={user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />} />
@@ -146,7 +146,7 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   );
 }

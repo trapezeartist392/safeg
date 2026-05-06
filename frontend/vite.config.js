@@ -20,14 +20,18 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react':  ['react', 'react-dom', 'react-router-dom'],
-          'vendor-axios':  ['axios'],
-          'vendor-charts': ['recharts'],
-          'admin':         ['./src/pages/admin/AdminDashboard.jsx'],
-          'billing':       ['./src/pages/payment/BillingDashboard.jsx'],
-          'compliance':    ['./src/components/factory-compliance.jsx'],
-          'ai-monitor':    ['./src/components/AIMonitorPanel.jsx'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) return 'vendor-react';
+          if (id.includes('node_modules/axios')) return 'vendor-axios';
+          if (id.includes('node_modules/recharts')) return 'vendor-charts';
+          if (id.includes('node_modules/lucide')) return 'vendor-icons';
+          if (id.includes('AdminDashboard')) return 'admin';
+          if (id.includes('BillingDashboard')) return 'billing';
+          if (id.includes('factory-compliance')) return 'compliance';
+          if (id.includes('AIMonitorPanel')) return 'ai-monitor';
+          if (id.includes('safety-monitor')) return 'safety-monitor';
+          if (id.includes('SignupPage')) return 'signup';
+          if (id.includes('CameraHealthMonitor') || id.includes('ViolationHeatmap') || id.includes('ShiftCompliance') || id.includes('WorkerViolation') || id.includes('MultiPlant')) return 'widgets';
         }
       }
     }
