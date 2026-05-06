@@ -83,6 +83,7 @@ router.post('/stream/stop', authenticate, async (req, res) => {
     const data = await proxyToAI('POST', '/stream/stop', { camera_id: cameraId });
     res.json({ success: true, data });
   } catch (err) {
+    require('../utils/logger').error('AI detect error: ' + err.message + ' | ' + err.stack);
     res.status(500).json({ success: false, message: err.message });
   }
 });
@@ -144,6 +145,7 @@ router.post('/detect', authenticate, async (req, res) => {
 
     res.json({ success: true, data });
   } catch (err) {
+    require('../utils/logger').error('AI detect error: ' + err.message + ' | ' + err.stack);
     res.status(500).json({ success: false, message: err.message });
   }
 });
