@@ -71,18 +71,8 @@ export default function App() {
       <div style={{ minHeight:"100vh", background:T.bg }}>
         {/* Only show main nav when NOT on admin route */}
         {user && !location.pathname.startsWith("/admin") && <AppNav user={user} onLogout={handleLogout} />}
-        {user && (
-          <div
-            style={{
-              display: location.pathname === "/dashboard" ? "block" : "none",
-              position: location.pathname === "/dashboard" ? "relative" : "fixed",
-              visibility: location.pathname === "/dashboard" ? "visible" : "hidden",
-              height: location.pathname === "/dashboard" ? "auto" : 0,
-              overflow: "hidden",
-            }}
-          >
-            <SafetyMonitor />
-          </div>
+        {user && location.pathname === "/dashboard" && (
+          <SafetyMonitor />
         )}
         <Routes>
           {/* Public */}
