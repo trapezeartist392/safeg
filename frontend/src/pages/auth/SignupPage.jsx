@@ -8,12 +8,13 @@
  * Step 4: Choose Plan (Free Trial OR Paid)
  * Step 5: Activate
  */
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-const CameraDiscovery = lazy(() => import('../../components/CameraDiscovery'));
+import CameraDiscovery from '../../components/CameraDiscovery';
 
 const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes gridMove{from{transform:translateY(0)}to{transform:translateY(60px)}}
@@ -623,11 +624,7 @@ export default function SignupPage({ onLogin }) {
           {step===0 && <StepCompany  form={form} setForm={setForm} onNext={next} setError={setError}/>}
           {step===1 && <StepPlant    plants={plants} setPlants={setPlants} onNext={next} onBack={back} setError={setError}/>}
           {step===2 && <StepZones    plants={plants} zones={zones} setZones={setZones} onNext={next} onBack={back} setError={setError}/>}
-          {step===3 && (
-            <Suspense fallback={<div style={{color:'#8899BB',textAlign:'center',padding:40}}>Loading camera setup...</div>}>
-              <CameraDiscovery zones={zones} cameras={cameras} setCameras={setCameras} onNext={next} onBack={back} setError={setError}/>
-            </Suspense>
-          )}
+          {step===3 && <CameraDiscovery zones={zones} cameras={cameras} setCameras={setCameras} onNext={next} onBack={back} setError={setError}/>}
           {step===4 && <StepChoosePlan
             form={{...form, setCameraCount:(v)=>setForm(f=>({...f,cameraCount:v}))}}
             selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan}
