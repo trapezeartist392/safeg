@@ -24,7 +24,7 @@ async function proxyToAI(method, path, data = null) {
     method,
     url: `${AI_URL}${path}`,
     data,
-    timeout: 5000,
+    timeout: 30000,
     proxy: false,
     headers: { 'Content-Type': 'application/json' },
   });
