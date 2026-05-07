@@ -35,7 +35,21 @@
     </style>
   </head>
   <body>
-    <div id="root"><div class="app-loading">Loading SafeguardsIQ...</div></div>
+    <div id="root">
+      <div style="min-height:100vh;background:#05080F;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,sans-serif;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px;">
+          <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#FF5B18,#FF8C52);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#fff;">S</div>
+          <div>
+            <div style="color:#EDF2FF;font-weight:800;font-size:20px;letter-spacing:2px;">Safeguards IQ</div>
+            <div style="color:#3A4E72;font-size:11px;letter-spacing:3px;">FACTORY SAFETY AI</div>
+          </div>
+        </div>
+        <div style="width:200px;height:3px;background:#1A2540;border-radius:3px;overflow:hidden;">
+          <div style="height:100%;background:linear-gradient(90deg,#FF5B18,#FF8C52);border-radius:3px;animation:safeg-load 1.5s ease-in-out infinite;" id="safeg-bar"></div>
+        </div>
+        <style>#safeg-bar{animation:safeg-load 1.5s ease-in-out infinite}@keyframes safeg-load{0%{width:0%}50%{width:70%}100%{width:100%}}</style>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
