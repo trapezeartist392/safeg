@@ -228,7 +228,7 @@ function ArchSection({ sysInfo }) {
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
           {/* Server */}
           <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:22 }}>
-            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>??? Server Runtime</div>
+            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>🖥️ Server Runtime</div>
             {sysInfo ? (
               Object.entries(sysInfo.server).map(([k,v]) => (
                 <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:`1px solid ${T.border}`, fontSize:13 }}>
@@ -242,7 +242,7 @@ function ArchSection({ sysInfo }) {
           </div>
           {/* App */}
           <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:22 }}>
-            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>?? Application Stats</div>
+            <div style={{ ...syne, fontSize:14, fontWeight:700, color:T.white, marginBottom:18 }}>📊 Application Stats</div>
             {sysInfo ? (
               Object.entries(sysInfo.app).map(([k,v]) => (
                 <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:`1px solid ${T.border}`, fontSize:13 }}>
@@ -655,7 +655,7 @@ function CustomersSection({ token }) {
                   fontSize:12
                 }}
               >
-                ?? Copy Email
+                📋 Copy Email
               </button>
               <button
                 onClick={() => {
@@ -764,11 +764,11 @@ function AdminLogin({ onLogin }) {
 
         {/* Warning strip */}
         <div style={{ background:`${T.red}0E`, border:`1px solid ${T.red}25`, borderRadius:10, padding:"9px 14px", fontSize:11, color:`${T.red}CC`, marginBottom:28, marginTop:22, display:"flex", gap:8, alignItems:"center", ...mono }}>
-          ?? RESTRICTED � AUTHORISED PERSONNEL ONLY
+          🔒 RESTRICTED · AUTHORISED PERSONNEL ONLY
         </div>
 
         {err && (
-          <div style={{ background:`${T.red}10`, border:`1px solid ${T.red}30`, borderRadius:10, padding:"10px 14px", color:T.red, fontSize:13, marginBottom:18 }}>? {err}</div>
+          <div style={{ background:`${T.red}10`, border:`1px solid ${T.red}30`, borderRadius:10, padding:"10px 14px", color:T.red, fontSize:13, marginBottom:18 }}>⚠ {err}</div>
         )}
 
         <form onSubmit={submit}>
@@ -784,7 +784,7 @@ function AdminLogin({ onLogin }) {
           ))}
 
           <button type="submit" disabled={load} style={{ width:"100%", marginTop:8, background:load?T.g2:`linear-gradient(135deg,${T.orange},${T.orng2})`, border:"none", borderRadius:11, padding:"14px", color:"#fff", fontSize:14, fontWeight:800, cursor:load?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
-            {load ? <><Spinner />Authenticating...</> : "Access Admin Portal ?"}
+            {load ? <><Spinner />Authenticating...</> : "Access Admin Portal →"}
           </button>
         </form>
 
@@ -801,12 +801,12 @@ function AdminLogin({ onLogin }) {
           </div>
           <button onClick={() => setForm({ email:"suresh@puneauto.com", password:"Demo@SafeG2024" })}
             style={{ width:"100%", background:`${T.teal}18`, border:`1px solid ${T.teal}35`, borderRadius:8, padding:"8px", color:T.teal, fontSize:11, fontWeight:700, cursor:"pointer", ...mono, letterSpacing:1 }}>
-            ? AUTOFILL DEMO CREDENTIALS
+            ⚡ AUTOFILL DEMO CREDENTIALS
           </button>
         </div>
 
         <div style={{ textAlign:"center", marginTop:16 }}>
-          <button onClick={() => navigate("/login")} style={{ background:"none", border:"none", color:T.g2, fontSize:12, cursor:"pointer" }}>? Back to main app</button>
+          <button onClick={() => navigate("/login")} style={{ background:"none", border:"none", color:T.g2, fontSize:12, cursor:"pointer" }}>← Back to main app</button>
         </div>
       </div>
     </div>
