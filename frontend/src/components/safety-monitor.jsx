@@ -343,13 +343,13 @@ export default function App() {
   const medCount  = logs.filter(l => l.risk === "MEDIUM").length;
 
   useEffect(() => {
-  const total = highCount + medCount;
-  if (total > 0) {
-    document.title = `⚠️ ${total} VIOLATIONS — SafeguardsIQ`;
-  } else {
-    document.title = '✅ All Safe — SafeguardsIQ';
-  }
-}, [highCount, medCount]);
+    const total = highCount + medCount;
+    if (window.location.pathname === '/dashboard') {
+      document.title = total > 0
+        ? `⚠️ ${total} VIOLATIONS — SafeguardsIQ`
+        : 'SafeguardsIQ — Factory Safety Monitor';
+    }
+  }, [highCount, medCount]);
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.text,

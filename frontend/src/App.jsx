@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 
 import ThemeToggle from "./components/ThemeToggle";
@@ -57,6 +57,11 @@ function AppNav({ user, onLogout }) {
 
 export default function App() {
   const location = useLocation();
+  useEffect(() => {
+    if (location.pathname !== '/dashboard') {
+      document.title = 'SafeguardsIQ — Factory Safety Monitor';
+    }
+  }, [location.pathname]);
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem("safeg_user")); } catch { return null; }
   });
