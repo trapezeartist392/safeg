@@ -45,6 +45,7 @@ function AppNav({ user, onLogout }) {
         ))}
         <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
           {user && <>
+            <TrialExpiredBanner />
             <div style={{ textAlign:"right" }}>
               <div style={{ fontSize:12, color:T.white, fontWeight:700 }}>{user.fullName || user.email}</div>
               <div style={{ fontSize:10, color:T.g2, letterSpacing:1 }}>{user.role?.replace("_"," ").toUpperCase()}</div>
@@ -54,11 +55,6 @@ function AppNav({ user, onLogout }) {
           </>}
         </div>
       </nav>
-      {user && (
-        <div style={{ padding:"0 24px", background:T.nav, borderBottom:`1px solid ${T.border}` }}>
-          <TrialExpiredBanner />
-        </div>
-      )}
     </div>
   );
 }
