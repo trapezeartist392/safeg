@@ -91,7 +91,6 @@ export default function LoginPage({ onLogin }) {
               {[
                 ["98.7%", lang === 'hi' ? "AI सटीकता" : "AI Accuracy"],
                 ["<3s",   lang === 'hi' ? "पहचान समय" : "Detection"],
-                ["363K+", lang === 'hi' ? "फैक्ट्रियां" : "Factories"],
               ].map(([v,l])=>(
                 <div key={l}>
                   <div style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: T.orange, letterSpacing: 1 }}>{v}</div>
