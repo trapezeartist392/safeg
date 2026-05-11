@@ -26,7 +26,7 @@ function AppNav({ user, onLogout }) {
     { to: "/billing",    label: "Billing"        },
   ];
   return (
-    <>
+    <div>
       <nav style={{ background:T.nav, borderBottom:`1px solid ${T.border}`, padding:"0 24px", display:"flex", alignItems:"center", gap:4, overflowX:"auto", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:10, marginRight:24, paddingRight:24, borderRight:`1px solid ${T.border}`, flexShrink:0 }}>
           <div style={{ width:34, height:34, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8C52)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:16, color:"#fff" }}>S</div>
@@ -54,8 +54,12 @@ function AppNav({ user, onLogout }) {
           </>}
         </div>
       </nav>
-      {user && <div style={{padding:"0 24px"}}><TrialExpiredBanner /></div>}
-    </>
+      {user && (
+        <div style={{ padding:"0 24px", background:T.nav, borderBottom:`1px solid ${T.border}` }}>
+          <TrialExpiredBanner />
+        </div>
+      )}
+    </div>
   );
 }
 
