@@ -200,7 +200,7 @@ exports.resetPassword = asyncHandler(async (req, res) => {
 exports.getMe = asyncHandler(async (req, res) => {
   const db = getDB();
   const { rows } = await db.query(
-    `SELECT u.id, u.email, u.full_name, u.designation, u.department, u.mobile, u.role, u.plant_ids, u.last_login_at,
+    `SELECT u.id, u.email, u.full_name, u.designation, u.department, u.role, u.plant_ids, u.last_login_at,
             t.plan, t.slug AS tenant_slug,
             c.company_name, c.city, c.state
      FROM users u

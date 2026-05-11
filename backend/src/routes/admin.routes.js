@@ -203,7 +203,7 @@ router.get('/system', asyncHandler(async (req, res) => {
     db.query(`SELECT COUNT(*) AS val FROM tenants WHERE subscription_status='active'`),
     db.query(`SELECT COUNT(*) AS val FROM plants`),
     db.query(`SELECT COUNT(*) AS val FROM cameras WHERE status='online'`),
-    db.query(`SELECT COUNT(*) AS val FROM ppe_events WHERE created_at >= NOW() - INTERVAL '24 hours'`),
+    db.query(`SELECT COUNT(*) AS val FROM violations WHERE occurred_at >= NOW() - INTERVAL '24 hours'`),
   ]);
 
   res.json({
