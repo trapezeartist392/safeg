@@ -11,7 +11,6 @@ import ShiftComplianceReport from './ShiftComplianceReport';
 import WorkerViolationHistory from './WorkerViolationHistory';
 import ViolationHeatmap    from './ViolationHeatmap';
 import CameraHealthMonitor from './CameraHealthMonitor';
-import TrialExpiredBanner from './TrialExpiredBanner';
 
 const CAMERAS = [
   { id: 1, name: "Assembly Line A", zone: "Zone 1" },
@@ -385,9 +384,8 @@ export default function App() {
       <div style={{ display: "flex", flex: 1, overflow: "hidden", height: "calc(100vh - 57px)" }}>
         {/* Main grid area */}
         <div style={{ flex: 1, padding: 14, overflowY: "auto" }}>
-          <TrialExpiredBanner />
-          <PPEComplianceBar />
           <AIMonitorPanel />
+          <PPEComplianceBar />
           <CameraHealthMonitor />
           <ViolationHeatmap />
           <MultiPlantDashboard />

@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 
 import ThemeToggle from "./components/ThemeToggle";
+import TrialExpiredBanner from "./components/TrialExpiredBanner";
 const LoginPage         = lazy(() => import("./pages/auth/LoginPage.jsx"));
 const SignupPage        = lazy(() => import("./pages/auth/SignupPage.jsx"));
 const SafetyMonitor     = lazy(() => import("./components/safety-monitor.jsx"));
@@ -25,33 +26,36 @@ function AppNav({ user, onLogout }) {
     { to: "/billing",    label: "Billing"        },
   ];
   return (
-    <nav style={{ background:T.nav, borderBottom:`1px solid ${T.border}`, padding:"0 24px", display:"flex", alignItems:"center", gap:4, overflowX:"auto", position:"sticky", top:0, zIndex:100 }}>
-      <div style={{ display:"flex", alignItems:"center", gap:10, marginRight:24, paddingRight:24, borderRight:`1px solid ${T.border}`, flexShrink:0 }}>
-        <div style={{ width:34, height:34, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8C52)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:16, color:"#fff" }}>S</div>
-        <div>
-          <div style={{ color:T.white, fontWeight:800, fontSize:13, letterSpacing:1.5 }}>Safeguards IQ</div>
-          <div style={{ color:T.g1, fontSize:9, letterSpacing:2 }}>FACTORY SAFETY</div>
-        </div>
-      </div>
-      {navItems.map(({ to, label }) => (
-        <NavLink key={to} to={to} style={({ isActive }) => ({
-          padding:"15px 14px", fontSize:13, fontWeight:600,
-          color: isActive ? T.orange : T.g1, textDecoration:"none",
-          borderBottom: isActive ? `2px solid ${T.orange}` : "2px solid transparent",
-          whiteSpace:"nowrap", transition:"color .2s",
-        })}>{label}</NavLink>
-      ))}
-      <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
-        {user && <>
-          <div style={{ textAlign:"right" }}>
-            <div style={{ fontSize:12, color:T.white, fontWeight:700 }}>{user.fullName || user.email}</div>
-            <div style={{ fontSize:10, color:T.g2, letterSpacing:1 }}>{user.role?.replace("_"," ").toUpperCase()}</div>
+    <>
+      <nav style={{ background:T.nav, borderBottom:`1px solid ${T.border}`, padding:"0 24px", display:"flex", alignItems:"center", gap:4, overflowX:"auto", position:"sticky", top:0, zIndex:100 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10, marginRight:24, paddingRight:24, borderRight:`1px solid ${T.border}`, flexShrink:0 }}>
+          <div style={{ width:34, height:34, borderRadius:9, background:"linear-gradient(135deg,#FF5B18,#FF8C52)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:16, color:"#fff" }}>S</div>
+          <div>
+            <div style={{ color:T.white, fontWeight:800, fontSize:13, letterSpacing:1.5 }}>Safeguards IQ</div>
+            <div style={{ color:T.g1, fontSize:9, letterSpacing:2 }}>FACTORY SAFETY</div>
           </div>
-          <ThemeToggle />
-          <button onClick={onLogout} style={{ background:"transparent", border:`1px solid ${T.border}`, borderRadius:8, padding:"7px 14px", color:T.g1, fontSize:12, fontWeight:600, cursor:"pointer" }}>Sign Out</button>
-        </>}
-      </div>
-    </nav>
+        </div>
+        {navItems.map(({ to, label }) => (
+          <NavLink key={to} to={to} style={({ isActive }) => ({
+            padding:"15px 14px", fontSize:13, fontWeight:600,
+            color: isActive ? T.orange : T.g1, textDecoration:"none",
+            borderBottom: isActive ? `2px solid ${T.orange}` : "2px solid transparent",
+            whiteSpace:"nowrap", transition:"color .2s",
+          })}>{label}</NavLink>
+        ))}
+        <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
+          {user && <>
+            <div style={{ textAlign:"right" }}>
+              <div style={{ fontSize:12, color:T.white, fontWeight:700 }}>{user.fullName || user.email}</div>
+              <div style={{ fontSize:10, color:T.g2, letterSpacing:1 }}>{user.role?.replace("_"," ").toUpperCase()}</div>
+            </div>
+            <ThemeToggle />
+            <button onClick={onLogout} style={{ background:"transparent", border:`1px solid ${T.border}`, borderRadius:8, padding:"7px 14px", color:T.g1, fontSize:12, fontWeight:600, cursor:"pointer" }}>Sign Out</button>
+          </>}
+        </div>
+      </nav>
+      {user && <div style={{padding:"0 24px"}}><TrialExpiredBanner /></div>}
+    </>
   );
 }
 
