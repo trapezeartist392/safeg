@@ -96,7 +96,6 @@ router.get('/payments', asyncHandler(async (req, res) => {
       p.razorpay_order_id,
       p.razorpay_payment_id,
       p.plan_id,
-      p.camera_count,
       p.total_amount,
       p.gst_amount,
       p.status,
