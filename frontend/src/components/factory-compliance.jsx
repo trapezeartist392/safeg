@@ -765,10 +765,10 @@ export default function App() {
       {icon:"✅",name:"Inspection",pg:"inspection"},
     ]},
     {label:"Reports",items:[
-      {icon:"📄",name:"ISO 45001"},
-      {icon:"📄",name:"ESIC Returns"},
-      {icon:"📄",name:"BRSR Safety"},
-      {icon:"📄",name:"OSH Code"},
+      {icon:"📄",name:"ISO 45001",    pg:"reports"},
+      {icon:"📄",name:"ESIC Returns", pg:"reports"},
+      {icon:"📄",name:"BRSR Safety",  pg:"reports"},
+      {icon:"📄",name:"OSH Code",     pg:"reports"},
     ]},
   ];
 
