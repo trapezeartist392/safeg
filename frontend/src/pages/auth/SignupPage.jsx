@@ -501,7 +501,7 @@ export default function SignupPage({ onLogin }) {
         gstin:         form.gstin,
         city:          form.city,
         state:         form.state,
-        trialDays:     billing === "trial" ? 28 : 0,
+        trialDays:     14,
         plants, zones, cameras,
       });
 

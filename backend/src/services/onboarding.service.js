@@ -74,8 +74,8 @@ exports.activateOnboarding = async (payload) => {
       + '-' + Date.now().toString(36);
 
     const tenantRes = await client.query(
-      `INSERT INTO tenants (slug, plan, max_cameras, max_plants)
-       VALUES ($1, $2, $3, $4) RETURNING id`,
+      `INSERT INTO tenants (slug, plan, max_cameras, max_plants, trial_ends_at, subscription_status)
+       VALUES ($1, $2, $3, $4, NOW() + INTERVAL '14 days', 'trial') RETURNING id`,
       [
         slug,
         customer.plan || 'growth',

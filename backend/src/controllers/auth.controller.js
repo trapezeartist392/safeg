@@ -27,7 +27,7 @@ exports.register = asyncHandler(async (req, res) => {
     // 1. Create tenant
     const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60) + '-' + Date.now().toString(36);
     const tenant = await client.query(
-      `INSERT INTO tenants (slug, plan) VALUES ($1, $2) RETURNING id`,
+      `INSERT INTO tenants (slug, plan, trial_ends_at, subscription_status) VALUES ($1, $2, NOW() + INTERVAL '14 days', 'trial') RETURNING id`,
       [slug, plan]
     );
     const tenantId = tenant.rows[0].id;
