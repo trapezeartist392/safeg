@@ -202,6 +202,22 @@ export default function LoginPage({ onLogin }) {
               <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>
                 {t('signup_title')} →
               </Link>
+              <div style={{ marginTop: 8 }}>
+                <Link
+                  to="/free-trial"
+                  style={{
+                    color: T.green,
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    fontSize: 12,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  🎁 Start 14-Day Free Trial →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
