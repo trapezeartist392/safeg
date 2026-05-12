@@ -42,12 +42,14 @@ function ComplianceGauge({ pct, size = 80 }) {
 }
 
 export default function PPEComplianceBar() {
-  const [data,    setData]    = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [data,       setData]       = useState(null);
+  const [loading,    setLoading]    = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const token = localStorage.getItem('safeg_token') || '';
 
-  const fetchCompliance = async () => {
+  const fetchCompliance = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
     try {
       // Read from AIMonitorPanel streams via status endpoint
       const AI_URL = window.location.hostname !== 'localhost'
@@ -113,7 +115,7 @@ export default function PPEComplianceBar() {
     setData({ compliance_rate:100, total_violations:0,
       ppe_violations:0, pathway_violations:0, unsafe_violations:0,
       accident_violations:0, nearmiss_violations:0, ppe_by_type:{} });
-    } finally { setLoading(false); }
+    } finally { setLoading(false); setRefreshing(false); }
   };
   useEffect(() => {
     fetchCompliance();
@@ -152,11 +154,11 @@ export default function PPEComplianceBar() {
               padding:"2px 10px", borderRadius:6 }}>
               {compLabel}
             </div>
-            <button onClick={fetchCompliance} style={{
+            <button onClick={() => fetchCompliance(true)} style={{
               marginLeft:"auto", background:"none",
               border:`1px solid ${T.border}`, borderRadius:6,
               padding:"3px 10px", color:T.g1, fontSize:10,
-              fontWeight:700, cursor:"pointer" }}>↻ Refresh</button>
+              fontWeight:700, cursor:"pointer" }}>{refreshing ? "⟳ ..." : "↻ Refresh"}</button>
           </div>
 
           {/* Progress bar */}
