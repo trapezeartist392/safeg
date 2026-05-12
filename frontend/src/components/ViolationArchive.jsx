@@ -65,13 +65,12 @@ function ExpandedViolation({ v, cc, lang, token }) {
 
       {/* Photo evidence button */}
       <div style={{ marginTop:10 }}>
-        <button onClick={loadPhoto} disabled={loading} style={{
-          background:`${cc}20`, border:`1px solid ${cc}40`,
-          borderRadius:8, padding:"6px 14px", color:cc,
-          fontSize:11, fontWeight:700, cursor:"pointer",
-          display:"flex", alignItems:"center", gap:6,
+        <button disabled style={{
+          padding:"6px 14px", borderRadius:8, fontSize:12, fontWeight:700,
+          background:"rgba(255,255,255,.05)", border:"1px solid rgba(255,255,255,.1)",
+          color:"#3A4E72", cursor:"not-allowed", display:"flex", alignItems:"center", gap:6
         }}>
-          {loading ? "⏳ Loading..." : showPhoto ? "🖼 Hide Photo" : "📷 View Evidence Photo"}
+          📷 View Evidence Photo <span style={{fontSize:10, color:"#2E4068"}}>(Coming Soon)</span>
         </button>
 
         {showPhoto && photo && photo !== 'none' && (
