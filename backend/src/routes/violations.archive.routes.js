@@ -36,8 +36,8 @@ router.get('/', authenticate, async (req, res) => {
     } = req.query;
 
     const earliest = new Date(Date.now() - maxDays * 86400000);
-    const fromDate = dateFrom ? new Date(Math.max(new Date(dateFrom), earliest)) : earliest;
-    const toDate   = dateTo   ? new Date(dateTo) : new Date();
+    const fromDate = dateFrom ? new Date(Math.max(new Date(dateFrom + 'T00:00:00+05:30'), earliest)) : earliest;
+    const toDate   = dateTo   ? new Date(dateTo + 'T23:59:59+05:30') : new Date();
     const pageNum  = Math.max(1, parseInt(page));
     const limitNum = Math.min(parseInt(limit) || 20, 1000);
     const offset   = (pageNum - 1) * limitNum;
