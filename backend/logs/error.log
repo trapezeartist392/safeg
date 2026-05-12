@@ -422,3 +422,19 @@
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async Promise.all (index 0)
     at async C:\Users\YAVER IMAM\Downloads\SyyaimSafeG_AI_v2_Complete\safeg-complete\backend\src\routes\admin.routes.js:203:50
+2026-05-11 16:15:22 [error]: Email failed to suresh@puneauto.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-367beac5dc2sm2790215a91.9 - gsmtp
+2026-05-11 16:15:45 [error]: Email failed to abc@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2baf1e36596sm103185735ad.48 - gsmtp
+2026-05-11 16:15:46 [error]: Email failed to trapezeartist392@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2baf1d27083sm104415895ad.13 - gsmtp
+2026-05-11 16:15:48 [error]: Email failed to test@testfactory.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-83965d36a12sm18195519b3a.27 - gsmtp
+2026-05-11 16:16:11 [error]: Email failed to testpune2@factory.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-367d629f40bsm7360809a91.7 - gsmtp
+2026-05-11 16:16:13 [error]: Email failed to abc1@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2baf1d269fcsm104176945ad.15 - gsmtp
+2026-05-11 16:16:36 [error]: Email failed to abcd@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2baf1e75fffsm95900135ad.59 - gsmtp
+2026-05-11 16:16:38 [error]: Email failed to abcde@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-367d64de478sm7347968a91.13 - gsmtp
