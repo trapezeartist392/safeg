@@ -198,24 +198,27 @@ export default function LoginPage({ onLogin }) {
             </div>
 
             <div style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: T.g1 }}>
-              {lang === 'hi' ? 'खाता नहीं है? ' : "Don't have an account? "}
-              <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>
-                {t('signup_title')} →
+              <Link
+                to="/free-trial"
+                style={{
+                  display: "inline-block",
+                  width: "100%",
+                  background: "linear-gradient(135deg,#FF5B18,#FF8C52)",
+                  color: "#fff",
+                  fontWeight: 800,
+                  textDecoration: "none",
+                  borderRadius: 10,
+                  padding: "11px 0",
+                  fontSize: 14,
+                  marginBottom: 10,
+                }}
+              >
+                🎁 Start 14-Day Free Trial →
               </Link>
-              <div style={{ marginTop: 8 }}>
-                <Link
-                  to="/free-trial"
-                  style={{
-                    color: T.green,
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    fontSize: 12,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
-                >
-                  🎁 Start 14-Day Free Trial →
+              <div style={{ fontSize: 12, color: T.g2 }}>
+                {lang === 'hi' ? 'पहले से खाता है? ' : "Already have an account? "}
+                <Link to="/signup" style={{ color: T.orange, fontWeight: 700, textDecoration: "none" }}>
+                  Sign up →
                 </Link>
               </div>
             </div>
