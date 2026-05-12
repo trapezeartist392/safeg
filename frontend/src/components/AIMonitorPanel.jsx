@@ -49,6 +49,7 @@ export default function AIMonitorPanel() {
   const [rtspUrl,   setRtspUrl]   = useState('webcam:0');
   const [ppeTypes,  setPpeTypes]  = useState(['Helmet','Safety Vest','Gloves']);
   const [violLog,   setViolLog]   = useState([]);
+  const [showAllViolations, setShowAllViolations] = useState(false);
 
   const canvasRef      = useRef(null);
   const intervalRef    = useRef(null);
@@ -498,7 +499,7 @@ export default function AIMonitorPanel() {
             </button>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-            {violLog.slice(0,10).map((v,i) => {
+            {(showAllViolations ? violLog : violLog.slice(0,5)).map((v,i) => {
               const catColor = v.category==='accident'?"#FF0000":v.category==='nearmiss'?"#FF6B00":v.category==='unsafe'?T.amber:v.category==='pathway'?"#00BCD4":T.red;
               const catLabel = v.category==='accident'
                 ? (lang==='hi'?"🚨 दुर्घटना":"🚨 ACCIDENT")
@@ -531,6 +532,20 @@ export default function AIMonitorPanel() {
               );
             })}
           </div>
+          {violLog.length > 5 && (
+            <button onClick={() => setShowAllViolations(s => !s)} style={{
+              marginTop: 10, width:"100%", background:"transparent",
+              border:`1px solid ${T.border}`, borderRadius:8,
+              padding:"8px 0", color:T.g1, fontSize:12,
+              fontWeight:700, cursor:"pointer",
+              display:"flex", alignItems:"center", justifyContent:"center", gap:6
+            }}>
+              {showAllViolations
+                ? "▲ Show Less"
+                : `▼ View More (${violLog.length - 5} more violations)`
+              }
+            </button>
+          )}
         </div>
       )}
 
