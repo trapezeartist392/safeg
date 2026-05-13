@@ -60,6 +60,11 @@ function AppNav({ user, onLogout }) {
   );
 }
 
+function LandingRedirect() {
+  window.location.href = "/landing.html";
+  return null;
+}
+
 export default function App() {
   const location = useLocation();
   useEffect(() => {
@@ -99,7 +104,7 @@ export default function App() {
           <Route path="/login"  element={user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />} />
           <Route path="/signup" element={user ? <Navigate to="/dashboard" replace /> : <SignupPage onLogin={handleLogin} />} />
           <Route path="/free-trial" element={user ? <Navigate to="/dashboard" replace /> : <FreeTrialPage onLogin={handleLogin} />} />
-          <Route path="/"       element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
+          <Route path="/"       element={user ? <Navigate to="/dashboard" replace /> : <LandingRedirect />} />
 
           {/* Main app - protected */}
           <Route path="/dashboard"  element={<PrivateRoute user={user}><div /></PrivateRoute>} />
