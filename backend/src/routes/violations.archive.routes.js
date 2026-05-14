@@ -35,9 +35,11 @@ router.get('/', authenticate, async (req, res) => {
       dateFrom, dateTo, category, severity, cameraId,
     } = req.query;
 
-    const earliest = new Date(Date.now() - maxDays * 86400000);
-    const fromDate = dateFrom ? new Date(Math.max(new Date(dateFrom).getTime(), earliest.getTime())) : earliest;
-    const toDate   = dateTo   ? new Date(new Date(dateTo).getTime() + 24*60*60*1000 - 1) : new Date();
+    const earliest   = new Date(Date.now() - maxDays * 86400000);
+    const parsedFrom = dateFrom ? new Date(dateFrom).getTime() : NaN;
+    const parsedTo   = dateTo ? new Date(dateTo).getTime() : NaN;
+    const fromDate   = !Number.isNaN(parsedFrom) ? new Date(Math.max(parsedFrom, earliest.getTime())) : earliest;
+    const toDate     = !Number.isNaN(parsedTo) ? new Date(parsedTo + 24*60*60*1000 - 1) : new Date();
     const pageNum  = Math.max(1, parseInt(page));
     const limitNum = Math.min(parseInt(limit) || 20, 1000);
     const offset   = (pageNum - 1) * limitNum;

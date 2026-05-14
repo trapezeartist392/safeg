@@ -125,10 +125,12 @@ router.post('/detect', authenticate, async (req, res) => {
           try {
             await db.query(`
               INSERT INTO violations
-                (tenant_id, violation_cam, violation_type, category, severity,
+                (violation_no, tenant_id, violation_cam, violation_type, category, severity,
                  confidence, description, status, occurred_at)
-              VALUES ($1,$2,$3,$4,$5,$6,$7,'open',NOW())
+              VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'open',NOW())
+              ON CONFLICT (violation_no) DO NOTHING
             `, [
+              v.violation_no || null,
               req.user.tenantId,
               req.body.cameraId || 'browser-webcam',
               v.type || v.ppe_type || 'Unknown',
