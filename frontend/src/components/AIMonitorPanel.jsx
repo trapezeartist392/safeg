@@ -183,7 +183,24 @@ export default function AIMonitorPanel() {
         // Remove old video elements
         document.querySelectorAll('video[data-safeg]').forEach(v => v.remove());
 
-        const media = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480 }, audio: false });
+        let media;
+        try {
+          media = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480 }, audio: false });
+        } catch(camErr) {
+          if (camErr.name === 'NotAllowedError' || camErr.name === 'PermissionDeniedError') {
+            setError(lang === 'hi'
+              ? 'कैमरा अनुमति अस्वीकृत। ब्राउज़र में कैमरा अनुमति दें और पुनः प्रयास करें।'
+              : 'Camera permission denied. Please allow camera access in your browser settings and try again.');
+          } else if (camErr.name === 'NotFoundError') {
+            setError('No camera found. Please connect a camera and try again.');
+          } else if (camErr.name === 'NotReadableError') {
+            setError('Camera is in use by another application. Please close other apps using the camera.');
+          } else {
+            setError(`Camera error: ${camErr.message}`);
+          }
+          setLoading(false);
+          return;
+        }
         mediaStreamRef.current = media;
 
         const video = document.createElement('video');
