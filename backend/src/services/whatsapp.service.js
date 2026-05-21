@@ -1,5 +1,4 @@
 const axios = require('axios');
-const logger = require('../config/logger');
 
 async function sendWhatsAppAlert({ violation, camera, zone, time, confidence }) {
   try {
@@ -9,7 +8,7 @@ async function sendWhatsAppAlert({ violation, camera, zone, time, confidence }) 
     const numbers  = (process.env.WHATSAPP_ALERT_NUMBERS || '').split(',').filter(Boolean);
 
     if (!token || !phoneId || numbers.length === 0) {
-      logger.warn('WhatsApp not configured — skipping alert');
+      console.warn('WhatsApp not configured - skipping alert');
       return;
     }
 
@@ -35,18 +34,12 @@ async function sendWhatsAppAlert({ violation, camera, zone, time, confidence }) 
             }]
           }
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        }
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
-      logger.info(`WhatsApp alert sent to ${number}: ${res.data?.messages?.[0]?.id}`);
+      console.log('WhatsApp alert sent to ' + number + ':', res.data?.messages?.[0]?.id);
     }
   } catch (err) {
-    const errMsg = err.response?.data?.error?.message || err.message;
-    logger.warn('WhatsApp alert error: ' + errMsg);
+    console.warn('WhatsApp alert error:', err.response?.data?.error?.message || err.message);
   }
 }
 
