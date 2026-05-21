@@ -15,6 +15,7 @@ const router  = express.Router();
 const axios   = require('axios');
 const { authenticate } = require('../middleware/auth');
 const logger  = require('../utils/logger');
+const { sendWhatsAppAlert } = require('../services/whatsapp.service');
 
 const AI_URL = process.env.AI_ENGINE_URL || 'http://localhost:5001';
 
@@ -139,6 +140,15 @@ router.post('/detect', authenticate, async (req, res) => {
               v.confidence || 80,
               v.description || '',
             ]);
+            // Send WhatsApp alert after successful save
+            const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            sendWhatsAppAlert({
+              violation: v.type || 'Unknown Violation',
+              camera: req.body.cameraId || 'browser-webcam',
+              zone: 'Factory Floor',
+              time: now,
+              confidence: v.confidence || 80,
+            }).catch(() => {});
           } catch(dbErr) {
             logger.warn('Violation save error: ' + dbErr.message + ' | ' + dbErr.stack);
           }
