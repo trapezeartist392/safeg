@@ -141,13 +141,14 @@ router.post('/detect', authenticate, async (req, res) => {
               v.description || '',
             ]);
             // Read tenant's whatsapp number from DB
+            const DEMO_TENANT = 'ca5b55f4-bcac-4744-b07a-370503414ff1';
             const db2 = require('../config/database').getDB();
             const tenantRow = await db2.query(
               'SELECT whatsapp_number, whatsapp_alerts FROM tenants WHERE id=$1',
               [req.user.tenantId]
             );
             const tenant = tenantRow.rows[0];
-            if (tenant?.whatsapp_alerts && tenant?.whatsapp_number) {
+            if (req.user.tenantId !== DEMO_TENANT && tenant?.whatsapp_alerts && tenant?.whatsapp_number) {
               const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
               sendWhatsAppAlert({
                 violation:  v.type || 'Unknown Violation',
