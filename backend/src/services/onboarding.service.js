@@ -74,13 +74,15 @@ exports.activateOnboarding = async (payload) => {
       + '-' + Date.now().toString(36);
 
     const tenantRes = await client.query(
-      `INSERT INTO tenants (slug, plan, max_cameras, max_plants, trial_ends_at, subscription_status)
-       VALUES ($1, $2, $3, $4, NOW() + INTERVAL '14 days', 'trial') RETURNING id`,
+      `INSERT INTO tenants (slug, plan, max_cameras, max_plants, trial_ends_at, subscription_status, whatsapp_number, whatsapp_alerts)
+       VALUES ($1, $2, $3, $4, NOW() + INTERVAL '14 days', 'trial', $5, $6) RETURNING id`,
       [
         slug,
         customer.plan || 'growth',
         customer.plan === 'starter' ? 8 : customer.plan === 'enterprise' ? 9999 : 32,
         customer.plan === 'starter' ? 1 : customer.plan === 'enterprise' ? 99 : 5,
+        customer.whatsapp || customer.phone || null,
+        customer.whatsappOptIn || false,
       ]
     );
     const tenantId = tenantRes.rows[0].id;

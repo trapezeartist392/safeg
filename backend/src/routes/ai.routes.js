@@ -140,15 +140,24 @@ router.post('/detect', authenticate, async (req, res) => {
               v.confidence || 80,
               v.description || '',
             ]);
-            // Send WhatsApp alert after successful save
-            const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            sendWhatsAppAlert({
-              violation: v.type || 'Unknown Violation',
-              camera: req.body.cameraId || 'browser-webcam',
-              zone: 'Factory Floor',
-              time: now,
-              confidence: v.confidence || 80,
-            }).catch(() => {});
+            // Read tenant's whatsapp number from DB
+            const db2 = require('../config/database').getDB();
+            const tenantRow = await db2.query(
+              'SELECT whatsapp_number, whatsapp_alerts FROM tenants WHERE id=$1',
+              [req.user.tenantId]
+            );
+            const tenant = tenantRow.rows[0];
+            if (tenant?.whatsapp_alerts && tenant?.whatsapp_number) {
+              const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+              sendWhatsAppAlert({
+                violation:  v.type || 'Unknown Violation',
+                camera:     req.body.cameraId || 'browser-webcam',
+                zone:       'Factory Floor',
+                time:       now,
+                confidence: v.confidence || 80,
+                numbers:    [tenant.whatsapp_number],
+              }).catch(() => {});
+            }
           } catch(dbErr) {
             logger.warn('Violation save error: ' + dbErr.message + ' | ' + dbErr.stack);
           }
