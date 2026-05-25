@@ -157,7 +157,7 @@ def analyse_frame(frame, ppe_types: List[str], camera_id: str) -> dict:
         b64      = base64.b64encode(buf).decode("utf-8")
 
         response = client.messages.create(
-            model      = "claude-sonnet-4-20250514",
+            model      = "claude-haiku-4-5-20251001",
             max_tokens = 1000,
             messages   = [{
                 "role": "user",
@@ -385,7 +385,7 @@ def health():
     return {
         "status":          "ok",
         "agent":           "claude-vision",
-        "model":           "claude-sonnet-4-20250514",
+        "model":           "claude-haiku-4-5-20251001",
         "api_key_set":     bool(ANTHROPIC_API_KEY),
         "detects":         ["PPE","Pathway","Unsafe Acts","Accidents","Near Misses"],
         "active_streams":  len([s for s in active_streams.values() if s.get("running")]),
