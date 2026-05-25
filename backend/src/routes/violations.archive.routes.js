@@ -56,7 +56,7 @@ router.get('/', authenticate, async (req, res) => {
     // CSV export
     if (format === 'csv') {
       const rows = await pool.query(
-        `SELECT occurred_at, camera_id, violation_type, severity,
+        `SELECT occurred_at, violation_cam, violation_type, severity,
                 confidence, description, corrective_action
          FROM violations ${where}
          ORDER BY occurred_at DESC LIMIT ${limitNum}`,
@@ -68,7 +68,7 @@ router.get('/', authenticate, async (req, res) => {
         return [
           dt.toLocaleDateString('en-IN'),
           dt.toLocaleTimeString('en-IN'),
-          r.camera_id,
+          r.violation_cam,
           r.violation_type,
           r.severity,
           `${r.confidence || 0}%`,
@@ -90,7 +90,7 @@ router.get('/', authenticate, async (req, res) => {
 
     // Data
     const dataRes = await pool.query(
-      `SELECT id, occurred_at, camera_id, violation_type, severity,
+      `SELECT id, occurred_at, violation_cam, violation_type, severity,
               confidence, description, corrective_action, frame_url,
               status, plant_id, area_id
        FROM violations ${where}
@@ -103,7 +103,7 @@ router.get('/', authenticate, async (req, res) => {
     const violations = dataRes.rows.map(r => ({
       id:               r.id,
       detected_at:      r.occurred_at,
-      camera_id:        r.camera_id,
+      camera_id:        r.violation_cam,
       violation_type:   r.violation_type,
       category:         'ppe',
       severity:         r.severity,
