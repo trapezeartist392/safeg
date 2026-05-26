@@ -49,7 +49,8 @@ router.get('/', authenticate, async (req, res) => {
     let   idx        = 4;
 
     if (severity) { conditions.push(`severity = $${idx++}`);          params.push(severity); }
-    if (cameraId) { conditions.push(`camera_id ILIKE $${idx++}`);     params.push(`%${cameraId}%`); }
+    if (cameraId) { conditions.push(`violation_cam ILIKE $${idx++}`); params.push(`%${cameraId}%`); }
+    if (category) { conditions.push(`category = $${idx++}`);          params.push(category); }
 
     const where = 'WHERE ' + conditions.join(' AND ');
 
