@@ -63,8 +63,13 @@ SEVERITY_COLORS = {
 
 def build_prompt(ppe_types: List[str]) -> str:
     ppe_list = ", ".join(ppe_types)
-    ppe_checks = "\n".join([f"- {p}: check if this specific item is worn" for p in ppe_types])
-    return f"""You are an expert factory safety AI for Indian manufacturing plants (Factories Act 1948 compliance).
+    ppe_checks = "\n".join([f"- {p}: Is this item CLEARLY and VISIBLY worn? If not 100% sure, flag as violation." for p in ppe_types])
+    single_ppe = len(ppe_types) == 1
+    strict_note = f"\nCRITICAL: You are ONLY checking for {ppe_types[0]}. If any person visible does NOT have {ppe_types[0]} clearly visible on their body, you MUST report a violation. Do not give benefit of doubt.\n" if single_ppe else ""
+    return f"""You are a STRICT factory safety enforcement AI for Indian manufacturing plants (Factories Act 1948).
+{strict_note}
+IMPORTANT: You must be VERY STRICT. If PPE is not clearly visible, assume it is NOT worn and flag a violation.
+A person in casual office clothing (shirt, jeans) in a factory ALWAYS needs PPE.
 
 Analyze this camera frame for safety violations across 5 categories:
 
@@ -142,10 +147,11 @@ Respond ONLY in this exact JSON format — no other text before or after:
 }}
 
 Rules:
-- Be strict — flag anything suspicious
-- If a person is visible and PPE cannot be clearly confirmed, flag it
+- Be EXTREMELY strict — if PPE is not 100% clearly visible, flag it as violation
+- A person in regular clothes (shirt, jeans, t-shirt) = NOT wearing required PPE
+- If a person is visible and the required PPE ({ppe_list}) is not clearly confirmed worn, MUST flag violation
 - Accidents and near misses are CRITICAL severity always
-- If nothing unsafe is detected, return empty violations array
+- Do NOT return empty violations if a person is visible without the required PPE
 - CRITICAL: Return ONLY valid JSON. No trailing commas. No comments. No extra text."""
 
 
