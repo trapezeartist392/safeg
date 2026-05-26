@@ -280,42 +280,6 @@ def process_stream(camera_id, rtsp_url, tenant_id, plant_id, area_id,
                 violations = result.get("violations", [])
                 persons    = result.get("persons_detected", 0)
 
-                # Categorise violations
-                ppe_viols      = [v for v in violations if v.get("category") == "ppe"]
-                pathway_viols  = [v for v in violations if v.get("category") == "pathway"]
-                unsafe_viols   = [v for v in violations if v.get("category") == "unsafe"]
-                accident_viols = [v for v in violations if v.get("category") == "accident"]
-                nearmiss_viols = [v for v in violations if v.get("category") == "nearmiss"]
-
-                # Only show violations from current frame
-                # Filter PPE violations to only selected ppe_types
-                # Keep all non-PPE violations (pathway, unsafe, accident, nearmiss)
-                PPE_KEYWORDS = {
-                    "Helmet":       ["helmet","hardhat","hard hat","chin strap","head","no helmet","missing helmet","without helmet"],
-                    "Safety Vest":  ["vest","hi-vis","high vis","hiviz","high visibility","no vest","missing vest","without vest","reflective"],
-                    "Gloves":       ["glove","gloves","hand protection","hand","no gloves","missing gloves","without gloves","bare hand"],
-                    "Safety Boots": ["boot","boots","footwear","shoe","shoes","feet","foot","no boots","without boots"],
-                    "Goggles":      ["goggle","goggles","eye protection","spectacle","face shield","no goggles","without goggles"],
-                    "Face Mask":    ["mask","face mask","respirator","mouth","face covering","no mask","without mask"],
-                }
-                filtered_violations = []
-                for v in violations:
-                    cat = v.get("category", "ppe")
-                    if cat == "ppe":
-                        vtype   = v["ppe_type"].lower().replace("_"," ").replace("-"," ")
-                        matched = False
-                        for selected_ppe in ppe_types:
-                            keywords = PPE_KEYWORDS.get(selected_ppe, [selected_ppe.lower()])
-                            if any(kw in vtype for kw in keywords):
-                                v["ppe_type"] = selected_ppe  # normalize to exact name
-                                matched = True
-                                break
-                        if matched:
-                            filtered_violations.append(v)
-                    else:
-                        filtered_violations.append(v)
-
-                violations    = filtered_violations
                 ppe_viols     = [v for v in violations if v.get("category") == "ppe"]
                 pathway_viols = [v for v in violations if v.get("category") == "pathway"]
                 unsafe_viols  = [v for v in violations if v.get("category") == "unsafe"]
@@ -419,34 +383,8 @@ async def detect_frame(req: DetectRequest):
             raise HTTPException(400, "Invalid image")
 
         result     = analyse_frame(frame, req.ppe_types, req.camera_id)
-        PPE_KEYWORDS = {
-            "Helmet":       ["helmet","hardhat","hard hat","chin strap","head","no helmet","missing helmet","without helmet"],
-            "Safety Vest":  ["vest","hi-vis","high vis","hiviz","high visibility","no vest","missing vest","without vest","reflective"],
-            "Gloves":       ["glove","gloves","hand protection","hand","no gloves","missing gloves","without gloves","bare hand"],
-            "Safety Boots": ["boot","boots","footwear","shoe","shoes","feet","foot","no boots","without boots"],
-            "Goggles":      ["goggle","goggles","eye protection","spectacle","face shield","no goggles","without goggles"],
-            "Face Mask":    ["mask","face mask","respirator","mouth","face covering","no mask","without mask"],
-        }
         all_viols  = result.get("violations", [])
-        violations = []
-        for v in all_viols:
-            cat = v.get("category", "ppe")
-            if cat != "ppe":
-                violations.append(v)
-                continue
-            vtype = v["ppe_type"].lower().replace("_"," ").replace("-"," ").strip()
-            matched = False
-            for sel in req.ppe_types:
-                kws = PPE_KEYWORDS.get(sel, [sel.lower()])
-                if any(kw in vtype for kw in kws):
-                    v["ppe_type"] = sel
-                    violations.append(v)
-                    matched = True
-                    break
-            # If only 1 PPE type selected and no keyword match - include anyway
-            if not matched and len(req.ppe_types) == 1:
-                v["ppe_type"] = req.ppe_types[0]
-                violations.append(v)
+        violations = all_viols  # pass all violations through directly
 
         return {
             "success":             True,
