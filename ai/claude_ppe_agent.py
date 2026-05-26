@@ -145,7 +145,8 @@ Rules:
 - Be strict — flag anything suspicious
 - If a person is visible and PPE cannot be clearly confirmed, flag it
 - Accidents and near misses are CRITICAL severity always
-- If nothing unsafe is detected, return empty violations array"""
+- If nothing unsafe is detected, return empty violations array
+- CRITICAL: Return ONLY valid JSON. No trailing commas. No comments. No extra text."""
 
 
 def analyse_frame(frame, ppe_types: List[str], camera_id: str) -> dict:
@@ -168,12 +169,26 @@ def analyse_frame(frame, ppe_types: List[str], camera_id: str) -> dict:
             }]
         )
 
-        raw   = response.content[0].text.strip()
+        raw = response.content[0].text.strip()
+        # Try to extract JSON
         start = raw.find("{")
         end   = raw.rfind("}") + 1
         if start >= 0 and end > start:
             raw = raw[start:end]
-        result = json.loads(raw)
+
+        try:
+            result = json.loads(raw)
+        except json.JSONDecodeError:
+            # Haiku sometimes adds trailing commas or comments - clean up
+            import re
+            raw = re.sub(r',\s*([}\]])', r'\1', raw)  # remove trailing commas
+            raw = re.sub(r'//.*?\n', '\n', raw)        # remove JS comments
+            try:
+                result = json.loads(raw)
+            except:
+                log.warning(f"JSON parse failed, returning safe default. Raw: {raw[:200]}")
+                return {"persons_detected":0,"compliant":True,"violations":[],
+                        "summary":"Parse error - frame skipped","risk_level":"safe"}
         log.info(f"{camera_id}: {result.get('persons_detected',0)} persons | "
                  f"{len(result.get('violations',[]))} violations | "
                  f"risk={result.get('risk_level','?')}")
