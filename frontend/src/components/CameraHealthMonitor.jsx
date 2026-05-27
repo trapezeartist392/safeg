@@ -108,12 +108,28 @@ function CameraCard({ cam, streamInfo, onTest }) {
         <div style={{ fontSize:9, color:T.g2 }}>
           Last seen: <span style={{ color:T.g1 }}>{lastSeen}</span>
         </div>
-        <button onClick={() => onTest(cam)} style={{
-          background:"none", border:`1px solid ${T.border}`,
-          borderRadius:6, padding:"3px 8px", color:T.g1,
-          fontSize:9, fontWeight:700, cursor:"pointer" }}>
-          Test ↗
-        </button>
+        <div style={{ display:"flex", gap:6 }}>
+          {cam.ip_address && (
+            <a
+              href={`http://${cam.ip_address}:${cam.port || 80}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background:"none", border:`1px solid ${T.teal}40`,
+                borderRadius:6, padding:"3px 8px", color:T.teal,
+                fontSize:9, fontWeight:700, cursor:"pointer",
+                textDecoration:"none", display:"inline-flex", alignItems:"center", gap:3
+              }}>
+              📷 Open Camera
+            </a>
+          )}
+          <button onClick={() => onTest(cam)} style={{
+            background:"none", border:`1px solid ${T.border}`,
+            borderRadius:6, padding:"3px 8px", color:T.g1,
+            fontSize:9, fontWeight:700, cursor:"pointer" }}>
+            Test ↗
+          </button>
+        </div>
       </div>
     </div>
   );
