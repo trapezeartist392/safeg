@@ -49,6 +49,7 @@ export default function AIMonitorPanel() {
   const [rtspUrl,   setRtspUrl]   = useState('webcam:0');
   const [ppeTypes,  setPpeTypes]  = useState(['Helmet','Safety Vest','Gloves']);
   const [violLog,   setViolLog]   = useState([]);
+  const violLogRef = useRef([]);
   const [showAllViolations, setShowAllViolations] = useState(false);
 
   const canvasRef      = useRef(null);
@@ -97,16 +98,17 @@ export default function AIMonitorPanel() {
         setStreams(s);
         Object.entries(s).forEach(([id, info]) => {
           if ((info.violations_today || 0) > 0 && info.last_violations_list?.length > 0) {
-            setViolLog(prev => {
-              const newEntries = info.last_violations_list.map((v, i) => ({
-                id: `${id}-${info.violations_today}-${i}`, camera: id,
-                type: v.type, category: v.category || 'ppe',
-                persons: info.persons_detected || 0, total: info.violations_today || 0,
-                time: new Date().toLocaleTimeString(), desc: v.description || '',
-              }));
-              const combined = [...newEntries, ...prev];
-              return combined.filter((v, i, arr) => arr.findIndex(x => x.id === v.id) === i).slice(0, 20);
-            });
+            const newEntries = info.last_violations_list.map((v, i) => ({
+              id: `${id}-${info.violations_today}-${i}`, camera: id,
+              type: v.type, category: v.category || 'ppe',
+              persons: info.persons_detected || 0, total: info.violations_today || 0,
+              time: new Date().toLocaleTimeString(), desc: v.description || '',
+            }));
+            const combined = [...newEntries, ...violLogRef.current];
+            violLogRef.current = combined
+              .filter((v, i, arr) => arr.findIndex(x => x.id === v.id) === i)
+              .slice(0, 20);
+            setViolLog([...violLogRef.current]);
           }
         });
       } catch {}
@@ -159,15 +161,18 @@ export default function AIMonitorPanel() {
         }
       }));
       if (data.violations?.length > 0) {
-        setViolLog(prev => {
-          const now = Date.now();
-          return [...data.violations.map((v, i) => ({
-            id: `${id}-${now}-${i}`, camera: id, type: v.type,
-            category: v.category || 'ppe', persons: data.persons_detected || 0,
-            total: (streams[id]?.violations_today || 0) + data.violations.length,
-            time: new Date().toLocaleTimeString(), desc: v.description || '',
-          })), ...prev].slice(0, 20);
-        });
+        const newEntries = data.violations.map((v, i) => ({
+          id: `${camIdRef.current}-${Date.now()}-${i}`,
+          camera: camIdRef.current,
+          type: v.type,
+          category: v.category || 'ppe',
+          persons: data.persons_detected || 0,
+          total: data.violations.length,
+          time: new Date().toLocaleTimeString(),
+          desc: v.description || '',
+        }));
+        violLogRef.current = [...newEntries, ...violLogRef.current].slice(0, 20);
+        setViolLog([...violLogRef.current]);
       }
     } catch(e) { console.error('Analysis error:', e); }
   }, []);
@@ -510,7 +515,7 @@ export default function AIMonitorPanel() {
         <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:16, padding:20 }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
             <div style={{ fontSize:11, color:T.red, fontWeight:800, letterSpacing:1.5 }}>{t('live_log')}</div>
-            <button onClick={()=>setViolLog([])} style={{ background:"none", border:`1px solid ${T.border}`,
+            <button onClick={()=>{ violLogRef.current = []; setViolLog([]); }} style={{ background:"none", border:`1px solid ${T.border}`,
               borderRadius:6, padding:"3px 10px", color:T.g1, fontSize:10, fontWeight:700, cursor:"pointer" }}>
               {t('clear')}
             </button>
