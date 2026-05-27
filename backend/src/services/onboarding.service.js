@@ -217,10 +217,12 @@ exports.activateOnboarding = async (payload) => {
       const c = cameras[i];
       const dbAreaId = areaIdMap[c.areaId] || null;
       const camCode  = `CAM-${plantCode2}-${String(i + 1).padStart(3, '0')}`;
+      const cameraIp = c.camera_ip || c.ipAddress || c.ip || null;
+      const cameraPort = parseInt(c.camera_port || c.port, 10) || 554;
 
       const rtspUrl = c.rtspUrl ||
-        (c.ipAddress
-          ? `rtsp://${c.username || 'admin'}:${c.password || ''}@${c.ipAddress}:${c.port || 554}/stream1`
+        (cameraIp
+          ? `rtsp://${c.username || 'admin'}:${c.password || ''}@${cameraIp}:${cameraPort}/stream1`
           : null);
 
       const camRes = await client.query(
@@ -239,8 +241,8 @@ exports.activateOnboarding = async (payload) => {
           c.camId || `CAM-${String(i + 1).padStart(2, '0')}`,
           camCode, c.location,
           c.model || null, c.resolution || null,
-          c.ipAddress || null,
-          parseInt(c.port) || 554,
+          cameraIp,
+          cameraPort,
           (c.protocol || 'rtsp').toLowerCase(),
           rtspUrl,
           c.username || null,

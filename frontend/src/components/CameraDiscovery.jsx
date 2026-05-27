@@ -445,6 +445,7 @@ function DiscoveredCard({ cam, zones, onAdd, added }) {
 function ManualEntry({ zones, onAdd }) {
   const [form, setForm] = useState({
     name:"", brand:"CP Plus", ip:"", rtspUrl:"",
+    camera_ip:"", camera_port:"80",
     zoneId:zones[0]?.id||"", resolution:"1080p",
     ppeTypes:["Helmet","Safety Vest"], username:"admin",
   });
@@ -478,6 +479,14 @@ function ManualEntry({ zones, onAdd }) {
           <label style={lbl}>RTSP URL (optional)</label>
           <input value={form.rtspUrl} onChange={e=>F("rtspUrl",e.target.value)} placeholder="rtsp://admin:password@192.168.1.100:554/stream0" style={inpM}/>
         </div>
+        <div>
+          <label style={lbl}>CAMERA IP ADDRESS</label>
+          <input value={form.camera_ip} onChange={e=>F("camera_ip",e.target.value)} placeholder="192.168.1.100" style={inpM}/>
+        </div>
+        <div>
+          <label style={lbl}>CAMERA PORT</label>
+          <input type="number" value={form.camera_port} onChange={e=>F("camera_port",e.target.value)} placeholder="80" style={inpM}/>
+        </div>
         <div style={{gridColumn:"span 2"}}>
           <label style={lbl}>ASSIGN TO ZONE</label>
           <select value={form.zoneId} onChange={e=>F("zoneId",e.target.value)} style={sel}>
@@ -491,8 +500,20 @@ function ManualEntry({ zones, onAdd }) {
       </div>
       <button onClick={()=>{
         if(!form.name){return;}
-        onAdd({...form,id:Date.now(),protocol:'manual',discovered:new Date().toISOString()});
-        setForm({name:"",brand:"CP Plus",ip:"",rtspUrl:"",zoneId:zones[0]?.id||"",resolution:"1080p",ppeTypes:["Helmet","Safety Vest"],username:"admin"});
+        onAdd({
+          ...form,
+          id:Date.now(),
+          protocol:'manual',
+          ipAddress:form.camera_ip || form.ip,
+          port:form.camera_port || "80",
+          discovered:new Date().toISOString(),
+        });
+        setForm({
+          name:"", brand:"CP Plus", ip:"", rtspUrl:"",
+          camera_ip:"", camera_port:"80",
+          zoneId:zones[0]?.id||"", resolution:"1080p",
+          ppeTypes:["Helmet","Safety Vest"], username:"admin"
+        });
       }} style={{marginTop:16,width:"100%",background:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:10,padding:"13px",color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'"}}>
         + Add Camera
       </button>
