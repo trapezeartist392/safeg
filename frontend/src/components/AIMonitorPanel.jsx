@@ -118,7 +118,7 @@ export default function AIMonitorPanel() {
     return () => clearInterval(t);
   }, []);
 
-  const analyseBrowserFrame = useCallback(async () => {
+  const analyseBrowserFrame = async () => {
     const video  = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas || video.readyState < 3 || video.videoWidth === 0) return;
@@ -177,8 +177,8 @@ export default function AIMonitorPanel() {
         setViolLog([...violLogRef.current]);
         console.log('setViolLog called');
       }
-    } catch(e) { console.error('Analysis error:', e); }
-  }, []);
+      } catch(e) { console.error('Analysis error:', e); }
+    };
 
   const startStream = async () => {
     setLoading(true); setError('');
