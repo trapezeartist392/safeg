@@ -75,6 +75,8 @@ function parseSummary(text) {
 // ── Global log context via a simple event emitter ─────────────────────────
 const listeners = new Set();
 function emitLog(entry) { listeners.forEach(fn => fn(entry)); }
+// Expose globally so AIMonitorPanel can emit events
+if (typeof window !== 'undefined') window._safegEmitLog = emitLog;
 
 // ── Camera Tile ───────────────────────────────────────────────────────────
 function CameraTile({ cam, isMain, onClick }) {

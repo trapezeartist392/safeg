@@ -162,6 +162,18 @@ export default function AIMonitorPanel() {
         }
       }));
       if (data.violations?.length > 0) {
+        // Emit to LIVE EVENT LOG in safety-monitor
+        if (typeof window !== 'undefined' && window._safegEmitLog) {
+          window._safegEmitLog({
+            cam: camIdRef.current,
+            zone: 'Factory Floor',
+            risk: data.risk_level?.toUpperCase() || 'HIGH',
+            summary: data.summary || `${data.violations.length} violation(s) detected`,
+            violations: data.violations.length,
+            time: new Date().toLocaleTimeString(),
+            id: Date.now(),
+          });
+        }
         console.log('Adding to violLog:', data.violations.length, 'violations, current log length:', violLogRef.current.length);
         const newEntries = data.violations.map((v, i) => ({
           id: `${camIdRef.current}-${Date.now()}-${i}`,
