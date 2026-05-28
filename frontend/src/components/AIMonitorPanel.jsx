@@ -50,6 +50,7 @@ export default function AIMonitorPanel() {
   const [ppeTypes,  setPpeTypes]  = useState(['Helmet','Safety Vest','Gloves']);
   const [violLog,   setViolLog]   = useState([]);
   const violLogRef = useRef([]);
+  const analyseBrowserFrameRef = useRef(null);
   const [showAllViolations, setShowAllViolations] = useState(false);
 
   const canvasRef      = useRef(null);
@@ -180,6 +181,8 @@ export default function AIMonitorPanel() {
       } catch(e) { console.error('Analysis error:', e); }
     };
 
+  analyseBrowserFrameRef.current = analyseBrowserFrame;
+
   const startStream = async () => {
     setLoading(true); setError('');
     if (IS_PRODUCTION) {
@@ -258,8 +261,8 @@ export default function AIMonitorPanel() {
             last_violation: null, last_summary: '', compliant: true,
           }
         }));
-        await analyseBrowserFrame();
-        intervalRef.current = setInterval(analyseBrowserFrame, 15000);
+        await analyseBrowserFrameRef.current?.();
+        intervalRef.current = setInterval(() => analyseBrowserFrameRef.current?.(), 15000);
       } catch(e) {
         setError('Camera error: ' + e.message);
       }
