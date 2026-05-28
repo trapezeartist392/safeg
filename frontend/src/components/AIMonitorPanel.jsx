@@ -161,6 +161,7 @@ export default function AIMonitorPanel() {
         }
       }));
       if (data.violations?.length > 0) {
+        console.log('Adding to violLog:', data.violations.length, 'violations, current log length:', violLogRef.current.length);
         const newEntries = data.violations.map((v, i) => ({
           id: `${camIdRef.current}-${Date.now()}-${i}`,
           camera: camIdRef.current,
@@ -172,7 +173,9 @@ export default function AIMonitorPanel() {
           desc: v.description || '',
         }));
         violLogRef.current = [...newEntries, ...violLogRef.current].slice(0, 20);
+        console.log('violLogRef updated:', violLogRef.current.length, 'items');
         setViolLog([...violLogRef.current]);
+        console.log('setViolLog called');
       }
     } catch(e) { console.error('Analysis error:', e); }
   }, []);
