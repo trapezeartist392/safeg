@@ -689,7 +689,12 @@ export default function App() {
   const [livePlants, setLivePlants] = useState([]);
   const [page, setPage] = useState("dashboard");
   const [toasts, setToasts] = useState([]);
-  const maxZ = Math.max(...(realZoneBars || ZONE_BARS).map(d=>d.val));
+  const displayViols = realViols?.length > 0 ? realViols : VIOLATIONS;
+  const displayPpe = realPpe?.length > 0 ? realPpe : PPE_TYPES;
+  const displayZones = realZones?.length > 0 ? realZones : ZONES;
+  const displayTimeline = realTimeline?.length > 0 ? realTimeline : TIMELINE;
+  const displayZoneBars = realZoneBars?.length > 0 ? realZoneBars : ZONE_BARS;
+  const maxZ = Math.max(...displayZoneBars.map(d=>d.val));
 
   useEffect(() => {
     const fetchCameras = async () => {
@@ -829,7 +834,7 @@ export default function App() {
               <div style={{overflow:"hidden",background:"rgba(255,59,59,.07)",border:`1px solid rgba(255,59,59,.18)`,borderRadius:8,padding:"7px 0",marginBottom:20}}>
                 <div style={{display:"flex",gap:48,animation:"ticker 28s linear infinite",whiteSpace:"nowrap"}}>
                   {[...Array(2)].map((_,ri)=>
-                    (realViols && realViols.length > 0 ? realViols : VIOLATIONS).slice(0,6).map((v,i)=>(
+                    displayViols.slice(0,6).map((v,i)=>(
                       <span key={`${ri}-${i}`} style={{fontSize:11,
                         color: v.sev==="High"||v.status==="Open" ? C.red : C.green,
                         fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,
@@ -845,7 +850,7 @@ export default function App() {
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>COMPLIANCE COMMAND CENTRE</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>PUNE AUTO PLANT · {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase()}</div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>{(livePlants[0]?.plant_name || 'YOUR PLANT')?.toUpperCase()} · {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase()}</div>
                 </div>
                 <button onClick={()=>setPage("form18")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>📋 File Form 18</button>
               </div>
@@ -865,7 +870,7 @@ export default function App() {
                 <Card>
                   <CardTitle>Violations by Zone — This Week</CardTitle>
                   <div style={{display:"flex",alignItems:"flex-end",gap:8,height:130,padding:"0 4px"}}>
-                    {(realZoneBars || ZONE_BARS).map((d,i)=>(
+                    {displayZoneBars.map((d,i)=>(
                       <div key={d.label} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
                         <div style={{flex:1,width:"100%",display:"flex",alignItems:"flex-end"}}>
                           <div style={{width:"100%",height:`${d.val/maxZ*100}%`,background:d.c,borderRadius:"4px 4px 0 0",minHeight:4,transition:"height 1s",animation:"barUp 1s ease",animationDelay:`${i*0.08}s`,transformOrigin:"bottom",cursor:"pointer",position:"relative"}}
@@ -889,9 +894,9 @@ export default function App() {
                 <Card style={{overflowY:"auto",maxHeight:260}}>
                   <CardTitle color={C.teal}>Today's Events</CardTitle>
                   <div style={{display:"flex",flexDirection:"column",gap:0}}>
-                    {(realTimeline || TIMELINE).map((e,i)=>(
+                    {displayTimeline.map((e,i)=>(
                       <div key={i} style={{display:"flex",gap:12,paddingBottom:14,position:"relative"}}>
-                        {i<(realTimeline || TIMELINE).length-1 && <div style={{position:"absolute",left:16,top:32,width:2,bottom:0,background:C.border}}/>}
+                        {i<displayTimeline.length-1 && <div style={{position:"absolute",left:16,top:32,width:2,bottom:0,background:C.border}}/>}
                         <div style={{width:32,height:32,borderRadius:"50%",background:`${e.color}18`,border:`2px solid ${e.color}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,flexShrink:0}}>{e.icon}</div>
                         <div>
                           <div style={{fontSize:12,color:C.white,fontWeight:600}}>{e.title}</div>
@@ -907,12 +912,12 @@ export default function App() {
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
                 <Card>
                   <CardTitle color={C.orange}>PPE Compliance by Type</CardTitle>
-                  {(realPpe || PPE_TYPES).map(p=><MiniBar key={p.name} label={`${p.icon} ${p.name}`} pct={p.pct} color={p.c}/>)}
+                  {displayPpe.map(p=><MiniBar key={p.name} label={`${p.icon} ${p.name}`} pct={p.pct} color={p.c}/>)}
                 </Card>
                 <Card>
                   <CardTitle color={C.purple}>Zone-wise PPE Status</CardTitle>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                    {(realZones || ZONES).map(z=>(
+                    {displayZones.map(z=>(
                       <div key={z.name} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}}>
                         <div style={{fontSize:22}}>{z.icon}</div>
                         <div style={{flex:1}}>
@@ -994,7 +999,7 @@ export default function App() {
               <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3,marginBottom:4}}>PPE COMPLIANCE TRACKER</div>
               <div style={{fontSize:12,color:C.g2,marginBottom:20,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>REAL-TIME PERSONAL PROTECTIVE EQUIPMENT MONITORING — ALL ZONES</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:20}}>
-                {(realPpe || PPE_TYPES).map(p=>(
+                {displayPpe.map(p=>(
                   <div key={p.name} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"16px 18px",position:"relative",overflow:"hidden"}}>
                     <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:p.c}}/>
                     <div style={{display:"flex",alignItems:"center",gap:14}}>
@@ -1014,14 +1019,14 @@ export default function App() {
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
                 <Card>
                   <CardTitle>Zone-wise PPE Status</CardTitle>
-                  {(realZones || ZONES).map(z=><MiniBar key={z.name} label={`${z.icon} ${z.name}`} pct={z.pct} color={z.c}/>)}
+                  {displayZones.map(z=><MiniBar key={z.name} label={`${z.icon} ${z.name}`} pct={z.pct} color={z.c}/>)}
                 </Card>
                 <Card>
                   <CardTitle color={C.red}>PPE Violation Log — Today</CardTitle>
                   <table style={{width:"100%",borderCollapse:"collapse"}}>
                     <thead><tr>{["Time","Worker","Violation","Zone","Severity","Status"].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 10px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
                     <tbody>
-                      {(realViols || VIOLATIONS).slice(0,5).map((v,i)=>(
+                      {displayViols.slice(0,5).map((v,i)=>(
                         <tr key={i}>
                           <td style={{padding:"10px",fontSize:12,color:C.g1,borderBottom:`1px solid ${C.border}44`,fontFamily:"'Barlow Condensed',sans-serif"}}>{v.date}</td>
                           <td style={{padding:"10px",fontSize:11,color:C.g2,borderBottom:`1px solid ${C.border}44`,fontFamily:"'Barlow Condensed',sans-serif"}}>{v.worker||"—"}</td>
@@ -1060,7 +1065,7 @@ export default function App() {
                   <table style={{width:"100%",borderCollapse:"collapse"}}>
                     <thead><tr>{["ID","Date/Time","Type","Zone","Worker","Severity","Corrective Action","Status",""].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 12px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
                     <tbody>
-                      {(realViols || VIOLATIONS).map((v,i)=>(
+                      {displayViols.map((v,i)=>(
                         <tr key={i} style={{borderBottom:`1px solid ${C.border}44`}}>
                           <td style={{padding:"11px 12px",fontSize:12,color:C.orange,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:600}}>{v.id}</td>
                           <td style={{padding:"11px 12px",fontSize:12,color:C.g1}}>{v.date}</td>

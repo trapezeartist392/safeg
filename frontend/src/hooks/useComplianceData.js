@@ -123,11 +123,11 @@ export function useComplianceData() {
         const compliance  = Math.max(60, Math.min(100,
           Math.round(100 - (viols.length / totalFrames) * 100)));
 
-        setViolations(formattedViols.length > 0 ? formattedViols : null);
-        setPpeTypes(ppeList.length > 0 ? ppeList : null);
-        setZones(zoneList.length > 0 ? zoneList : null);
-        setTimeline(timelineList.length > 0 ? timelineList : null);
-        setZoneBars(zoneBarList.length > 0 ? zoneBarList : null);
+        setViolations(formattedViols);
+        setPpeTypes(ppeList);
+        setZones(zoneList);
+        setTimeline(timelineList);
+        setZoneBars(zoneBarList);
         setStats({ openCount, pendingCount, closedToday, totalMonth, compliance });
 
       } catch(e) {
