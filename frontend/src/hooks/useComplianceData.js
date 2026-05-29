@@ -118,10 +118,11 @@ export function useComplianceData() {
             c: val >= 10 ? '#FF3B3B' : val >= 5 ? '#FF5C1A' : val >= 3 ? '#FFB800' : '#00D4B8',
           }));
 
-        // Overall compliance
-        const totalFrames = Math.max(viols.length * 3, 100);
-        const compliance  = Math.max(60, Math.min(100,
-          Math.round(100 - (viols.length / totalFrames) * 100)));
+        // Use only today's violations for compliance — matches PPEComplianceBar
+        const todayViolCount = todayViols.length;
+        const frames = Math.max(todayViolCount * 3, 100);
+        const compliance = todayViolCount === 0 ? 100
+          : Math.max(0, Math.min(99, Math.round(100 - (todayViolCount / frames) * 100)));
 
         setViolations(formattedViols);
         setPpeTypes(ppeList);
