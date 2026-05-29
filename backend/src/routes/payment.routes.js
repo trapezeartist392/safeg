@@ -479,6 +479,31 @@ router.get("/history", authenticate, asyncHandler(async (req, res) => {
 /* ═══════════════════════════════════════════════════
    GET /payments/:id
    ═══════════════════════════════════════════════════ */
+// GET /stats — payment summary stats for billing dashboard
+router.get("/stats", authenticate, asyncHandler(async (req, res) => {
+  const db = getDB();
+  const tenantId = req.user.tenantId;
+  const result = await db.query(`
+    SELECT
+      COUNT(*) FILTER (WHERE status='captured') as total_payments,
+      COALESCE(SUM(total_amount) FILTER (WHERE status='captured'), 0) as total_paid,
+      MAX(created_at) FILTER (WHERE status='captured') as last_payment,
+      COUNT(*) FILTER (WHERE status='created') as open_invoices
+    FROM payments
+    WHERE tenant_id = $1
+  `, [tenantId]);
+  const row = result.rows[0];
+  res.json({
+    success: true,
+    data: {
+      totalPayments: parseInt(row.total_payments) || 0,
+      totalPaid:     parseInt(row.total_paid) || 0,
+      lastPayment:   row.last_payment || null,
+      openInvoices:  parseInt(row.open_invoices) || 0,
+    }
+  });
+}));
+
 router.get("/:id", authenticate, asyncHandler(async (req, res) => {
   const db = getDB();
   const { rows } = await db.query(
