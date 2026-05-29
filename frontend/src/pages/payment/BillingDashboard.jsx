@@ -274,10 +274,8 @@ export default function BillingDashboard({ onUpgrade }) {
       });
     } catch (err) {
       console.error(err);
-      // Load demo data
-      setPayments(DEMO_PAYMENTS);
-      setCurrentPlan("growth");
-      setStats({ totalPaid: 67660800, totalPayments: 3, lastPayment: new Date().toISOString(), openInvoices: 0 });
+      setPayments([]);
+      setStats({ totalPaid: 0, totalPayments: 0, lastPayment: null, openInvoices: 0 });
     } finally {
       setLoading(false);
     }
@@ -566,25 +564,3 @@ export default function BillingDashboard({ onUpgrade }) {
     </>
   );
 }
-
-/* ─── Demo data ─────────────────────────────────── */
-const DEMO_PAYMENTS = [
-  {
-    id:"1", invoice_no:"INV-2024-0003", plan_id:"growth", billing_cycle:"annual",
-    total_amount:67660800, status:"captured", created_at: new Date().toISOString(),
-    razorpay_payment_id:"pay_OABCXYZ123456", company_name:"Pune Auto Components Pvt Ltd",
-    coupon_code:"SAFEG20",
-  },
-  {
-    id:"2", invoice_no:"INV-2024-0002", plan_id:"starter", billing_cycle:"monthly",
-    total_amount:1132800, status:"captured", created_at: new Date(Date.now()-32*86400000).toISOString(),
-    razorpay_payment_id:"pay_NABCDEF987654",
-  },
-  {
-    id:"3", invoice_no:"INV-2024-0001", plan_id:"starter", billing_cycle:"monthly",
-    total_amount:1132800, status:"refunded", created_at: new Date(Date.now()-65*86400000).toISOString(),
-    razorpay_payment_id:"pay_MABCDEF246810",
-  },
-];
-
-
