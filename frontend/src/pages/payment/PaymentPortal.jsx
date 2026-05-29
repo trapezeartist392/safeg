@@ -26,9 +26,11 @@ const T = {
   // Brand
   ember:   "#FF4D00",
   flame:   "#FF6B2B",
+  orange:  "#FF4D00",
   gold:    "#FFB020",
   jade:    "#00E5A0",
   sky:     "#2D8EFF",
+  blue:    "#2D8EFF",
   violet:  "#8B5CF6",
   rose:    "#FF3B6B",
   // Glows
@@ -70,70 +72,58 @@ const PLANS = [
   {
     id: "starter",
     name: "Starter",
-    tagline: "Up to 8 cameras",
-    monthlyINR: 9600,
-    annualINR:  96000,
-    annualSave: "₹19,200 saved",
-    color: T.jade,
-    glow: T.jadeGlow,
-    icon: "◈",
+    tagline: "Up to 4 cameras",
+    monthlyINR: 10000,
+    annualINR:  102000,
+    annualSave: "₹18,000 saved",
+    color: T.blue,
     features: [
-      "8 cameras max",
-      "PPE detection (Helmet + Vest)",
-      "Real-time dashboard",
-      "Form 18 auto-fill",
+      "4 cameras max",
+      "PPE detection — 6 categories",
+      "30-day violation archive",
       "Email alerts",
-      "1 plant",
-      "30-day data retention",
+      "Form 18 auto-fill",
+      "Basic compliance report",
     ],
-    notIncluded: ["WhatsApp alerts","Multi-plant","API access","ISO reports"],
+    popular: false,
   },
   {
     id: "growth",
-    name: "Growth",
-    tagline: "Up to 32 cameras",
-    monthlyINR: 57600,
-    annualINR:  576000,
-    annualSave: "₹1,15,200 saved",
-    color: T.ember,
-    glow: T.emberGlow,
-    icon: "⬡",
-    popular: true,
+    name: "Professional",
+    tagline: "5 to 16 cameras",
+    monthlyINR: 32000,
+    annualINR:  326400,
+    annualSave: "₹57,600 saved",
+    color: T.orange,
     features: [
-      "32 cameras max",
-      "Full PPE detection suite",
-      "Multi-plant dashboard",
+      "5–16 cameras",
+      "90-day violation archive",
       "WhatsApp + Email alerts",
-      "Form 18 auto-fill",
-      "ISO 45001 & BRSR reports",
-      "REST API access",
-      "90-day data retention",
-      "5 users included",
+      "Form 18 PDF",
+      "Full compliance reports",
+      "ROI calculator",
+      "Multi-plant dashboard",
     ],
-    notIncluded: ["On-prem option","Dedicated CSM"],
+    popular: true,
   },
   {
     id: "enterprise",
     name: "Enterprise",
-    tagline: "Unlimited cameras",
+    tagline: "17 to 32 cameras",
     monthlyINR: null,
     annualINR:  null,
+    annualSave: "",
     color: T.violet,
-    glow: "rgba(139,92,246,.12)",
-    icon: "✦",
     features: [
-      "Unlimited cameras",
-      "All Growth features",
+      "17–32 cameras",
+      "Unlimited archive",
+      "WhatsApp + SMS + Email",
       "Dedicated CSM",
-      "SLA 99.9% uptime",
-      "On-prem deployment option",
-      "Custom AI model training",
-      "Unlimited data retention",
-      "Unlimited users",
-      "Custom integrations",
-      "Priority 24/7 support",
+      "Custom reports",
+      "99.5% SLA",
+      "On-site training",
     ],
-    notIncluded: [],
+    popular: false,
   },
 ];
 
@@ -213,16 +203,19 @@ function AmbientOrbs({ color }) {
 /* ═══════════════════════════════════════════════════ */
 function PlanCard({ plan, billing, selected, onSelect }) {
   const price = billing === "annual" ? plan.annualINR : plan.monthlyINR;
-  const perCam = plan.id === "starter" ? (billing === "annual" ? 1000 : 1200)
-               : plan.id === "growth"  ? (billing === "annual" ? 1500 : 1800)
+  const perCam = plan.id === "starter" ? (billing === "annual" ? 2125 : 2500)
+               : plan.id === "growth"  ? (billing === "annual" ? 1700 : 2000)
+               : plan.id === "enterprise" ? (billing === "annual" ? 1360 : 1600)
                : null;
+  const planGlow = plan.glow || `${plan.color}1f`;
+  const planIcon = plan.icon || (plan.id === "starter" ? "◈" : plan.id === "growth" ? "⬡" : "✦");
 
   return (
     <div
       onClick={() => plan.monthlyINR !== null && onSelect(plan.id)}
       style={{
         background: selected
-          ? `linear-gradient(135deg, ${plan.glow} 0%, rgba(255,255,255,.02) 100%)`
+          ? `linear-gradient(135deg, ${planGlow} 0%, rgba(255,255,255,.02) 100%)`
           : T.card,
         border: `1.5px solid ${selected ? plan.color : T.line}`,
         borderRadius: 20,
@@ -232,7 +225,7 @@ function PlanCard({ plan, billing, selected, onSelect }) {
         overflow: "hidden",
         transition: "all .25s cubic-bezier(.22,1,.36,1)",
         transform: selected ? "translateY(-4px)" : "none",
-        boxShadow: selected ? `0 20px 60px ${plan.glow}, 0 0 0 1px ${plan.color}22` : "none",
+        boxShadow: selected ? `0 20px 60px ${planGlow}, 0 0 0 1px ${plan.color}22` : "none",
       }}
     >
       {/* Top accent bar */}
@@ -258,11 +251,11 @@ function PlanCard({ plan, billing, selected, onSelect }) {
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
         <div style={{
           width: 44, height: 44, borderRadius: 12,
-          background: `${plan.glow}`,
+          background: `${planGlow}`,
           border: `1.5px solid ${plan.color}44`,
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 20, color: plan.color,
-        }}>{plan.icon}</div>
+        }}>{planIcon}</div>
         <div>
           <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: T.snow }}>{plan.name}</div>
           <div style={{ fontSize: 12, color: T.fog, marginTop: 1 }}>{plan.tagline}</div>
@@ -336,7 +329,7 @@ function PlanCard({ plan, billing, selected, onSelect }) {
       ) : (
         <a href="mailto:sales@syyaimsafeg.ai" style={{
           display: "block", width: "100%", padding: "11px",
-          background: `${plan.glow}`,
+          background: `${planGlow}`,
           border: `1.5px solid ${plan.color}44`,
           borderRadius: 10, textAlign: "center",
           fontSize: 13, fontWeight: 700, color: plan.color,
