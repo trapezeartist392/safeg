@@ -328,6 +328,32 @@ export default function App() {
   const [logs, setLogs] = useState([]);
   const clockRef = useRef(null);
   const [clockStr, setClockStr] = useState(new Date().toLocaleTimeString());
+  const [realCameras, setRealCameras] = useState([]);
+
+  useEffect(() => {
+    const fetchCams = async () => {
+      try {
+        const token = localStorage.getItem('safeg_token') || '';
+        const res = await fetch('/api/v1/cameras', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const cams = (data.data || []).map(c => ({
+          id: c.id,
+          name: c.cam_label || c.id,
+          zone: c.area_name || c.zone_type || 'Zone',
+          rtsp_url: c.rtsp_url || '',
+          status: c.status || 'offline',
+        }));
+        if (cams.length > 0) setRealCameras(cams);
+      } catch(e) {
+        console.error('Camera fetch error:', e);
+      }
+    };
+    fetchCams();
+    const interval = setInterval(fetchCams, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fn = (entry) => setLogs(prev => [entry, ...prev.slice(0, 99)]);
@@ -375,7 +401,7 @@ export default function App() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 20, fontSize: 9, color: T.textSub, alignItems: "center" }}>
-          <span>● {CAMERAS.length} FEEDS</span>
+          <span>● {(realCameras.length > 0 ? realCameras : CAMERAS).length} FEEDS</span>
           <span style={{ color: "#ffb020" }}>⚠ {highCount + medCount} ALERTS</span>
           <span style={{ color: "#4f8ef7" }}>■ LIVE</span>
           <span style={{ color: T.textSub }}>{clockStr}</span>
@@ -404,12 +430,12 @@ export default function App() {
                 cursor: "pointer", fontSize: 9, padding: "5px 14px",
                 borderRadius: 3, fontFamily: "inherit", letterSpacing: 3
               }}>← ALL CAMERAS</button>
-              <CameraTile cam={CAMERAS[focusIdx]} isMain={true} onClick={() => {}} />
+              <CameraTile cam={(realCameras.length > 0 ? realCameras : CAMERAS)[focusIdx]} isMain={true} onClick={() => {}} />
             </div>
           ) : (
             <>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                {CAMERAS.map((cam, i) => (
+                {(realCameras.length > 0 ? realCameras : CAMERAS).map((cam, i) => (
                   <CameraTile key={cam.id} cam={cam} isMain={false} onClick={() => setFocusIdx(i)} />
                 ))}
               </div>
