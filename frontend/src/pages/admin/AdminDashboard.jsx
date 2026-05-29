@@ -369,7 +369,7 @@ function CustomerTable({ token }) {
   useEffect(() => {
     axios.get("/api/admin/customers?limit=20", { headers:{ Authorization:`Bearer ${token}` } })
       .then(r => setCustomers(r.data.data || []))
-      .catch(() => setCustomers(MOCK_CUSTOMERS))
+      .catch(() => setCustomers([]))
       .finally(() => setLoading(false));
   }, [token]);
 
@@ -707,16 +707,6 @@ const MOCK_PAYMENTS = Array.from({ length:10 }, (_, i) => ({
   status:["captured","captured","captured","captured","refunded","captured","created","captured","captured","captured"][i],
   created_at: new Date(Date.now() - i * 7 * 24 * 60 * 60 * 1000).toISOString(),
 }));
-const MOCK_CUSTOMERS = Array.from({ length:6 }, (_, i) => ({
-  company_name:["Pune Auto Pvt Ltd","Mumbai Steel Works","Chennai Forge","Delhi Plastics","Bangalore Mfg","Hyderabad Auto"][i],
-  plan_id:["professional","enterprise","starter","professional","enterprise","starter"][i],
-  camera_count:[8,20,4,12,24,4][i],
-  subscription_status:["active","active","trial","active","active","expired"][i],
-  trial_ends_at: i===2 ? new Date(Date.now()+3*24*60*60*1000).toISOString() : null,
-  created_at: new Date(Date.now() - i * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  plant_count:[2,3,1,2,4,1][i],
-}));
-
 /* ------------------------------------------------------
    ADMIN LOGIN SCREEN
 ------------------------------------------------------ */
