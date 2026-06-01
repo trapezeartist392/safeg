@@ -354,13 +354,15 @@ function CamFeed({cam}) {
 // ─── FORM 18 ─────────────────────────────────────────────────────
 function Form18({toast}) {
   const today=new Date().toISOString().slice(0,10);
+  const _user = (() => { try { return JSON.parse(localStorage.getItem('safeg_user')||'{}'); } catch { return {}; } })();
+  const _plant = (() => { try { return JSON.parse(localStorage.getItem('safeg_plant')||'{}'); } catch { return {}; } })();
   const [f,setF]=useState({
-    factoryName: localStorage.getItem('safeg_factory_name') || JSON.parse(localStorage.getItem('safeg_user')||'{}')?.companyName || "Pune Auto Components Pvt Ltd",
-    regNo: localStorage.getItem('safeg_factory_reg') || "",
-    industry:"Automobile Components Manufacturing",
-    address:"Plot 47, MIDC Industrial Area, Pimpri-Chinchwad, Pune – 411018",
-    district: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.city || "Pune",
-    state: JSON.parse(localStorage.getItem('safeg_user')||'{}')?.state || "Maharashtra",
+    factoryName: localStorage.getItem('safeg_factory_name') || _user?.companyName || _plant?.plant_name || "",
+    regNo: localStorage.getItem('safeg_factory_reg') || _plant?.factory_licence_no || "",
+    industry: _user?.industry || _plant?.industry_type || "",
+    address: _plant?.address || _user?.address || "",
+    district: _user?.city || _plant?.city || "",
+    state: _user?.state || _plant?.state || "",
     occupier:"", manager:"", contact:"",
     accDate:today, accTime:"14:23", department:"Welding Zone B — Bay 3",
     nature:"Fall from height",
@@ -376,9 +378,7 @@ function Form18({toast}) {
   });
   const [injured,setInjured]=useState([{name:"Ramesh Kumar Singh",sex:"Male",age:34,empType:"Permanent – Factory Worker",dept:"Welding",injuryType:"Minor Injury",bodyPart:"Left knee — abrasion",days:2}]);
   const [capa,setCapa]=useState([
-    {action:"Immediate housekeeping of Welding Zone B — spill removed",resp:"Rajesh Patil — Housekeeping Supervisor",date:today,status:"Completed"},
-    {action:"Install spill containment kit in Welding Zone B",resp:"Maintenance Manager",date:today,status:"In Progress"},
-    {action:"Revise housekeeping SOP — reduce response SLA from 30 to 10 min",resp:"HSE Manager",date:today,status:"Pending"},
+    {action:"",resp:"",date:today,status:"Pending"},
   ]);
 
   const upd=(k,v)=>{
@@ -544,14 +544,17 @@ function Form18({toast}) {
             {secTitle("PART E — Safeguards IQ EVIDENCE LOG","Auto-captured")}
             <div style={{background:"rgba(0,212,184,.04)",border:`1px solid rgba(0,212,184,.2)`,borderRadius:10,padding:20}}>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:14}}>
-                {[
-                  ["Camera ID","CAM-04 · Zone B Welding"],
-                  ["Detection Timestamp",new Date().toISOString().slice(0,10)+" 14:23:07 IST"],
-                  ["AI Confidence Score","98.7%"],
-                  ["Alert Sent To","Zone B Supervisor · Plant Manager"],
-                  ["Response Time","28 seconds"],
-                  ["Evidence Video","📹 Click to view clip →"],
-                ].map(([k,v])=><div key={k}>
+                {(() => {
+                  const lastViol = (() => { try { return JSON.parse(localStorage.getItem('safeg_last_violation')||'null'); } catch { return null; } })();
+                  return [
+                    ["Camera ID", lastViol?.camera || "No recent detection"],
+                    ["Detection Timestamp", lastViol?.time || "—"],
+                    ["AI Confidence Score", lastViol?.confidence ? `${lastViol.confidence}%` : "—"],
+                    ["Alert Sent To", "Zone Supervisor · Plant Manager"],
+                    ["Response Time", "< 28 seconds"],
+                    ["Violation Type", lastViol?.type || "—"],
+                  ];
+                })().map(([k,v])=><div key={k}>
                   <div style={{fontSize:10,color:C.teal,textTransform:"uppercase",letterSpacing:1.5,fontFamily:"'Barlow Condensed',sans-serif",marginBottom:4}}>{k}</div>
                   <div style={{fontSize:13,fontFamily:k.includes("Timestamp")||k.includes("Score")?"'Barlow Condensed',sans-serif":"'Syne',sans-serif",cursor:k.includes("Video")?"pointer":"default",color:k.includes("Video")?C.teal:C.white}}>{v}</div>
                 </div>)}
@@ -1054,10 +1057,10 @@ export default function App() {
                 <button onClick={()=>toast("VIO-236 created and assigned","success")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>+ Log Violation</button>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="Open" value={stats.openCount||"7"} unit="Require action" trend="↑ 2 new today" trendUp={false} color={C.red}/>
-                <KpiCard label="Pending Review" value={stats.pendingCount||"4"} unit="Awaiting sign-off" trend="→ Same as yesterday" color={C.amber}/>
-                <KpiCard label="Closed Today" value={stats.closedToday||"12"} unit="Resolved" trend="↑ +3 vs yesterday" trendUp={true} color={C.green}/>
-                <KpiCard label="This Month" value={stats.totalMonth||"47"} unit="Total" trend="↓ −23% vs last month" trendUp={true} color={C.blue}/>
+                <KpiCard label="Open" value={stats.openCount||0} unit="Require action" trend="↑ 2 new today" trendUp={false} color={C.red}/>
+                <KpiCard label="Pending Review" value={stats.pendingCount||0} unit="Awaiting sign-off" trend="→ Same as yesterday" color={C.amber}/>
+                <KpiCard label="Closed Today" value={stats.closedToday||0} unit="Resolved" trend="↑ +3 vs yesterday" trendUp={true} color={C.green}/>
+                <KpiCard label="This Month" value={stats.totalMonth||0} unit="Total" trend="↓ −23% vs last month" trendUp={true} color={C.blue}/>
               </div>
               <Card>
                 <CardTitle>All Violations</CardTitle>

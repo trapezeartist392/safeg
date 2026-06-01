@@ -18,7 +18,7 @@ export function useComplianceData() {
   const [loading,     setLoading]     = useState(true);
   const [stats,       setStats]       = useState({
     openCount: 0, pendingCount: 0, closedToday: 0,
-    totalMonth: 0, compliance: 97, cameras: 0,
+    totalMonth: 0, compliance: 0, cameras: 0,
   });
 
   const token = localStorage.getItem('safeg_token') || '';

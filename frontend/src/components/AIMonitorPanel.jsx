@@ -162,6 +162,16 @@ export default function AIMonitorPanel() {
         }
       }));
       if (data.violations?.length > 0) {
+        // Save last violation to localStorage for Form 18
+        const v = data.violations[0];
+        localStorage.setItem('safeg_last_violation', JSON.stringify({
+          camera: camIdRef.current,
+          time: new Date().toISOString(),
+          confidence: v.confidence,
+          type: v.type,
+          description: v.description,
+        }));
+
         // Emit to LIVE EVENT LOG in safety-monitor
         if (typeof window !== 'undefined' && window._safegEmitLog) {
           window._safegEmitLog({
