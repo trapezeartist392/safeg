@@ -156,11 +156,40 @@ SUMMARY: <one short sentence>` }
     }
   }, [cam]);
 
-  const startCamera = async (e) => {
-    e?.stopPropagation();
+const startCamera = async (e) => {
+  e?.stopPropagation();
+  // If camera has RTSP URL — use AI stream agent
+  if (cam.rtsp_url && !cam.rtsp_url.includes('webcam')) {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      streamRef.current = stream;
+      setStatus("live");
+      const token = localStorage.getItem('safeg_token') || '';
+      const AI_URL = window.location.hostname !== 'localhost'
+        ? 'https://safeguardsiq.com/ai' : 'http://localhost:5050';
+      const res = await fetch(`${AI_URL}/stream/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          camera_id: cam.id || cam.cam_label,
+          rtsp_url:  cam.rtsp_url,
+          tenant_id: localStorage.getItem('safeg_tenant') || '',
+          ppe_types: ['Helmet','Safety Vest','Gloves','Safety Boots'],
+          token,
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatus("live");
+        setRisk("UNKNOWN");
+      } else {
+        setStatus("denied");
+      }
+    } catch { setStatus("denied"); }
+    return;
+  }
+  // Fallback — browser webcam
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    streamRef.current = stream;
       if (videoRef.current) { videoRef.current.srcObject = stream; await videoRef.current.play(); }
       setStatus("live");
       setRisk("UNKNOWN");
@@ -169,6 +198,16 @@ SUMMARY: <one short sentence>` }
 
   const stopCamera = (e) => {
     e?.stopPropagation();
+    // Stop RTSP stream if running
+    if (cam.rtsp_url && !cam.rtsp_url.includes('webcam')) {
+      const AI_URL = window.location.hostname !== 'localhost'
+        ? 'https://safeguardsiq.com/ai' : 'http://localhost:5050';
+      fetch(`${AI_URL}/stream/stop`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ camera_id: cam.id || cam.cam_label })
+      }).catch(() => {});
+    }
     streamRef.current?.getTracks().forEach(t => t.stop());
     streamRef.current = null;
     clearInterval(intervalRef.current);
@@ -231,7 +270,7 @@ SUMMARY: <one short sentence>` }
                 background: "rgba(79,142,247,0.12)", border: "1px solid rgba(79,142,247,0.4)",
                 color: "#7ab4ff", cursor: "pointer", fontSize: isMain ? 10 : 8,
                 letterSpacing: 3, borderRadius: 3, fontFamily: "inherit", transition: "all 0.2s"
-              }}>▶ CONNECT</button>
+    }}>{cam.rtsp_url && !cam.rtsp_url.includes('webcam') ? '▶ CONNECT RTSP' : '▶ CONNECT'}</button>
             )}
           </div>
         )}
