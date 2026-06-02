@@ -367,7 +367,50 @@ export default function App() {
   const [logs, setLogs] = useState([]);
   const clockRef = useRef(null);
   const [clockStr, setClockStr] = useState(new Date().toLocaleTimeString());
-  const [realCameras, setRealCameras] = useState([]);
+const [realCameras, setRealCameras] = useState([]);
+const [showAddCamera, setShowAddCamera] = useState(false);
+const [manualCam, setManualCam] = useState({ label: '', rtsp: '' });
+const [manualError, setManualError] = useState('');
+
+const connectManualCamera = async () => {
+  if (!manualCam.label) { setManualError('Enter camera label'); return; }
+  if (!manualCam.rtsp)  { setManualError('Enter RTSP URL'); return; }
+  setManualError('');
+  try {
+    const AI_URL = window.location.hostname !== 'localhost'
+      ? 'https://safeguardsiq.com/ai' : 'http://localhost:5050';
+    const token = localStorage.getItem('safeg_token') || '';
+    const res = await fetch(`${AI_URL}/stream/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        camera_id: manualCam.label,
+        rtsp_url:  manualCam.rtsp,
+        tenant_id: localStorage.getItem('safeg_tenant') || '',
+        ppe_types: ['Helmet','Safety Vest','Gloves','Safety Boots'],
+        token,
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      // Add to realCameras list
+      setRealCameras(prev => [...prev, {
+        id: manualCam.label,
+        name: manualCam.label,
+        zone: 'Manual',
+        rtsp_url: manualCam.rtsp,
+        status: 'online',
+        cam_label: manualCam.label,
+      }]);
+      setShowAddCamera(false);
+      setManualCam({ label: '', rtsp: '' });
+    } else {
+      setManualError('Failed to connect — check RTSP URL');
+    }
+  } catch(e) {
+    setManualError('Connection error: ' + e.message);
+  }
+};
 
   useEffect(() => {
     const fetchCams = async () => {
@@ -473,11 +516,62 @@ export default function App() {
             </div>
           ) : (
             <>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                {(realCameras.length > 0 ? realCameras : CAMERAS).map((cam, i) => (
-                  <CameraTile key={cam.id} cam={cam} isMain={false} onClick={() => setFocusIdx(i)} />
-                ))}
-              </div>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+  {(realCameras.length > 0 ? realCameras : CAMERAS).map((cam, i) => (
+    <CameraTile key={cam.id} cam={cam} isMain={false} onClick={() => setFocusIdx(i)} />
+  ))}
+  {/* Manual Add Camera Tile */}
+  {showAddCamera ? (
+    <div style={{ background: T.bgCard, border: `1px solid ${T.border}`,
+      borderRadius: 8, padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ fontSize: 10, color: T.textSub, letterSpacing: 2, fontWeight: 700 }}>
+        ADD CAMERA MANUALLY
+      </div>
+      <input
+        placeholder="Camera Label (e.g. Welding Zone)"
+        value={manualCam.label}
+        onChange={e => setManualCam(p => ({...p, label: e.target.value}))}
+        style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: 6,
+          padding: "8px 10px", color: T.text, fontSize: 11, fontFamily: "monospace",
+          outline: "none" }}
+      />
+      <input
+        placeholder="RTSP URL (rtsp://admin:pass@192.168.1.x:554/stream1)"
+        value={manualCam.rtsp}
+        onChange={e => setManualCam(p => ({...p, rtsp: e.target.value}))}
+        style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: 6,
+          padding: "8px 10px", color: T.text, fontSize: 11, fontFamily: "monospace",
+          outline: "none" }}
+      />
+      <div style={{ display: "flex", gap: 8 }}>
+        <button onClick={connectManualCamera} style={{
+          flex: 2, padding: "8px", borderRadius: 6, background: "rgba(79,142,247,0.15)",
+          border: "1px solid rgba(79,142,247,0.4)", color: "#7ab4ff",
+          fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+          ▶ Connect
+        </button>
+        <button onClick={() => { setShowAddCamera(false); setManualCam({label:'',rtsp:''}); }}
+          style={{ flex: 1, padding: "8px", borderRadius: 6, background: "none",
+          border: `1px solid ${T.border}`, color: T.textSub, fontSize: 11, cursor: "pointer" }}>
+          Cancel
+        </button>
+      </div>
+      {manualError && <div style={{ fontSize: 10, color: "#ff3b3b" }}>{manualError}</div>}
+    </div>
+  ) : (
+    <div onClick={() => setShowAddCamera(true)}
+      style={{ background: T.bgCard, border: `1px dashed ${T.border}`,
+        borderRadius: 8, padding: 14, display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center", gap: 8,
+        cursor: "pointer", minHeight: 120, transition: "border-color .2s" }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = "#7ab4ff"}
+      onMouseLeave={e => e.currentTarget.style.borderColor = T.border}>
+      <div style={{ fontSize: 24, color: T.textMute }}>＋</div>
+      <div style={{ fontSize: 9, color: T.textMute, letterSpacing: 2 }}>ADD CAMERA</div>
+      <div style={{ fontSize: 8, color: T.textMute }}>RTSP / Webcam</div>
+    </div>
+  )}
+</div>
               <Form18Generator />
               <div style={{ marginTop: 12, padding: "10px 14px",
                 border: `1px solid ${T.border}`, borderRadius: 4,
