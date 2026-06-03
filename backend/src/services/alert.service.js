@@ -41,7 +41,8 @@ exports.sendAlert = async ({ violation, tenantId, escalated = false }) => {
 
     const promises = [];
     for (const r of recipients) {
-      if (r.email) promises.push(sendEmailAlert(r, violation, message, tenantId));
+// Email alerts disabled — WhatsApp only
+// if (r.email) promises.push(sendEmailAlert(r, violation, message, tenantId));
       if (r.mobile && process.env.WHATSAPP_PROVIDER) {
         promises.push(sendWhatsApp(r, violation, message, tenantId));
       }
@@ -86,7 +87,8 @@ function formatMessage(v, escalated) {
 async function sendEmailAlert(recipient, violation, message, tenantId) {
   const db = getDB();
   try {
-    await transporter.sendMail({
+// Email disabled
+return; await transporter.sendMail({
       from:    process.env.EMAIL_FROM,
       to:      recipient.email,
       subject: `SafeG AI Alert — ${violation.violation_type} | ${violation.violation_no}`,

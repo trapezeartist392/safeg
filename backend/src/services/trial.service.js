@@ -180,6 +180,8 @@ const expiredEmail = (name, companyName, loginUrl) => `
 
 // ── SEND EMAIL HELPER ──
 const sendEmail = async (to, subject, html) => {
+    // Email alerts disabled — WhatsApp only
+    return;
   try {
     const emailSvc = require('./email.service');
     await emailSvc.sendEmail({ to, subject, html });

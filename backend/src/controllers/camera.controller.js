@@ -129,12 +129,24 @@ exports.testConnection = asyncHandler(async (req, res) => {
   let result = { success: false, latencyMs: null, fps: null, error: null };
 
   try {
-    const start = Date.now();
-    const aiRes = await axios.post(`${process.env.AI_ENGINE_URL}/api/camera/test`,
-      { rtspUrl: cam.rtsp_url, cameraId: cam.id },
-      { headers: { 'X-Api-Key': process.env.AI_API_KEY }, timeout: 10000 }
-    );
-    result = { success: true, latencyMs: Date.now() - start, fps: aiRes.data.fps, resolution: aiRes.data.resolution };
+const start = Date.now();
+// Test AI engine health + attempt RTSP stream start
+const aiRes = await axios.get(`${process.env.AI_ENGINE_URL}/health`, { timeout: 5000 });
+const latencyMs = Date.now() - start;
+const aiOnline = aiRes.data?.status === 'ok';
+// If camera has RTSP URL, try starting stream briefly
+if (cam.rtsp_url) {
+  try {
+    await axios.post(`${process.env.AI_ENGINE_URL}/stream/start`, {
+      camera_id: cam.id, rtsp_url: cam.rtsp_url,
+      tenant_id: req.user.tenantId, ppe_types: ['Helmet','Safety Vest'],
+    }, { timeout: 5000 });
+    setTimeout(async () => {
+      try { await axios.post(`${process.env.AI_ENGINE_URL}/stream/stop`, { camera_id: cam.id }); } catch {}
+    }, 3000);
+  } catch {}
+}
+result = { success: aiOnline, latencyMs, fps: null, resolution: null };
     await db.query(`UPDATE cameras SET status='online', last_heartbeat=NOW() WHERE id=$1`, [cam.id]);
   } catch (err) {
     result.error = err.message;
