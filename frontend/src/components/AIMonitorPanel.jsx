@@ -72,12 +72,10 @@ export default function AIMonitorPanel() {
         const r = await fetch(`${AI_URL}/health`);
         if (!r.ok) { setAiOnline(false); return; }
         setAiOnline(true);
-        const sr = await fetch(`${AI_URL}/stream/status`);
-        const sd = await sr.json();
-        const busy = Object.values(sd.streams || {}).some(s =>
-          s.status === 'running' || s.status === 'analysing' || s.status === 'connecting'
-        );
-        if (!busy) setExpanded(true);
+        // Clear all stopped streams on server
+        await fetch(`${AI_URL}/stream/clear`, { method: 'POST' }).catch(() => {});
+        setStreams({});
+        setExpanded(true);
       } catch { setAiOnline(false); }
     };
     init();
@@ -401,6 +399,22 @@ export default function AIMonitorPanel() {
               </div>
             ))}
           </div>
+          {allStreams.length > 0 && (
+            <button onClick={async () => {
+              await fetch(`${AI_URL}/stream/clear`, { method: 'POST' }).catch(() => {});
+              if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+              if (mediaStreamRef.current) { mediaStreamRef.current.getTracks().forEach(t => t.stop()); mediaStreamRef.current = null; }
+              if (videoRef.current) { videoRef.current.srcObject = null; videoRef.current = null; }
+              setStreams({});
+              setCapturing(false);
+              violLogRef.current = [];
+              setViolLog([]);
+            }} style={{
+              background:"none", border:`1px solid ${T.red}40`, borderRadius:8,
+              padding:"7px 16px", color:T.red, fontSize:12, fontWeight:700,
+              cursor:"pointer", fontFamily:"'Nunito'",
+            }}>✕ Clear All</button>
+          )}
           <button onClick={() => setExpanded(e => !e)} style={{
             background:"none", border:`1px solid ${T.border}`, borderRadius:8,
             padding:"7px 16px", color:T.g1, fontSize:12, fontWeight:700,
@@ -500,7 +514,7 @@ export default function AIMonitorPanel() {
                       <div style={{ fontSize:13, fontWeight:800, color:T.white }}>{id}</div>
                       <div style={{ fontSize:10, color:T.g1, fontFamily:"'DM Mono'" }}>{s.rtsp_url} · {s.status}</div>
                     </div>
-                    {running && (
+                    {(running || s.status === 'retrying' || s.status === 'connecting' || s.status === 'stopped') && (
                       <button onClick={() => stopStream(id)} style={{
                         background:"none", border:`1px solid ${T.red}40`, borderRadius:6,
                         padding:"5px 10px", color:T.red, fontSize:11, fontWeight:700, cursor:"pointer",
