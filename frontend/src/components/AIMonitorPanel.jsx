@@ -72,7 +72,6 @@ export default function AIMonitorPanel() {
         const r = await fetch(`${AI_URL}/health`);
         if (!r.ok) { setAiOnline(false); return; }
         setAiOnline(true);
-        if (IS_PRODUCTION) { setExpanded(true); return; }
         const sr = await fetch(`${AI_URL}/stream/status`);
         const sd = await sr.json();
         const busy = Object.values(sd.streams || {}).some(s =>
@@ -207,7 +206,8 @@ export default function AIMonitorPanel() {
 
   const startStream = async () => {
     setLoading(true); setError('');
-    if (IS_PRODUCTION) {
+    const isRtsp = rtspUrl && rtspUrl !== 'webcam:0' && !rtspUrl.startsWith('webcam:');
+    if (!isRtsp) {
       try {
         // Stop any existing stream
         if (mediaStreamRef.current) {
@@ -289,6 +289,7 @@ export default function AIMonitorPanel() {
         setError('Camera error: ' + e.message);
       }
     } else {
+      // RTSP stream
       try {
         const r = await fetch(`${AI_URL}/stream/start`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -303,7 +304,9 @@ export default function AIMonitorPanel() {
   };
 
   const stopStream = async (id) => {
-    if (IS_PRODUCTION) {
+    const streamInfo = streams[id];
+    const wasRtsp = streamInfo?.rtsp_url && streamInfo.rtsp_url !== 'browser-webcam';
+    if (!wasRtsp) {
       if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
       if (mediaStreamRef.current) { mediaStreamRef.current.getTracks().forEach(t => t.stop()); mediaStreamRef.current = null; }
       if (videoRef.current) {
@@ -376,10 +379,10 @@ export default function AIMonitorPanel() {
         {expanded && (
           <div style={{ background:T.card2, border:`1px solid ${T.border}`, borderRadius:12, padding:16, marginBottom:16 }}>
             <div style={{ fontSize:11, color:T.orange, fontWeight:800, letterSpacing:1.5, marginBottom:14 }}>
-              {IS_PRODUCTION ? (lang==='hi'?'ब्राउज़र कैमरा जोड़ें':'CONNECT BROWSER CAMERA') : (lang==='hi'?'कैमरा जोड़ें':'CONNECT CAMERA')}
+{lang==='hi' ? 'कैमरा जोड़ें' : 'CONNECT CAMERA'}
             </div>
 
-            {!IS_PRODUCTION && (
+{true && (
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
                 <div>
                   <label style={{ fontSize:10, color:T.g1, display:"block", marginBottom:5, letterSpacing:1, fontWeight:700 }}>
@@ -393,14 +396,15 @@ export default function AIMonitorPanel() {
                   <label style={{ fontSize:10, color:T.g1, display:"block", marginBottom:5, letterSpacing:1, fontWeight:700 }}>
                     STREAM URL
                   </label>
-                  <input value={rtspUrl} onChange={e=>setRtspUrl(e.target.value)} placeholder="webcam:0"
+                  <input value={rtspUrl} onChange={e=>setRtspUrl(e.target.value)}
+                    placeholder="rtsp://admin:pass@192.168.1.x:554/stream1  or  webcam:0 for browser"
                     style={{ width:"100%", background:"#06090F", border:`1px solid ${T.border}`, borderRadius:8,
                       padding:"10px 12px", color:T.white, fontSize:12, fontFamily:"'DM Mono'", outline:"none", boxSizing:"border-box" }}/>
                 </div>
               </div>
             )}
 
-            {IS_PRODUCTION && (
+{false && (
               <div style={{ marginBottom:14, padding:"10px 14px", background:`${T.teal}10`,
                 border:`1px solid ${T.teal}30`, borderRadius:8, fontSize:11, color:T.teal }}>
                 {t('browser_cam_note')}
