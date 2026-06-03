@@ -89,7 +89,6 @@ export default function AIMonitorPanel() {
   }, [tenantId]);
 
   useEffect(() => {
-    if (IS_PRODUCTION) return;
     const poll = async () => {
       try {
         const r    = await fetch(`${AI_URL}/stream/status`);
@@ -296,8 +295,36 @@ export default function AIMonitorPanel() {
           body: JSON.stringify({ camera_id: camId, rtsp_url: rtspUrl, tenant_id: tenantId, ppe_types: ppeTypes, confidence: 0.1 }),
         });
         const d = await r.json();
-        if (d.success) setExpanded(false);
-        else setError(d.message || 'Failed to start');
+        if (d.success) {
+          setExpanded(false);
+          // Show RTSP stream card immediately
+          setStreams(prev => ({
+            ...prev,
+            [camId]: {
+              status: 'connecting', rtsp_url: rtspUrl, ppe_types: ppeTypes,
+              started_at: new Date().toISOString(), violations_today: 0,
+              persons_detected: 0, risk_level: 'safe', ppe_violations: 0,
+              pathway_violations: 0, unsafe_violations: 0, accident_violations: 0,
+              nearmiss_violations: 0, current_violations: [], last_violations_list: [],
+              last_violation: null, last_summary: '', compliant: true,
+            }
+          }));
+          // Poll RTSP stream status every 3 seconds
+          const rtspPoll = setInterval(async () => {
+            try {
+              const sr = await fetch(`${AI_URL}/stream/status/${camId}`);
+              const sd = await sr.json();
+              if (sd.success && sd.stream) {
+                setStreams(prev => ({ ...prev, [camId]: { ...prev[camId], ...sd.stream } }));
+                if (sd.stream.status === 'stopped' || sd.stream.status === 'error') {
+                  clearInterval(rtspPoll);
+                }
+              }
+            } catch {}
+          }, 3000);
+        } else {
+          setError(d.message || 'Failed to start');
+        }
       } catch(e) { setError(e.message); }
     }
     setLoading(false);
@@ -317,9 +344,17 @@ export default function AIMonitorPanel() {
       setCapturing(false);
       setStreams(prev => ({ ...prev, [id]: { ...prev[id], status: 'stopped' } }));
     } else {
-      await fetch(`${AI_URL}/stream/stop`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ camera_id: id }),
+      try {
+        await fetch(`${AI_URL}/stream/stop`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ camera_id: id }),
+        });
+      } catch {}
+      // Remove from UI
+      setStreams(prev => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
       });
     }
   };
