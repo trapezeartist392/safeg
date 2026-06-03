@@ -246,7 +246,7 @@ function StepZones({ plants, zones, setZones, onNext, onBack, setError }) {
 }
 
 /* ── STEP 5 — Choose Plan ── */
-function StepChoosePlan({ form, selectedPlan, setSelectedPlan, billing, setBilling, onNext, onBack }) {
+function StepChoosePlan({ form, setForm, selectedPlan, setSelectedPlan, billing, setBilling, onNext, onBack }) {
   const cameraCount = parseInt(form.cameraCount) || 1;
 
   return (
@@ -296,6 +296,7 @@ function StepChoosePlan({ form, selectedPlan, setSelectedPlan, billing, setBilli
 
           return (
             <div key={plan.id} onClick={()=>!isDisabled&&setSelectedPlan(plan.id)}
+              title={isDisabled ? "Free trial is available on the Professional plan only." : undefined}
               style={{
                 background:isSelected?`${plan.color}10`:T.card2,
                 border:`2px solid ${isSelected?plan.color:isDisabled?T.border+"60":T.border}`,
@@ -355,7 +356,7 @@ function StepChoosePlan({ form, selectedPlan, setSelectedPlan, billing, setBilli
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <input type="number" min={1} max={32}
               value={form.cameraCount||4}
-              onChange={e=>form.setCameraCount?.(e.target.value)}
+              onChange={e=>setForm(f=>({...f,cameraCount:e.target.value}))}
               style={{...inp,width:100}}/>
             <div style={{fontSize:12,color:T.g1}}>
               Estimated monthly: <span style={{color:T.orange,fontWeight:800}}>
@@ -465,6 +466,7 @@ export default function SignupPage({ onLogin }) {
   const [form,         setForm]         = useState({
     companyName:"", email:"", password:"", confirmPass:"",
     phone:"", gstin:"", address:"", city:"", state:"", pincode:"",
+    whatsapp:"",
     agreeTerms:false, agreeWhatsapp:false, cameraCount:4,
   });
   const [plants,       setPlants]       = useState([]);
@@ -501,7 +503,7 @@ export default function SignupPage({ onLogin }) {
         gstin:         form.gstin,
         city:          form.city,
         state:         form.state,
-        trialDays:     14,
+        trialDays:     28,
         plants, zones, cameras,
       });
 
@@ -626,7 +628,7 @@ export default function SignupPage({ onLogin }) {
           {step===2 && <StepZones    plants={plants} zones={zones} setZones={setZones} onNext={next} onBack={back} setError={setError}/>}
           {step===3 && <CameraDiscovery zones={zones} cameras={cameras} setCameras={setCameras} onNext={next} onBack={back} setError={setError}/>}
           {step===4 && <StepChoosePlan
-            form={{...form, setCameraCount:(v)=>setForm(f=>({...f,cameraCount:v}))}}
+            form={form} setForm={setForm}
             selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan}
             billing={billing} setBilling={setBilling}
             onNext={next} onBack={back}/>}
