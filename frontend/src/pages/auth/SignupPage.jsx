@@ -465,6 +465,86 @@ export default function SignupPage({ onLogin }) {
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const navigate = useNavigate();
 
+  const handlePayAndActivate = async () => {
+    setLoading('signup'); setError("");
+    try {
+      // Step 1 — Create Razorpay order WITHOUT registering first
+      // Use a temp endpoint that doesn't need auth
+      const orderRes = await axios.post("/api/v1/payments/create-guest-order", {
+        planId:      selectedPlan,
+        billing,
+        cameraCount: parseInt(form.cameraCount) || 4,
+        email:       form.email,
+        companyName: form.companyName,
+      });
+
+      const { orderId, amount, currency, keyId } = orderRes.data.data;
+
+      // Step 2 — Open Razorpay
+      await new Promise((resolve, reject) => {
+        const rzp = new window.Razorpay({
+          key:         keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount, currency: currency || "INR", order_id: orderId,
+          name:        "SafeguardsIQ",
+          description: `${selectedPlan.toUpperCase()} Plan — ${billing}`,
+          image:       "https://safeguardsiq.com/logo.png",
+          prefill:     { name: form.companyName, email: form.email, contact: form.phone },
+          theme:       { color: "#FF5B18" },
+          handler: async (response) => {
+            try {
+              // Step 3 — Register account AFTER payment
+              const regRes = await axios.post("/api/v1/auth/register", {
+                companyName:   form.companyName,
+                email:         form.email,
+                password:      form.password,
+                fullName:      form.companyName + " Admin",
+                phone:         form.phone,
+                whatsapp:      form.whatsapp || form.phone,
+                whatsappOptIn: form.agreeWhatsapp || false,
+                gstin:         form.gstin,
+                city:          form.city,
+                state:         form.state,
+                trialDays:     0,
+                plants: [], zones: [], cameras: [],
+              });
+
+              const { accessToken, refreshToken, user, tenantId } = regRes.data.data;
+              localStorage.setItem("safeg_token",   accessToken);
+              localStorage.setItem("safeg_refresh", refreshToken);
+              localStorage.setItem("safeg_user",    JSON.stringify(user));
+              localStorage.setItem("safeg_tenant",  tenantId);
+
+              // Step 4 — Verify payment and activate plan
+              await axios.post("/api/v1/payments/verify", {
+                razorpay_order_id:   response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature:  response.razorpay_signature,
+                planId: selectedPlan, billing,
+              }, { headers: { Authorization: `Bearer ${accessToken}` }});
+
+              resolve();
+            } catch(e) { reject(e); }
+          },
+          modal: { ondismiss: () => reject(new Error("Payment cancelled")) },
+        });
+        rzp.open();
+      });
+
+      setStep(2);
+      onLogin?.(JSON.parse(localStorage.getItem("safeg_user")));
+      setTimeout(() => navigate("/dashboard"), 2500);
+
+    } catch(err) {
+      if (err.message === "Payment cancelled") {
+        setError("Payment cancelled. You can try again.");
+      } else {
+        setError(err.response?.data?.message || err.message || "Registration failed.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Load Razorpay script
   useEffect(() => {
     const script = document.createElement('script');
