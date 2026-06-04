@@ -187,94 +187,6 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
   );
 }
 
-/* ── STEP 2: Choose Plan (only for paid signup) ── */
-function StepChoosePlan({ form, setForm, selectedPlan, setSelectedPlan, billing, setBilling, onNext, onBack }) {
-  return (
-    <div style={{animation:"fadeUp .5s ease both"}}>
-      <div style={{marginBottom:24}}>
-        <div style={{fontFamily:"'Bebas Neue'",fontSize:32,color:T.white,letterSpacing:2}}>CHOOSE YOUR PLAN</div>
-        <div style={{color:T.g1,fontSize:13,marginTop:4}}>Select a plan and activate your account</div>
-      </div>
-
-      {/* Billing toggle */}
-      <div style={{display:"flex",justifyContent:"center",marginBottom:24}}>
-        <div style={{background:T.card2,border:`1px solid ${T.border}`,borderRadius:10,padding:4,display:"flex"}}>
-          {[{id:"monthly",label:"Monthly"},{id:"annual",label:"Annual (Save 15%)"}].map(b=>(
-            <button key={b.id} onClick={()=>setBilling(b.id)} style={{
-              padding:"8px 24px",borderRadius:8,fontSize:12,fontWeight:700,
-              border:"none",cursor:"pointer",fontFamily:"'Nunito'",
-              background:billing===b.id?T.orange:"transparent",
-              color:billing===b.id?"#fff":T.g1, transition:"all .2s",
-            }}>{b.label}</button>
-          ))}
-        </div>
-      </div>
-
-      {/* Plan cards */}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:20}}>
-        {PLANS.map(plan=>{
-          const isSelected = selectedPlan===plan.id;
-          const price = billing==="annual" ? Math.round(plan.price*0.85) : plan.price;
-          return (
-            <div key={plan.id} onClick={()=>setSelectedPlan(plan.id)}
-              style={{background:isSelected?`${plan.color}10`:T.card2,
-                border:`2px solid ${isSelected?plan.color:T.border}`,
-                borderRadius:14,padding:20,cursor:"pointer",transition:"all .2s",position:"relative"}}>
-              {plan.badge && (
-                <div style={{position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",
-                  background:plan.color,color:"#fff",fontSize:9,fontWeight:800,
-                  padding:"3px 12px",borderRadius:20,whiteSpace:"nowrap"}}>
-                  {plan.badge}
-                </div>
-              )}
-              <div style={{fontFamily:"'Bebas Neue'",fontSize:22,color:plan.color,letterSpacing:2,marginBottom:4}}>{plan.name}</div>
-              <div style={{fontSize:11,color:T.g1,marginBottom:10}}>{plan.cameras} cameras</div>
-              <div style={{marginBottom:12}}>
-                <span style={{fontSize:24,fontWeight:800,color:T.white}}>₹{price.toLocaleString()}</span>
-                <span style={{fontSize:10,color:T.g1}}>/camera/month</span>
-                {billing==="annual" && <div style={{fontSize:10,color:T.green,marginTop:2}}>Save 15% annually</div>}
-              </div>
-              <div style={{display:"flex",flexDirection:"column",gap:5}}>
-                {plan.features.map(f=>(
-                  <div key={f} style={{display:"flex",gap:6}}>
-                    <span style={{color:plan.color,fontSize:10,flexShrink:0,marginTop:2}}>✓</span>
-                    <span style={{fontSize:10,color:T.g1}}>{f}</span>
-                  </div>
-                ))}
-              </div>
-              {isSelected && <div style={{marginTop:12,padding:"6px",background:plan.color,borderRadius:6,textAlign:"center",fontSize:11,fontWeight:800,color:"#fff"}}>✓ SELECTED</div>}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Camera count */}
-      <div style={{background:T.card2,border:`1px solid ${T.border}`,borderRadius:12,padding:16,marginBottom:20}}>
-        <label style={lbl}>NUMBER OF CAMERAS</label>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <input type="number" min={1} max={32} value={form.cameraCount||4}
-            onChange={e=>setForm(f=>({...f,cameraCount:e.target.value}))}
-            style={{...inp,width:100}}/>
-          <div style={{fontSize:12,color:T.g1}}>
-            Estimated: <span style={{color:T.orange,fontWeight:800}}>
-              ₹{((PLANS.find(p=>p.id===selectedPlan)?.price||2000) *
-                (billing==="annual"?0.85:1) *
-                (parseInt(form.cameraCount)||4)).toLocaleString()}
-            </span>/month + 18% GST
-          </div>
-        </div>
-      </div>
-
-      <div style={{display:"flex",gap:12}}>
-        <button onClick={onBack} style={{flex:1,background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>← Back</button>
-        <button onClick={onNext} style={{flex:2,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,border:"none",borderRadius:12,padding:"14px",color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'"}}>
-          💳 Pay ₹{((PLANS.find(p=>p.id===selectedPlan)?.price||2000) * (billing==="annual"?0.85:1) * (parseInt(form.cameraCount)||4)).toLocaleString()} + GST →
-        </button>
-      </div>
-    </div>
-  );
-}
-
 /* ── SUCCESS SCREEN ── */
 function StepSuccess({ billing, email }) {
   return (
@@ -464,6 +376,36 @@ export default function SignupPage({ onLogin }) {
   const [billing,      setBilling]      = useState("monthly");
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => document.body.removeChild(script);
+  }, []);
+
+  // Free Trial — login with demo credentials
+  const handleFreeTrial = async () => {
+    setLoading('trial'); setError("");
+    try {
+      const res = await axios.post("/api/v1/auth/login", {
+        email:    DEMO.email,
+        password: DEMO.password,
+      });
+      const { accessToken, refreshToken, user, tenantId } = res.data.data;
+      localStorage.setItem("safeg_token",   accessToken);
+      localStorage.setItem("safeg_refresh", refreshToken);
+      localStorage.setItem("safeg_user",    JSON.stringify(user));
+      localStorage.setItem("safeg_tenant",  tenantId);
+      onLogin?.(user);
+      navigate("/dashboard");
+    } catch(err) {
+      setError(err.response?.data?.message || "Failed to start trial. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Sign Up — go to plan selection
   const handleSignup = () => {
