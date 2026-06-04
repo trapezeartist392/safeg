@@ -298,6 +298,160 @@ function StepSuccess({ billing, email }) {
 /* ════════════════════════════════════════
    MAIN SIGNUP PAGE
 ════════════════════════════════════════ */
+/* ── STEP 2: Choose Plan (auto-selects based on camera count) ── */
+function StepChoosePlanAuto({ form, setForm, selectedPlan, setSelectedPlan, billing, setBilling, onNext, onBack }) {
+  const camCount = parseInt(form.cameraCount) || 1;
+
+  // Auto-select plan based on camera count
+  const getAutoplan = (n) => {
+    if (n <= 4)  return 'starter';
+    if (n <= 16) return 'growth';
+    return 'enterprise';
+  };
+
+  useEffect(() => {
+    setSelectedPlan(getAutoplan(camCount));
+  }, [camCount]);
+
+  useEffect(() => {
+    if (billing !== 'monthly' && billing !== 'annual') setBilling('monthly');
+  }, [billing]);
+
+  const plan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
+  const pricePerCam = billing === 'annual' ? Math.round(plan.price * 0.85) : plan.price;
+  const totalMonthly = pricePerCam * camCount;
+  const totalWithGST = Math.round(totalMonthly * 1.18);
+
+  return (
+    <div style={{animation:"fadeUp .5s ease both"}}>
+      <div style={{marginBottom:24}}>
+        <div style={{fontFamily:"'Bebas Neue'",fontSize:32,color:T.white,letterSpacing:2}}>CHOOSE YOUR PLAN</div>
+        <div style={{color:T.g1,fontSize:13,marginTop:4}}>Enter number of cameras — plan auto-selected</div>
+      </div>
+
+      {/* Billing toggle */}
+      <div style={{display:"flex",justifyContent:"center",marginBottom:24}}>
+        <div style={{background:T.card2,border:`1px solid ${T.border}`,borderRadius:10,padding:4,display:"flex"}}>
+          {[{id:"monthly",label:"Monthly"},{id:"annual",label:"Annual (Save 15%)"}].map(b=>(
+            <button key={b.id} onClick={()=>setBilling(b.id)} style={{
+              padding:"8px 24px",borderRadius:8,fontSize:12,fontWeight:700,
+              border:"none",cursor:"pointer",fontFamily:"'Nunito'",
+              background:billing===b.id?T.orange:"transparent",
+              color:billing===b.id?"#fff":T.g1,transition:"all .2s",
+            }}>{b.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Camera count slider */}
+      <div style={{background:T.card2,border:`1px solid ${T.border}`,borderRadius:14,padding:24,marginBottom:20}}>
+        <div style={{fontSize:12,color:T.g1,fontWeight:700,letterSpacing:1.5,marginBottom:16}}>HOW MANY CAMERAS DO YOU NEED?</div>
+        <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:16}}>
+          <button onClick={()=>setForm(f=>({...f,cameraCount:Math.max(1,camCount-1)}))}
+            style={{width:36,height:36,borderRadius:8,border:`1px solid ${T.border}`,
+              background:T.card,color:T.white,fontSize:18,cursor:"pointer",flexShrink:0}}>−</button>
+          <div style={{flex:1}}>
+            <input type="range" min={1} max={32} value={camCount}
+              onChange={e=>setForm(f=>({...f,cameraCount:parseInt(e.target.value)}))}
+              style={{width:"100%",accentColor:T.orange,cursor:"pointer"}}/>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:9,color:T.g2,marginTop:4}}>
+              <span>1</span><span>4</span><span>16</span><span>32</span>
+            </div>
+          </div>
+          <button onClick={()=>setForm(f=>({...f,cameraCount:Math.min(32,camCount+1)}))}
+            style={{width:36,height:36,borderRadius:8,border:`1px solid ${T.border}`,
+              background:T.card,color:T.white,fontSize:18,cursor:"pointer",flexShrink:0}}>+</button>
+          <div style={{background:T.card,border:`1px solid ${T.orange}`,borderRadius:10,
+            padding:"8px 16px",minWidth:60,textAlign:"center"}}>
+            <div style={{fontSize:24,fontWeight:800,color:T.orange,fontFamily:"'Bebas Neue'"}}>{camCount}</div>
+            <div style={{fontSize:9,color:T.g2}}>CAMERAS</div>
+          </div>
+        </div>
+
+        {/* Plan zones indicator */}
+        <div style={{display:"grid",gridTemplateColumns:"4fr 12fr 16fr",gap:4,marginTop:8}}>
+          {[
+            {label:"STARTER",range:"1–4",color:T.blue,active:camCount<=4},
+            {label:"PROFESSIONAL",range:"5–16",color:T.orange,active:camCount>4&&camCount<=16},
+            {label:"ENTERPRISE",range:"17–32",color:T.teal,active:camCount>16},
+          ].map(z=>(
+            <div key={z.label} style={{
+              padding:"6px 8px",borderRadius:6,textAlign:"center",
+              background:z.active?`${z.color}20`:T.card,
+              border:`1px solid ${z.active?z.color:T.border}`,
+              transition:"all .3s",
+            }}>
+              <div style={{fontSize:9,fontWeight:800,color:z.active?z.color:T.g2,letterSpacing:1}}>{z.label}</div>
+              <div style={{fontSize:9,color:z.active?z.color:T.g2}}>{z.range} cams</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Selected plan card */}
+      <div style={{background:`${plan.color}10`,border:`2px solid ${plan.color}`,
+        borderRadius:14,padding:24,marginBottom:20,position:"relative"}}>
+        {plan.badge && (
+          <div style={{position:"absolute",top:-12,left:20,
+            background:plan.color,color:"#fff",fontSize:10,fontWeight:800,
+            padding:"3px 14px",borderRadius:20}}>{plan.badge}</div>
+        )}
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:20}}>
+          <div style={{flex:1}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+              <div style={{fontFamily:"'Bebas Neue'",fontSize:28,color:plan.color,letterSpacing:2}}>{plan.name}</div>
+              <div style={{background:`${plan.color}20`,border:`1px solid ${plan.color}40`,
+                borderRadius:20,padding:"3px 12px",fontSize:10,color:plan.color,fontWeight:700}}>
+                AUTO-SELECTED ✓
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+              {plan.features.map(f=>(
+                <div key={f} style={{display:"flex",gap:6,alignItems:"flex-start"}}>
+                  <span style={{color:plan.color,fontSize:11,flexShrink:0,marginTop:1}}>✓</span>
+                  <span style={{fontSize:11,color:T.g1}}>{f}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Price breakdown */}
+          <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:12,
+            padding:16,minWidth:200,textAlign:"center",flexShrink:0}}>
+            <div style={{fontSize:10,color:T.g2,letterSpacing:1,marginBottom:8}}>PRICE BREAKDOWN</div>
+            <div style={{fontSize:13,color:T.g1,marginBottom:4}}>
+              {camCount} cams × ₹{pricePerCam.toLocaleString()}
+            </div>
+            <div style={{fontSize:13,color:T.g1,marginBottom:4}}>
+              = ₹{totalMonthly.toLocaleString()}/month
+            </div>
+            <div style={{fontSize:11,color:T.g2,marginBottom:8}}>+ 18% GST</div>
+            <div style={{height:1,background:T.border,marginBottom:8}}/>
+            <div style={{fontSize:11,color:T.g2,marginBottom:4}}>TOTAL / MONTH</div>
+            <div style={{fontFamily:"'Bebas Neue'",fontSize:32,color:T.white}}>
+              ₹{totalWithGST.toLocaleString()}
+            </div>
+            {billing==="annual" && (
+              <div style={{fontSize:10,color:T.green,marginTop:4}}>15% annual discount applied</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{display:"flex",gap:12}}>
+        <button onClick={onBack} style={{flex:1,background:"transparent",
+          border:`1px solid ${T.border}`,borderRadius:12,padding:"14px",
+          color:T.g1,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito'"}}>← Back</button>
+        <button onClick={onNext} style={{flex:2,background:`linear-gradient(135deg,${T.orange},#FF8C52)`,
+          border:"none",borderRadius:12,padding:"14px",color:"#fff",
+          fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'",
+          display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+          💳 Pay ₹{totalWithGST.toLocaleString()} →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function SignupPage({ onLogin }) {
   const [step,         setStep]         = useState(0); // 0=company, 1=plan, 2=success
   const [form,         setForm]         = useState({
@@ -492,7 +646,7 @@ export default function SignupPage({ onLogin }) {
           )}
 
           {step === 1 && (
-            <StepChoosePlan
+<StepChoosePlanAuto
               form={form} setForm={setForm}
               selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan}
               billing={billing} setBilling={setBilling}
