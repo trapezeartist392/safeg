@@ -515,11 +515,12 @@ export default function SignupPage({ onLogin }) {
 
       // Step 2 — If paid plan, open Razorpay
       if (billing !== "trial") {
-        const orderRes = await axios.post("/api/v1/payments/create-order", {
-          planId:  selectedPlan,
-          billing,
-          addOns:  [],
-          customer: {
+const orderRes = await axios.post("/api/v1/payments/create-order", {
+  planId:      selectedPlan,
+  billing,
+  addOns:      [],
+  cameraCount: parseInt(form.cameraCount) || cameras.length || 4,
+  customer: {
             name:  form.companyName,
             email: form.email,
             phone: form.phone,
