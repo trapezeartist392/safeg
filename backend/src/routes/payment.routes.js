@@ -37,9 +37,9 @@ const rzp = new Razorpay({
 
 /* ─── Plan price matrix (paise — INR × 100) ────── */
 const PLAN_PRICES = {
-  starter:  { monthly: 960000,   annual: 9600000   },   // ₹9,600/mo · ₹96,000/yr
-  growth:   { monthly: 5760000,  annual: 57600000  },   // ₹57,600/mo · ₹5,76,000/yr
-  enterprise:{ monthly: null,    annual: null       },   // custom
+  starter:    { monthly: 1000000,  annual: 10200000  },  // 4 cams × ₹2,500 = ₹10,000/mo
+  growth:     { monthly: 1600000,  annual: 16320000  },  // 8 cams × ₹2,000 = ₹16,000/mo
+  enterprise: { monthly: 2560000,  annual: 26112000  },  // 16 cams × ₹1,600 = ₹25,600/mo
 };
 
 const ADD_ON_PRICES = {
