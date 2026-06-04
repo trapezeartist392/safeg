@@ -125,8 +125,14 @@ CREATE TRIGGER trg_invoice_no BEFORE INSERT ON payments FOR EACH ROW
 `;
 
 /* ─── Helper: calculate order amount ─────────────── */
-function calculateAmount(planId, billing, addOns = [], couponCode = null) {
-  const prices = PLAN_PRICES[planId];
+function calculateAmount(planId, billing, addOns = [], couponCode = null, cameraCount = null) {
+  const PER_CAM = {
+    starter:    { monthly: 250000, annual: 212500 },
+    growth:     { monthly: 200000, annual: 170000 },
+    enterprise: { monthly: 160000, annual: 136000 },
+  };
+  const DEFAULT_CAMS = { starter: 4, growth: 8, enterprise: 16 };
+  const perCam = PER_CAM[planId];
   if (!prices || prices[billing] === null) {
     throw new AppError("Custom pricing — contact sales", 400);
   }
@@ -156,14 +162,14 @@ function calculateAmount(planId, billing, addOns = [], couponCode = null) {
    POST /payments/create-order
    ═══════════════════════════════════════════════════ */
 router.post("/create-order", authenticate, asyncHandler(async (req, res) => {
-  const { planId, billing = "monthly", addOns = [], coupon, customer } = req.body;
+const { planId, billing = "monthly", addOns = [], coupon, customer, cameraCount } = req.body;
 
   if (!planId || !["starter","growth","enterprise"].includes(planId))
     throw new AppError("Invalid plan", 400);
   if (!["monthly","annual"].includes(billing))
     throw new AppError("Invalid billing cycle", 400);
 
-  const amounts = calculateAmount(planId, billing, addOns, coupon);
+const amounts = calculateAmount(planId, billing, addOns, coupon, cameraCount);
   const db = getDB();
 
   // Idempotency: check for existing pending order for this tenant
