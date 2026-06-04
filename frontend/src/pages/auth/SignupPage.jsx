@@ -233,6 +233,9 @@ function StepChoosePlanAuto({ form, setForm, selectedPlan, setSelectedPlan, bill
   const pricePerCam = billing === 'annual' ? Math.round(plan.price * 0.85) : plan.price;
   const totalMonthly = pricePerCam * camCount;
   const totalWithGST = Math.round(totalMonthly * 1.18);
+  const totalAnnual = Math.round(totalMonthly * 12 * 1.18);
+  const displayTotal = billing === 'annual' ? totalAnnual : totalWithGST;
+  const displayLabel = billing === 'annual' ? 'TOTAL / YEAR' : 'TOTAL / MONTH';
 
   return (
     <div style={{animation:"fadeUp .5s ease both"}}>
@@ -331,19 +334,22 @@ function StepChoosePlanAuto({ form, setForm, selectedPlan, setSelectedPlan, bill
             padding:16,minWidth:200,textAlign:"center",flexShrink:0}}>
             <div style={{fontSize:10,color:T.g2,letterSpacing:1,marginBottom:8}}>PRICE BREAKDOWN</div>
             <div style={{fontSize:13,color:T.g1,marginBottom:4}}>
-              {camCount} cams × ₹{pricePerCam.toLocaleString()}
+              {camCount} cams × ₹{pricePerCam.toLocaleString()}/cam
             </div>
             <div style={{fontSize:13,color:T.g1,marginBottom:4}}>
               = ₹{totalMonthly.toLocaleString()}/month
+              {billing==='annual' && ` × 12`}
             </div>
             <div style={{fontSize:11,color:T.g2,marginBottom:8}}>+ 18% GST</div>
             <div style={{height:1,background:T.border,marginBottom:8}}/>
-            <div style={{fontSize:11,color:T.g2,marginBottom:4}}>TOTAL / MONTH</div>
+            <div style={{fontSize:11,color:T.g2,marginBottom:4}}>{displayLabel}</div>
             <div style={{fontFamily:"'Bebas Neue'",fontSize:32,color:T.white}}>
-              ₹{totalWithGST.toLocaleString()}
+              ₹{displayTotal.toLocaleString()}
             </div>
             {billing==="annual" && (
-              <div style={{fontSize:10,color:T.green,marginTop:4}}>15% annual discount applied</div>
+              <div style={{fontSize:10,color:T.green,marginTop:4}}>
+                ₹{totalMonthly.toLocaleString()}/month × 12 months incl. GST
+              </div>
             )}
           </div>
         </div>
@@ -357,7 +363,7 @@ function StepChoosePlanAuto({ form, setForm, selectedPlan, setSelectedPlan, bill
           border:"none",borderRadius:12,padding:"14px",color:"#fff",
           fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Nunito'",
           display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-          💳 Pay ₹{totalWithGST.toLocaleString()} →
+          💳 Pay ₹{displayTotal.toLocaleString()} {billing==='annual'?'/ year':'/ month'} →
         </button>
       </div>
     </div>
