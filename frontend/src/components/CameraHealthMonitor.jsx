@@ -150,7 +150,9 @@ export default function CameraHealthMonitor() {
       const res = await axios.get('/api/v1/cameras', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setCameras(res.data.data || res.data.cameras || []);
+      const allCams = res.data.data || res.data.cameras || [];
+      const camLimit = parseInt(localStorage.getItem('safeg_cam_limit')) || 999;
+      setCameras(allCams.slice(0, camLimit));
     } catch(e) {
       setCameras([]);
     }

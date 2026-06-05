@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+﻿import { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route, NavLink, Navigate, useLocation } from "react-router-dom";
 
 import ThemeToggle from "./components/ThemeToggle";
@@ -8,6 +8,7 @@ const SignupPage        = lazy(() => import("./pages/auth/SignupPage.jsx"));
 const SafetyMonitor     = lazy(() => import("./components/safety-monitor.jsx"));
 const FactoryCompliance = lazy(() => import("./components/factory-compliance.jsx"));
 const BillingDashboard  = lazy(() => import("./pages/payment/BillingDashboard.jsx"));
+const UpgradePage       = lazy(() => import("./pages/payment/UpgradePage.jsx"));
 const AdminDashboard    = lazy(() => import("./pages/admin/AdminDashboard.jsx"));
 
 const T = {
@@ -111,50 +112,15 @@ export default function App() {
           <Route path="/billing" element={
           <PrivateRoute user={user}>
             <BillingDashboard onUpgrade={() => {
-              const token = localStorage.getItem('safeg_token');
-              // Load Razorpay script if not loaded
-              if (!window.Razorpay) {
-                const script = document.createElement('script');
-                script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-                script.onload = () => openRazorpay(token);
-                document.body.appendChild(script);
-              } else {
-                openRazorpay(token);
-              }
-
-              async function openRazorpay(token) {
-                try {
-                  const res  = await fetch('/api/v1/payments/create-order', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify({ planId: 'growth', billing: 'monthly', addOns: [] }),
-                });
-                const data = await res.json();
-                if (!data.success) throw new Error(data.message || 'Order creation failed');
-                const { orderId, amount, currency, key } = data.data;
-                  const rzp = new window.Razorpay({
-                    key, amount, currency, order_id: orderId,
-                    name: 'SafeguardsIQ',
-                    description: 'Professional Plan - Monthly',
-                    theme: { color: '#FF5B18' },
-                    handler: async (response) => {
-                      await fetch('/api/v1/payments/verify', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                        body: JSON.stringify({ ...response, planId: 'growth', billing: 'monthly' }),
-                      });
-                      alert('Payment successful! Your plan has been activated.');
-                      window.location.reload();
-                    },
-                  });
-                  rzp.open();
-                } catch(e) {
-                  alert('Payment failed: ' + e.message);
-                }
-              }
+              window.location.href = "/upgrade";
             }} />
           </PrivateRoute>
         } />
+          <Route path="/upgrade" element={
+            <PrivateRoute user={user}>
+              <UpgradePage />
+            </PrivateRoute>
+          } />
 
           {/* Admin portal - completely separate, has its own auth */}
           <Route path="/admin/*" element={<AdminDashboard />} />
