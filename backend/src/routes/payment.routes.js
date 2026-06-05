@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SafeG AI — Razorpay Payment Backend
  * ─────────────────────────────────────
  * Routes:
@@ -133,11 +133,12 @@ function calculateAmount(planId, billing, addOns = [], couponCode = null, camera
   };
   const DEFAULT_CAMS = { starter: 4, growth: 8, enterprise: 16 };
   const perCam = PER_CAM[planId];
-  if (!prices || prices[billing] === null) {
+  if (!perCam) {
     throw new AppError("Custom pricing — contact sales", 400);
   }
-
-  const base      = prices[billing];
+  const cameras = parseInt(cameraCount) || DEFAULT_CAMS[planId] || 4;
+  const monthlyBase = perCam['monthly'] * cameras;
+  const base = billing === 'annual' ? perCam['annual'] * cameras * 12 : monthlyBase;
   const addOnSum  = addOns.reduce((s, id) => s + (ADD_ON_PRICES[id] || 0), 0);
   const subtotal  = base + addOnSum;
 
@@ -757,3 +758,4 @@ async function sendPaymentReceipt({ email, name, invoiceNo, planId, billing, amo
 
 /* ─── Export ─────────────────────────────────────── */
 module.exports = router;
+
