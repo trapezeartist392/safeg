@@ -65,6 +65,7 @@ export default function AIMonitorPanel() {
   useEffect(() => { camIdRef.current = camId; }, [camId]);
 
   const tenantId = localStorage.getItem('safeg_tenant') || 'ca5b55f4-bcac-4744-b07a-370503414ff1';
+  const isDemo = tenantId === 'ca5b55f4-bcac-4744-b07a-370503414ff1';
 
   useEffect(() => {
     const init = async () => {
@@ -203,6 +204,10 @@ export default function AIMonitorPanel() {
 
   const startStream = async () => {
     setLoading(true); setError('');
+    // Force webcam for demo account
+    if (isDemo) {
+      setRtspUrl('webcam:0');
+    }
     const isRtsp = rtspUrl && rtspUrl !== 'webcam:0' && !rtspUrl.startsWith('webcam:');
     if (!isRtsp) {
       try {
@@ -431,7 +436,7 @@ export default function AIMonitorPanel() {
 {lang==='hi' ? 'कैमरा जोड़ें' : 'CONNECT CAMERA'}
             </div>
 
-{true && (
+{!isDemo && (
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
                 <div>
                   <label style={{ fontSize:10, color:T.g1, display:"block", marginBottom:5, letterSpacing:1, fontWeight:700 }}>
@@ -450,6 +455,12 @@ export default function AIMonitorPanel() {
                     style={{ width:"100%", background:"#06090F", border:`1px solid ${T.border}`, borderRadius:8,
                       padding:"10px 12px", color:T.white, fontSize:12, fontFamily:"'DM Mono'", outline:"none", boxSizing:"border-box" }}/>
                 </div>
+              </div>
+            )}
+            {isDemo && (
+              <div style={{ marginBottom:14, padding:"12px 16px", background:`${T.teal}10`,
+                border:`1px solid ${T.teal}30`, borderRadius:8, fontSize:12, color:T.teal, fontWeight:700 }}>
+                📷 Demo mode — browser webcam only. Sign up for a paid plan to connect RTSP cameras.
               </div>
             )}
 
