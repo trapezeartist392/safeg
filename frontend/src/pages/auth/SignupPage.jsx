@@ -35,8 +35,6 @@ const inp = { width:"100%", background:"#06090F", border:`1px solid ${T.border}`
 const lbl = { fontSize:11, color:T.g1, letterSpacing:1.5, fontWeight:700, display:"block", marginBottom:6 };
 const sel = { ...inp, cursor:"pointer" };
 
-const DEMO = { email:"suresh@puneauto.com", password:"Demo@SafeG2024" };
-
 const PLANS = [
   {
     id:"starter", name:"STARTER", price:2500, cameras:"1–4",
@@ -139,11 +137,12 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
               </div>
             ))}
           </div>
-          {/* Demo credentials */}
+          {/* Trial info */}
           <div style={{background:`${T.teal}08`,border:`1px solid ${T.teal}25`,borderRadius:8,padding:"10px 12px"}}>
-            <div style={{fontSize:10,color:T.teal,fontWeight:700,letterSpacing:1,marginBottom:6}}>DEMO LOGIN CREDENTIALS</div>
-            <div style={{fontSize:11,color:T.g1,fontFamily:"'DM Mono'"}}>📧 {DEMO.email}</div>
-            <div style={{fontSize:11,color:T.g1,fontFamily:"'DM Mono'",marginTop:2}}>🔑 {DEMO.password}</div>
+            <div style={{fontSize:10,color:T.teal,fontWeight:700,letterSpacing:1,marginBottom:6}}>WHAT YOU GET</div>
+            <div style={{fontSize:11,color:T.g1}}>✓ 14 days full Professional access</div>
+            <div style={{fontSize:11,color:T.g1,marginTop:2}}>✓ Your own dashboard with real data</div>
+            <div style={{fontSize:11,color:T.g1,marginTop:2}}>✓ No credit card · Cancel anytime</div>
           </div>
           <button onClick={()=>{ if(validate()) onFreeTrial(); }}
             disabled={loading}
@@ -391,23 +390,36 @@ export default function SignupPage({ onLogin }) {
     return () => document.body.removeChild(script);
   }, []);
 
-  // Free Trial — login with demo credentials
+  // Free Trial — register customer's own account with 14-day trial
   const handleFreeTrial = async () => {
     setLoading('trial'); setError("");
     try {
-      const res = await axios.post("/api/v1/auth/login", {
-        email:    DEMO.email,
-        password: DEMO.password,
+      const regRes = await axios.post("/api/v1/auth/register", {
+        companyName:   form.companyName,
+        email:         form.email,
+        password:      form.password,
+        fullName:      form.companyName + " Admin",
+        phone:         form.phone,
+        whatsapp:      form.whatsapp || form.phone,
+        whatsappOptIn: form.agreeWhatsapp || false,
+        gstin:         form.gstin,
+        city:          form.city,
+        state:         form.state,
+        trialDays:     14,
+        plants:        [],
+        zones:         [],
+        cameras:       [],
       });
-      const { accessToken, refreshToken, user, tenantId } = res.data.data;
+      const { accessToken, refreshToken, user, tenantId } = regRes.data.data;
       localStorage.setItem("safeg_token",   accessToken);
       localStorage.setItem("safeg_refresh", refreshToken);
       localStorage.setItem("safeg_user",    JSON.stringify(user));
       localStorage.setItem("safeg_tenant",  tenantId);
+      localStorage.setItem("safeg_plan",    "growth");
       onLogin?.(user);
       navigate("/dashboard");
     } catch(err) {
-      setError(err.response?.data?.message || "Failed to start trial. Please try again.");
+      setError(err.response?.data?.message || err.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
