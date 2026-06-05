@@ -420,7 +420,9 @@ const connectManualCamera = async () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
-        const cams = (data.data || []).map(c => ({
+        const allCams = data.data || [];
+        const camLimit = parseInt(localStorage.getItem('safeg_cam_limit')) || 999;
+        const cams = allCams.slice(0, camLimit).map(c => ({
           id: c.id,
           name: c.cam_label || c.id,
           zone: c.area_name || c.zone_type || 'Zone',
