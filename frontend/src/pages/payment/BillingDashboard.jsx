@@ -29,9 +29,9 @@ const API = import.meta?.env?.VITE_API_URL || "http://localhost:4000/api/v1";
 const authHeader = () => ({ Authorization: `Bearer ${localStorage.getItem('safeg_token') || ''}` });
 
 const PLAN_META = {
-  starter:    { color: T.jade,   icon: "◈", label: "Starter",    limit: "8 cameras" },
-  growth:     { color: T.ember,  icon: "⬡", label: "Growth",     limit: "32 cameras" },
-  enterprise: { color: T.violet, icon: "✦", label: "Enterprise", limit: "Unlimited" },
+  starter:    { color: T.jade,   icon: "◈", label: "Starter",      limit: "4 cameras" },
+  growth:     { color: T.ember,  icon: "⬡", label: "Professional", limit: "16 cameras" },
+  enterprise: { color: T.violet, icon: "✦", label: "Enterprise",   limit: "32 cameras" },
 };
 
 const STATUS_META = {
@@ -259,9 +259,13 @@ export default function BillingDashboard({ onUpgrade }) {
       setPayments(pmts);
 
       if (meRes.status === "fulfilled" && meRes.value.success) {
-        setCurrentPlan(meRes.value.data.plan || "growth");
-        setTrialEndsAt(meRes.value.data.trialEndsAt || null);
-        setCameraCount(meRes.value.data.cameraCount || null);
+        const me = meRes.value.data;
+        setCurrentPlan(me.plan || "growth");
+        setTrialEndsAt(me.trial_ends_at || me.trialEndsAt || null);
+        setCameraCount(
+          parseInt(localStorage.getItem('safeg_cam_limit')) ||
+          me.camera_count || me.cameraCount || null
+        );
       }
 
       // Compute stats
@@ -407,7 +411,11 @@ export default function BillingDashboard({ onUpgrade }) {
                 }}>ACTIVE</span>
               </div>
               <div style={{ fontSize: 13, color: T.fog, marginTop: 3 }}>
-                {cameraCount ? `${cameraCount} cameras` : plan.limit} · {trialEndsAt ? `Trial ends ${new Date(trialEndsAt).toLocaleDateString("en-IN")}` : `Renews ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")}`}
+                {cameraCount ? `${cameraCount} cameras` : plan.limit} · {trialEndsAt
+                  ? `Trial ends ${new Date(trialEndsAt).toLocaleDateString("en-IN", {day:"2-digit",month:"short",year:"numeric"})}`
+                  : stats?.lastPayment
+                    ? `Last paid ${new Date(stats.lastPayment).toLocaleDateString("en-IN", {day:"2-digit",month:"short",year:"numeric"})}`
+                    : "No active subscription"}
               </div>
             </div>
           </div>
@@ -517,22 +525,32 @@ export default function BillingDashboard({ onUpgrade }) {
             }}>
               <div style={{ fontSize: 48, marginBottom: 16 }}>💳</div>
               <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
-                Payment Methods
+                Manage Payment Methods
               </div>
-              <div style={{ fontSize: 14, color: T.fog, maxWidth: 400, margin: "0 auto 24px" }}>
-                Razorpay securely stores your payment methods. You can manage them directly from your Razorpay account.
+              <div style={{ fontSize: 14, color: T.fog, maxWidth: 500, margin: "0 auto 24px" }}>
+                Payment methods are securely managed by Razorpay. Your saved UPI, cards and net banking appear automatically at checkout.
               </div>
-              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                {["UPI / GPay", "HDFC Visa ****4242", "Net Banking", "+ Add new"].map((m, i) => (
-                  <div key={m} style={{
-                    padding: "10px 18px", borderRadius: 10,
-                    background: i === 3 ? `${T.emberGlow}` : T.card,
-                    border: `1.5px solid ${i === 3 ? T.ember + "44" : T.line}`,
-                    color: i === 3 ? T.ember : T.cloud,
-                    fontSize: 13, fontWeight: i === 3 ? 700 : 400, cursor: "pointer",
-                  }}>{m}</div>
-                ))}
+              <div style={{
+                background: T.ink, border: `1.5px solid ${T.line}`,
+                borderRadius: 16, padding: 20, marginBottom: 24, textAlign: "left",
+              }}>
+                <div style={{ fontSize: 12, color: T.ghost, marginBottom: 10, textTransform: "uppercase", fontWeight: 700 }}>Last Payment Method</div>
+                {payments.length > 0 && payments[0].razorpay_payment_id ? (
+                  <div>
+                    <div style={{ fontSize: 13, color: T.fog, marginBottom: 6 }}>Payment ID:</div>
+                    <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 12, color: T.snow, wordBreak: "break-all" }}>
+                      {payments[0].razorpay_payment_id?.slice(0, 20)}...
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 13, color: T.ghost }}>No payment history yet</div>
+                )}
               </div>
+              <button onClick={onUpgrade} style={{
+                background: `linear-gradient(135deg, ${T.ember}, ${T.flame})`,
+                color: "#fff", border: "none",
+                padding: "11px 24px", borderRadius: 10, fontSize: 13, fontWeight: 700,
+              }}>Make a Payment →</button>
             </div>
           </div>
         )}
