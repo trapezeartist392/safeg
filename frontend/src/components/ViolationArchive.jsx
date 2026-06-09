@@ -337,12 +337,12 @@ export default function ViolationArchive() {
                         border:`1px solid ${isExp ? cc+'30' : "transparent"}`,
                         borderRadius:8, marginBottom:2, transition:"all .15s" }}>
                       <div style={{ fontSize:11, color:T.g1, fontFamily:"'DM Mono'" }}>
-                        {v.detected_at ? new Date(v.detected_at).toLocaleString('en-IN', {
+                        {v.occurred_at ? new Date(v.occurred_at).toLocaleString('en-IN', {
                           day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', hour12:true }) : "—"}
                       </div>
                       <div style={{ fontSize:11, color:T.white, fontWeight:600,
                         overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                        {v.camera_id || "—"}
+                        {v.camera_id || v.violation_cam || "—"}
                       </div>
                       <div style={{ fontSize:10, fontWeight:700, color:cc }}>{CAT_LABEL[cat] || cat}</div>
                       <div style={{ fontSize:10, fontWeight:700, color:sc, textTransform:"uppercase" }}>{sev}</div>
