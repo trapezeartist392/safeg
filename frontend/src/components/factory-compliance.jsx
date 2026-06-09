@@ -352,7 +352,7 @@ function CamFeed({cam}) {
 }
 
 // ─── FORM 18 ─────────────────────────────────────────────────────
-function Form18({toast}) {
+function Form18({toast, lastViolation}) {
   const today=new Date().toISOString().slice(0,10);
   const _user = (() => { try { return JSON.parse(localStorage.getItem('safeg_user')||'{}'); } catch { return {}; } })();
   const _plant = (() => { try { return JSON.parse(localStorage.getItem('safeg_plant')||'{}'); } catch { return {}; } })();
@@ -545,7 +545,7 @@ function Form18({toast}) {
             <div style={{background:"rgba(0,212,184,.04)",border:`1px solid rgba(0,212,184,.2)`,borderRadius:10,padding:20}}>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:14}}>
                 {(() => {
-                  const lastViol = (() => { try { return JSON.parse(localStorage.getItem('safeg_last_violation')||'null'); } catch { return null; } })();
+                  const lastViol = lastViolation;
                   return [
                     ["Camera ID", lastViol?.camera || "No recent detection"],
                     ["Detection Timestamp", lastViol?.time || "—"],
@@ -687,7 +687,8 @@ function InspectionPage({toast}) {
 // ─── MAIN APP ────────────────────────────────────────────────────
 export default function App() {
   const { violations: realViols, ppeTypes: realPpe, zones: realZones,
-          timeline: realTimeline, zoneBars: realZoneBars, stats } = useComplianceData();
+          timeline: realTimeline, zoneBars: realZoneBars,
+          lastViolation, stats } = useComplianceData();
   const [liveCameras, setLiveCameras] = useState([]);
   const [livePlants, setLivePlants] = useState([]);
   const [page, setPage] = useState("dashboard");
@@ -863,7 +864,7 @@ export default function App() {
                 <KpiCard label="PPE Compliance" value={`${stats.compliance||97}%`} unit="Today" trend="↑ vs last week" trendUp={true} color={C.green}/>
                 <KpiCard label="Active Violations" value={stats.openCount||0} unit="Open cases" trend="↑ new today" trendUp={false} color={C.red}/>
                 <KpiCard label="Cameras Online" value={`${liveCameras.filter(c=>c.status==='online').length||0}/${liveCameras.length||0}`} unit="All operational" trend="● systems normal" trendUp={true} color={C.teal}/>
-                <KpiCard label="Near-Miss Events" value={stats.totalMonth||0} unit="This month" trend="↓ vs last week" trendUp={true} color={C.amber}/>
+                <KpiCard label="Near-Miss Events" value={stats.nearMissCount||0} unit="This month" trend="↓ vs last week" trendUp={true} color={C.amber}/>
                 <KpiCard label="Compliance Score" value={stats.compliance||92} unit="/ 100 · Grade A" trend="↑ Factories Act" trendUp={true} color={C.blue}/>
               </div>
 
@@ -1089,7 +1090,7 @@ export default function App() {
           )}
 
           {/* ── FORM 18 ── */}
-          {page==="form18" && <Form18 toast={toast}/>}
+          {page==="form18" && <Form18 toast={toast} lastViolation={lastViolation}/>}
 
           {/* ── INSPECTION ── */}
           {page==="inspection" && <InspectionPage toast={toast}/>}

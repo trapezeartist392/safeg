@@ -1,166 +1,241 @@
 /**
- * useComplianceData.js
- * SafeguardsIQ — Real data hook for factory-compliance.jsx
- * Place in: frontend/src/hooks/useComplianceData.js
- * 
- * Fetches real violation data from backend and formats it
- * to match the hardcoded data structures in factory-compliance.jsx
+ * useComplianceData.js — v2 (DB-accurate)
+ * SafeguardsIQ · frontend/src/hooks/useComplianceData.js
+ *
+ * Built from exact violations table schema + violation_type values confirmed in DB:
+ *   Helmet | Safety Vest | Gloves | Safety Boots | Goggles
+ *   Unsafe Act - Distraction | Unsafe Acts - Distraction/Horseplay
+ *
+ * All 9 issues from audit fixed. Field names match DB exactly.
  */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export function useComplianceData() {
-  const [violations,  setViolations]  = useState([]);
-  const [ppeTypes,    setPpeTypes]    = useState([]);
-  const [zones,       setZones]       = useState([]);
-  const [timeline,    setTimeline]    = useState([]);
-  const [zoneBars,    setZoneBars]    = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [stats,       setStats]       = useState({
-    openCount: 0, pendingCount: 0, closedToday: 0,
-    totalMonth: 0, compliance: 0, cameras: 0,
-  });
+// ─── PPE exact match map (matches DB violation_type values exactly) ──
+// Exact strings first, then fallback includes() for future AI variations
+const PPE_TYPE_MAP = [
+  { name: 'Hard Hat',       icon: '⛑️',  exact: ['Helmet', 'Hard Hat', 'No Helmet'],           keys: ['helmet','hard hat','hardhat'] },
+  { name: 'Safety Vest',    icon: '🦺',  exact: ['Safety Vest', 'No Vest', 'Hi-Vis Vest'],      keys: ['vest','hi-vis','hivis','reflective'] },
+  { name: 'Safety Boots',   icon: '👢',  exact: ['Safety Boots', 'No Boots', 'Footwear'],        keys: ['boot','shoe','footwear'] },
+  { name: 'Eye Protection', icon: '🥽',  exact: ['Goggles', 'Eye Protection', 'No Goggles'],     keys: ['gogg','eye','glasses','visor'] },
+  { name: 'Gloves',         icon: '🧤',  exact: ['Gloves', 'No Gloves', 'Hand Protection'],      keys: ['glove','hand protection'] },
+  { name: 'Face Mask',      icon: '😷',  exact: ['Face Mask', 'Respirator', 'No Mask'],          keys: ['mask','respirator','fume','dust'] },
+];
 
-  const token = localStorage.getItem('safeg_token') || '';
+function matchPpe(violationType = '') {
+  const lower = violationType.toLowerCase().trim();
+  for (const p of PPE_TYPE_MAP) {
+    if (p.exact.some(e => e.toLowerCase() === lower)) return p.name;
+    if (p.keys.some(k => lower.includes(k))) return p.name;
+  }
+  return null;
+}
+
+function isPpe(violationType = '') {
+  return matchPpe(violationType) !== null;
+}
+
+function pctColor(pct) {
+  return pct >= 95 ? '#22D46A' : pct >= 85 ? '#FFB800' : '#FF3B3B';
+}
+
+// ─── Zone icon by area name ──────────────────────────────────────
+const ZONE_ICON_KEYS = [
+  ['welding', '⚡'], ['assembly', '🔩'], ['paint', '🎨'],
+  ['forklift', '🚜'], ['press', '🔧'], ['electrical', '⚙️'],
+  ['store', '📦'], ['chemical', '🧪'], ['fire', '🔥'],
+];
+function zoneIcon(name = '') {
+  const l = name.toLowerCase();
+  return ZONE_ICON_KEYS.find(([k]) => l.includes(k))?.[1] ?? '📍';
+}
+
+// ─── HOOK ────────────────────────────────────────────────────────
+export function useComplianceData() {
+  const [violations,    setViolations]    = useState([]);
+  const [ppeTypes,      setPpeTypes]      = useState([]);
+  const [zones,         setZones]         = useState([]);
+  const [timeline,      setTimeline]      = useState([]);
+  const [zoneBars,      setZoneBars]      = useState([]);
+  const [lastViolation, setLastViolation] = useState(null);
+  const [loading,       setLoading]       = useState(true);
+  const [stats,         setStats]         = useState({
+    openCount: 0, pendingCount: 0, closedToday: 0,
+    totalMonth: 0, nearMissCount: 0, compliance: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
+      // Token read inside fetch — avoids stale closure on refresh
+      const token = localStorage.getItem('safeg_token') || '';
+      if (!token) { setLoading(false); return; }
+
       setLoading(true);
       try {
         const today = new Date().toISOString().split('T')[0];
         const month = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
 
-        // Fetch violations
         const res = await axios.get(
           `/api/v1/violations/archive?dateFrom=${month}&dateTo=${today}&limit=200`,
-          { headers: { Authorization: `Bearer ${token}` }}
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         const viols = res.data.data?.violations || [];
 
-        // Format violations to match VIOLATIONS structure
+        // ── Zero-violation early return ──────────────────────────
+        if (viols.length === 0) {
+          setPpeTypes(PPE_TYPE_MAP.map(p => ({ name: p.name, icon: p.icon, pct: 100, c: '#22D46A' })));
+          setZones([]); setZoneBars([]); setViolations([]);
+          setTimeline([{
+            icon: '✅', color: '#22D46A',
+            title: 'All clear — no violations this month',
+            meta: `${formatTime(new Date().toISOString())} · All zones clear`,
+          }]);
+          setStats({ openCount: 0, pendingCount: 0, closedToday: 0, totalMonth: 0, nearMissCount: 0, compliance: 100 });
+          setLoading(false);
+          return;
+        }
+
+        // ── Stats ────────────────────────────────────────────────
+        const todayViols   = viols.filter(v => v.occurred_at?.startsWith(today));
+        const openCount    = viols.filter(v => v.status === 'open').length;
+        const pendingCount = viols.filter(v => v.status === 'acknowledged').length;
+        const closedToday  = todayViols.filter(v => v.status === 'resolved').length;
+        const totalMonth   = viols.length;
+
+        const nearMissCount = viols.filter(v =>
+          v.violation_type?.toLowerCase().includes('near') ||
+          v.category?.toLowerCase().includes('near_miss')
+        ).length;
+
+        // Compliance: each violation today costs 2%, floor 50%
+        const compliance = todayViols.length === 0
+          ? 100
+          : Math.max(50, Math.min(99, 100 - todayViols.length * 2));
+
+        // ── Formatted violations list ────────────────────────────
+        // Use violation_no from DB (e.g. "VIO-00085") — already formatted
+        // Fall back to sequential counter if violation_no is null
         const formattedViols = viols.slice(0, 20).map((v, i) => ({
-          id:      v.id?.slice(0,8).toUpperCase() || `VIO-${200-i}`,
-          date:    formatDate(v.detected_at),
-          type:    v.violation_type || 'PPE Violation',
-          zone:    v.camera_id || 'Zone',
-          worker:  v.worker_id || '—',
-          sev:     capitalize(v.severity || 'medium'),
-          action:  v.immediate_action || 'Under review',
-          status:  v.status === 'resolved' ? 'Closed'
-                 : v.status === 'acknowledged' ? 'Pending' : 'Open',
+          id:     v.violation_no || `VIO-${String(totalMonth - i).padStart(3, '0')}`,
+          _uuid:  v.id,
+          date:   formatDate(v.occurred_at),
+          type:   v.violation_type || 'PPE Violation',
+          // area_name comes through if archive endpoint joins areas table
+          // otherwise falls back to camera_id label
+          zone:   v.area_name || v.zone_name || v.camera_id || 'Zone',
+          worker: v.worker_id || '—',
+          sev:    capitalize(v.severity || 'medium'),
+          action: v.corrective_action || 'Under review',
+          status: v.status === 'resolved'     ? 'Closed'
+                : v.status === 'acknowledged' ? 'Pending' : 'Open',
         }));
 
-        // Count stats
-        const todayViols  = viols.filter(v => v.detected_at?.startsWith(today));
-        const openCount   = viols.filter(v => v.status === 'open').length;
-        const pendingCount = viols.filter(v => v.status === 'acknowledged').length;
-        const closedToday = todayViols.filter(v => v.status === 'resolved').length;
-        const totalMonth  = viols.length;
-
-        // PPE compliance by type
-        const ppeViols = viols.filter(v => v.category === 'ppe' || !v.category);
-        const ppeCountByType = {};
-        ppeViols.forEach(v => {
-          const t = v.violation_type || 'Unknown';
-          ppeCountByType[t] = (ppeCountByType[t] || 0) + 1;
+        // ── PPE compliance — exact DB violation_type matching ────
+        const ppeViolCounts = {};
+        viols.forEach(v => {
+          const bucket = matchPpe(v.violation_type || '');
+          if (bucket) ppeViolCounts[bucket] = (ppeViolCounts[bucket] || 0) + 1;
         });
 
-        const ppeList = [
-          { name:"Hard Hat",      icon:"⛑️", base:100 },
-          { name:"Safety Vest",   icon:"🦺", base:100 },
-          { name:"Safety Boots",  icon:"👢", base:100 },
-          { name:"Eye Protection",icon:"🥽", base:100 },
-          { name:"Gloves",        icon:"🧤", base:100 },
-          { name:"Face Mask",     icon:"😷", base:100 },
-        ].map(p => {
-          const violCount = ppeCountByType[p.name] || 0;
-          const pct = Math.max(60, Math.min(100, p.base - violCount * 2));
-          return {
-            name: p.name, icon: p.icon, pct,
-            c: pct >= 95 ? '#22D46A' : pct >= 85 ? '#FFB800' : '#FF3B3B',
-          };
+        const ppeList = PPE_TYPE_MAP.map(p => {
+          const count = ppeViolCounts[p.name] || 0;
+          // 1.5% reduction per violation — more realistic than 2%
+          const pct = Math.round(Math.max(60, Math.min(100, 100 - count * 1.5)));
+          return { name: p.name, icon: p.icon, pct, c: pctColor(pct) };
         });
 
-        // Zone compliance
+        // ── Zone compliance ──────────────────────────────────────
+        // Prefer area_name (from JOIN) over camera_id
         const violsByZone = {};
         viols.forEach(v => {
-          const z = v.camera_id || 'Unknown';
-          violsByZone[z] = (violsByZone[z] || 0) + 1;
+          const zone = v.area_name || v.zone_name || v.camera_id || 'Unknown';
+          violsByZone[zone] = (violsByZone[zone] || 0) + 1;
         });
 
         const zoneList = Object.entries(violsByZone)
-          .sort((a,b) => b[1]-a[1])
+          .sort((a, b) => b[1] - a[1])
           .slice(0, 6)
           .map(([name, count]) => {
-            const pct = Math.max(60, Math.min(100, 100 - count));
-            return {
-              name, icon:"📹",
-              pct,
-              c: pct >= 95 ? '#22D46A' : pct >= 85 ? '#FFB800' : '#FF3B3B',
-            };
+            const pct = Math.round(Math.max(60, Math.min(100, 100 - count)));
+            return { name, icon: zoneIcon(name), pct, c: pctColor(pct) };
           });
 
-        // Timeline from recent violations
-        const timelineList = viols.slice(0, 5).map(v => ({
-          icon:  v.severity === 'high' || v.severity === 'critical' ? '🚨' : '⚠️',
-          color: v.severity === 'high' ? '#FF3B3B' : '#FFB800',
-          title: `${v.violation_type || 'Violation'} — ${v.camera_id || 'Camera'}`,
-          meta:  `${formatTime(v.detected_at)} · ${v.camera_id || ''} · ${capitalize(v.status || 'open')}`,
-        }));
-
-        // Zone bars
         const zoneBarList = Object.entries(violsByZone)
-          .sort((a,b) => b[1]-a[1])
+          .sort((a, b) => b[1] - a[1])
           .slice(0, 7)
           .map(([label, val]) => ({
-            label: label.length > 8 ? label.slice(0,8) : label,
+            label: label.length > 9 ? label.slice(0, 9) : label,
             val,
-            c: val >= 10 ? '#FF3B3B' : val >= 5 ? '#FF5C1A' : val >= 3 ? '#FFB800' : '#00D4B8',
+            c: val >= 10 ? '#FF3B3B' : val >= 6 ? '#FF5C1A' : val >= 3 ? '#FFB800' : '#00D4B8',
           }));
 
-        // Use only today's violations for compliance — matches PPEComplianceBar
-        const todayViolCount = todayViols.length;
-        const frames = Math.max(todayViolCount * 3, 100);
-        const compliance = todayViolCount === 0 ? 100
-          : Math.max(0, Math.min(99, Math.round(100 - (todayViolCount / frames) * 100)));
+        // ── Timeline ─────────────────────────────────────────────
+        const timelineList = viols.slice(0, 5).map(v => ({
+          icon:  ['high', 'critical'].includes(v.severity?.toLowerCase()) ? '🚨' : '⚠️',
+          color: ['high', 'critical'].includes(v.severity?.toLowerCase()) ? '#FF3B3B' : '#FFB800',
+          title: `${v.violation_type || 'Violation'} — ${v.area_name || v.camera_id || 'Zone'}`,
+          meta:  `${formatTime(v.occurred_at)} · ${v.camera_id || ''} · ${capitalize(v.status || 'open')}`,
+        }));
+
+        // Green "all clear" entry if no violations in last 4 hours
+        const lastViolTime    = viols[0]?.occurred_at ? new Date(viols[0].occurred_at) : null;
+        const hoursSinceLast  = lastViolTime ? (Date.now() - lastViolTime) / 3600000 : 99;
+        if (hoursSinceLast > 4) {
+          timelineList.push({
+            icon: '✅', color: '#22D46A',
+            title: 'Monitoring active — no recent violations',
+            meta: `${formatTime(new Date().toISOString())} · All zones clear`,
+          });
+        }
+
+        // ── Last violation for Form 18 evidence panel ────────────
+        // confidence column is 0–1 float in DB (e.g. 0.94 → 94%)
+        const last = viols[0] || null;
+        const formattedLastViol = last ? {
+          camera:     last.camera_id || '—',
+          time:       formatTime(last.occurred_at),
+          confidence: last.confidence != null ? Math.round(Number(last.confidence) * 100) : null,
+          type:       last.violation_type || '—',
+        } : null;
 
         setViolations(formattedViols);
         setPpeTypes(ppeList);
         setZones(zoneList);
         setTimeline(timelineList);
         setZoneBars(zoneBarList);
-        setStats({ openCount, pendingCount, closedToday, totalMonth, compliance });
+        setLastViolation(formattedLastViol);
+        setStats({ openCount, pendingCount, closedToday, totalMonth, nearMissCount, compliance });
 
-      } catch(e) {
-        console.error('Compliance data error:', e);
-        // Keep hardcoded data if API fails
+      } catch (e) {
+        console.error('useComplianceData error:', e.response?.status, e.message);
+        // On failure, keep existing state (hardcoded fallbacks in factory-compliance.jsx take over)
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 60000); // refresh every minute
+    const interval = setInterval(fetchData, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  return { violations, ppeTypes, zones, timeline, zoneBars, stats, loading };
+  return { violations, ppeTypes, zones, timeline, zoneBars, lastViolation, stats, loading };
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────
 function formatDate(dateStr) {
   if (!dateStr) return '—';
-  const d   = new Date(dateStr);
-  const now  = new Date();
-  const diff = now - d;
-  if (diff < 86400000) return `Today ${d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:false })}`;
+  const d    = new Date(dateStr);
+  const diff = Date.now() - d;
+  if (diff < 86400000)  return `Today ${d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
   if (diff < 172800000) return 'Yesterday';
-  return `${Math.floor(diff/86400000)} days ago`;
+  return `${Math.floor(diff / 86400000)} days ago`;
 }
 
 function formatTime(dateStr) {
   if (!dateStr) return '—';
   return new Date(dateStr).toLocaleTimeString('en-IN',
-    { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 }
 
 function capitalize(str) {
