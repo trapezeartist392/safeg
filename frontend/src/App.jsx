@@ -118,7 +118,7 @@ export default function App() {
         } />
           <Route path="/upgrade" element={
             <PrivateRoute user={user}>
-              <UpgradePage />
+              <UpgradePage onLogin={handleLogin} />
             </PrivateRoute>
           } />
 
@@ -131,3 +131,4 @@ export default function App() {
     </Suspense>
   );
 }
+
