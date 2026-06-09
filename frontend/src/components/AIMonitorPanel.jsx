@@ -93,7 +93,20 @@ export default function AIMonitorPanel() {
         const r    = await fetch(`${AI_URL}/stream/status`);
         const data = await r.json();
         const s    = data.streams || {};
-        setStreams(s);
+        // Merge server streams with local streams — don't overwrite browser webcam streams
+        setStreams(prev => {
+          const merged = { ...prev };
+          Object.entries(s).forEach(([id, info]) => {
+            merged[id] = { ...merged[id], ...info };
+          });
+          // Keep browser webcam streams that server doesn't know about
+          Object.entries(prev).forEach(([id, info]) => {
+            if (info.rtsp_url === 'browser-webcam' && !s[id]) {
+              merged[id] = info; // preserve local webcam stream
+            }
+          });
+          return merged;
+        });
         Object.entries(s).forEach(([id, info]) => {
           if ((info.violations_today || 0) > 0 && info.last_violations_list?.length > 0) {
             const newEntries = info.last_violations_list.map((v, i) => ({
@@ -204,11 +217,10 @@ export default function AIMonitorPanel() {
 
   const startStream = async () => {
     setLoading(true); setError('');
-    // Force webcam for demo account
-    if (isDemo) {
-      setRtspUrl('webcam:0');
-    }
-    const isRtsp = rtspUrl && rtspUrl !== 'webcam:0' && !rtspUrl.startsWith('webcam:');
+    // Force webcam for demo account - use local variable not state
+    const effectiveRtspUrl = isDemo ? 'webcam:0' : rtspUrl;
+    if (isDemo) setRtspUrl('webcam:0');
+    const isRtsp = effectiveRtspUrl && effectiveRtspUrl !== 'webcam:0' && !effectiveRtspUrl.startsWith('webcam:');
     if (!isRtsp) {
       try {
         // Stop any existing stream
@@ -295,7 +307,7 @@ export default function AIMonitorPanel() {
       try {
         const r = await fetch(`${AI_URL}/stream/start`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ camera_id: camId, rtsp_url: rtspUrl, tenant_id: tenantId, ppe_types: ppeTypes, confidence: 0.1 }),
+          body: JSON.stringify({ camera_id: camId, rtsp_url: effectiveRtspUrl, tenant_id: tenantId, ppe_types: ppeTypes, confidence: 0.1 }),
         });
         const d = await r.json();
         if (d.success) {
@@ -304,7 +316,7 @@ export default function AIMonitorPanel() {
           setStreams(prev => ({
             ...prev,
             [camId]: {
-              status: 'connecting', rtsp_url: rtspUrl, ppe_types: ppeTypes,
+              status: 'connecting', rtsp_url: effectiveRtspUrl, ppe_types: ppeTypes,
               started_at: new Date().toISOString(), violations_today: 0,
               persons_detected: 0, risk_level: 'safe', ppe_violations: 0,
               pathway_violations: 0, unsafe_violations: 0, accident_violations: 0,
