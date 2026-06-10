@@ -195,7 +195,7 @@ function ArchSection({ sysInfo }) {
             <div key={f.n} style={{ display:"grid", gridTemplateColumns:"36px 180px 28px 1fr 120px 100px", alignItems:"center", gap:14, background:T.card, border:`1px solid ${T.border}`, borderRadius:12, padding:"14px 18px", animation:`fadeUp .35s ease ${i*.04}s both` }}>
               <span style={{ fontSize:11, color:T.g2, ...mono }}>{f.n}</span>
               <span style={{ fontSize:13, color:T.white, fontWeight:600 }}>{f.from}</span>
-              <span style={{ textAlign:"center", fontSize:18, color:f.c }}>?</span>
+              <span style={{ textAlign:"center", fontSize:18, color:f.c }}>→</span>
               <span style={{ fontSize:13, color:T.white, fontWeight:600 }}>{f.to}</span>
               <Pill color={f.c} size={10}>{f.proto}</Pill>
               <span style={{ fontSize:12, color:T.g1, textAlign:"right", ...mono }}>{f.lat}</span>
@@ -277,8 +277,8 @@ function PaySection({ token }) {
       setStats(statsRes.data.data);
       setPayments(pmtRes.data.data || []);
     }).catch(() => {
-      setStats(MOCK_STATS);
-      setPayments(MOCK_PAYMENTS);
+      setStats(null);
+      setPayments([]);
     }).finally(() => setLoading(false));
   }, [token]);
 
@@ -335,6 +335,10 @@ function PaySection({ token }) {
         </div>
         {loading ? (
           <div style={{ textAlign:'center', padding:'40px 0', color:'#344A6E' }}>Loading...</div>
+        ) : !stats ? (
+          <div style={{ textAlign:'center', padding:'40px 0', color:T.red, fontSize:13 }}>
+            ⚠ Failed to load payment data — check API connection
+          </div>
         ) : payments.map((p, i) => (
           <div key={p.id} style={{ display:'grid',
             gridTemplateColumns:'1fr 1.5fr 1fr 1fr 1fr',
@@ -690,23 +694,7 @@ function CustomersSection({ token }) {
   );
 }
 
-/* -- MOCK DATA (fallback when API not ready) ------- */
-const MOCK_STATS = {
-  totalRevenue:4850000, monthRevenue:960000, activePlans:12, pendingRefunds:2,
-  byPlan:{ enterprise:2400000, professional:1800000, starter:650000 },
-  subs:{ starter:4, professional:6, enterprise:2 },
-  mrr:{ starter:40, professional:120, enterprise:320 },
-};
-const MOCK_PAYMENTS = Array.from({ length:10 }, (_, i) => ({
-  id:`pay_${i}`, invoice_no:`INV-2026-${String(i+1).padStart(3,"0")}`,
-  customer_name:["Pune Auto Pvt Ltd","Mumbai Steel Works","Chennai Forge","Delhi Plastics","Bangalore Mfg","Hyderabad Auto","Kolkata Steel","Ahmedabad Parts","Nagpur Chem","Surat Textile"][i],
-  plan_id:["starter","professional","enterprise","professional","starter","enterprise","professional","starter","professional","enterprise"][i],
-  camera_count:[4,8,20,12,4,24,16,4,10,18][i],
-  total_amount:[96000,192000,480000,288000,96000,576000,384000,96000,240000,432000][i],
-  gst_amount:  [17280,34560,86400,51840,17280,103680,69120,17280,43200,77760][i],
-  status:["captured","captured","captured","captured","refunded","captured","created","captured","captured","captured"][i],
-  created_at: new Date(Date.now() - i * 7 * 24 * 60 * 60 * 1000).toISOString(),
-}));
+
 /* ------------------------------------------------------
    ADMIN LOGIN SCREEN
 ------------------------------------------------------ */
@@ -777,23 +765,6 @@ function AdminLogin({ onLogin }) {
             {load ? <><Spinner />Authenticating...</> : "Access Admin Portal →"}
           </button>
         </form>
-
-        {/* Demo credentials */}
-        <div style={{ background:`${T.teal}0A`, border:`1px solid ${T.teal}25`, borderRadius:12, padding:"14px 16px", marginTop:20 }}>
-          <div style={{ fontSize:9, color:T.teal, letterSpacing:2.5, fontWeight:700, marginBottom:10, ...mono }}>DEMO CREDENTIALS</div>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
-            <span style={{ fontSize:11, color:T.g1 }}>Email</span>
-            <span style={{ fontSize:12, color:T.white, ...dm }}>suresh@puneauto.com</span>
-          </div>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
-            <span style={{ fontSize:11, color:T.g1 }}>Password</span>
-            <span style={{ fontSize:12, color:T.white, ...dm }}>Demo@SafeG2024</span>
-          </div>
-          <button onClick={() => setForm({ email:"suresh@puneauto.com", password:"Demo@SafeG2024" })}
-            style={{ width:"100%", background:`${T.teal}18`, border:`1px solid ${T.teal}35`, borderRadius:8, padding:"8px", color:T.teal, fontSize:11, fontWeight:700, cursor:"pointer", ...mono, letterSpacing:1 }}>
-            ⚡ AUTOFILL DEMO CREDENTIALS
-          </button>
-        </div>
 
         <div style={{ textAlign:"center", marginTop:16 }}>
           <button onClick={() => navigate("/login")} style={{ background:"none", border:"none", color:T.g2, fontSize:12, cursor:"pointer" }}>← Back to main app</button>
