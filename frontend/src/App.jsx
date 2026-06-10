@@ -9,6 +9,7 @@ const SafetyMonitor     = lazy(() => import("./components/safety-monitor.jsx"));
 const FactoryCompliance = lazy(() => import("./components/factory-compliance.jsx"));
 const BillingDashboard  = lazy(() => import("./pages/payment/BillingDashboard.jsx"));
 const UpgradePage       = lazy(() => import("./pages/payment/UpgradePage.jsx"));
+const PostPaymentOnboarding = lazy(() => import("./pages/onboarding/PostPaymentOnboarding.jsx"));
 const AdminDashboard    = lazy(() => import("./pages/admin/AdminDashboard.jsx"));
 
 const T = {
@@ -119,6 +120,11 @@ export default function App() {
           <Route path="/upgrade" element={
             <PrivateRoute user={user}>
               <UpgradePage onLogin={handleLogin} />
+            </PrivateRoute>
+          } />
+          <Route path="/onboarding" element={
+            <PrivateRoute user={user}>
+              <PostPaymentOnboarding />
             </PrivateRoute>
           } />
 

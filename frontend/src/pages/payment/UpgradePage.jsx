@@ -103,7 +103,7 @@ export default function UpgradePage({ onLogin }) {
         onLogin?.(meRes.data.data);
       }
 
-      navigate("/billing");
+      navigate("/onboarding");
     } catch(err) {
       if (err.message === "Payment cancelled") {
         setError("Payment cancelled.");
