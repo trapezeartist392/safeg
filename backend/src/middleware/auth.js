@@ -35,11 +35,15 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
   const cached = await cache.get(`session:${decoded.sub}`);
   if (cached) {
     req.user = JSON.parse(cached);
-    // Still check subscription for expired tenants (not cached to avoid stale state)
-    if (req.user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req.path)) {
-      throw new AppError('Trial expired — subscribe to continue', 402);
+    // If cached object is old schema (no subscriptionStatus), fall through to DB
+    if (req.user.subscriptionStatus !== undefined) {
+      if (req.user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req.path)) {
+        throw new AppError('Trial expired — subscribe to continue', 402);
+      }
+      return next();
     }
-    return next();
+    // Old cache entry — delete it and fall through to DB refresh
+    await cache.del(`session:${decoded.sub}`);
   }
 
   // Fallback to DB — also fetch subscription_status in same query
