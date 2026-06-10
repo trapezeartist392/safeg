@@ -761,9 +761,9 @@ export default function App() {
   ];
 
   const sideNav = [
-    {label:"Factory",items: livePlants.length > 0
+    {label:"Factory", items: livePlants.length > 0
       ? livePlants.map((p,i) => ({icon:"🏭", name:p.plant_name||p.name, pg:undefined, active:i===0}))
-      : [{icon:"🏭",name:"Pune Auto Plant",active:true},{icon:"🏭",name:"Chennai Unit 2"},{icon:"🏭",name:"Ahmedabad Plant"}]
+      : [{icon:"🏭", name:"Loading...", active:true}]
     },
     {label:"Compliance",items:[
       {icon:"📊",name:"Overview",pg:"dashboard"},
