@@ -39,4 +39,29 @@ async function sendWhatsAppAlert(opts) {
   }
 }
 
-module.exports = { sendWhatsAppAlert };
+// Simple text message (for trial alerts — no template needed)
+async function sendWhatsAppText(number, message) {
+  try {
+    const token   = process.env.WHATSAPP_TOKEN;
+    const phoneId = process.env.WHATSAPP_PHONE_ID;
+    if (!token || !phoneId || !number) {
+      console.warn('WhatsApp not configured for text message');
+      return;
+    }
+    await axios.post(
+      'https://graph.facebook.com/v18.0/' + phoneId + '/messages',
+      {
+        messaging_product: 'whatsapp',
+        to: number.trim().replace(/\s+/g, ''),
+        type: 'text',
+        text: { body: message }
+      },
+      { headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' } }
+    );
+    console.log('WhatsApp text sent to ' + number);
+  } catch (err) {
+    console.warn('WhatsApp text error:', err.message);
+  }
+}
+
+module.exports = { sendWhatsAppAlert, sendWhatsAppText };

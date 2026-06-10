@@ -251,6 +251,17 @@ exports.processTrials = async () => {
           `⚠️ ${daysLeft} days left in your SafeguardsIQ trial`,
           warningEmail(tenant.full_name, tenant.company_name, daysLeft, baseUrl)
         );
+        try {
+          if (tenant.whatsapp_number) {
+            const { sendWhatsAppText } = require('./whatsapp.service');
+            await sendWhatsAppText(
+              tenant.whatsapp_number,
+              `Hi ${tenant.full_name || 'there'}, your SafeguardsIQ trial for *${tenant.company_name}* ends in *${daysLeft} days*.\n\nUpgrade now to keep your factory protected: ${baseUrl}/upgrade`
+            );
+          }
+        } catch(waErr) {
+          logger.warn(`[TRIAL] WhatsApp warning failed: ${waErr.message}`);
+        }
         await db.query(
           `UPDATE tenants SET trial_email_sent = array_append(COALESCE(trial_email_sent,'{}'), 'warning7') WHERE id = $1`,
           [tenant.id]
@@ -260,17 +271,28 @@ exports.processTrials = async () => {
 
       // Trial expired
       if (daysLeft <= 0 && !emailsSent.includes('expired')) {
-        // Mark as expired
         await db.query(
           `UPDATE tenants SET subscription_status = 'expired' WHERE id = $1`,
           [tenant.id]
         );
-        // Send expiry email
+        // Send expiry email (currently disabled — no-op)
         await sendEmail(
           tenant.email,
           `Your SafeguardsIQ trial has expired — Reactivate now`,
           expiredEmail(tenant.full_name, tenant.company_name, baseUrl)
         );
+        // Send WhatsApp alert (only working notification channel)
+        try {
+          if (tenant.whatsapp_number) {
+            const { sendWhatsAppText } = require('./whatsapp.service');
+            await sendWhatsAppText(
+              tenant.whatsapp_number,
+              `Hi ${tenant.full_name || 'there'}, your SafeguardsIQ free trial for *${tenant.company_name}* has expired.\n\nYour factory cameras are no longer being monitored by AI.\n\nSubscribe now to reactivate: ${baseUrl}/upgrade\n\nQuestions? Call us: +91 96744 08408`
+            );
+          }
+        } catch(waErr) {
+          logger.warn(`[TRIAL] WhatsApp expiry alert failed: ${waErr.message}`);
+        }
         await db.query(
           `UPDATE tenants SET trial_email_sent = array_append(COALESCE(trial_email_sent,'{}'), 'expired') WHERE id = $1`,
           [tenant.id]
