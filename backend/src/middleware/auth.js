@@ -11,12 +11,14 @@ const ALLOWED_EXPIRED_PATHS = [
   '/api/v1/payments',
   '/api/v1/trial',
   '/api/v1/billing',
+  '/api/v1/admin',
   '/api/health',
   '/ai/health',
 ];
 
-function isAllowedWhenExpired(path) {
-  return ALLOWED_EXPIRED_PATHS.some(prefix => path.startsWith(prefix));
+function isAllowedWhenExpired(req) {
+  const url = req.originalUrl || req.path;
+  return ALLOWED_EXPIRED_PATHS.some(prefix => url.startsWith(prefix));
 }
 
 // ── Verify JWT + attach req.user
@@ -37,7 +39,7 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     req.user = JSON.parse(cached);
     // If cached object is old schema (no subscriptionStatus), fall through to DB
     if (req.user.subscriptionStatus !== undefined) {
-      if (req.user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req.path)) {
+      if (req.user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req)) {
         throw new AppError('Trial expired — subscribe to continue', 402);
       }
       return next();
@@ -71,7 +73,7 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
   }
 
   // Block expired tenants from protected routes
-  if (user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req.path)) {
+  if (user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req)) {
     throw new AppError('Trial expired — subscribe to continue', 402);
   }
 
