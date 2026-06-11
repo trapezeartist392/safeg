@@ -16,7 +16,7 @@ const { authenticate } = require('../middleware/auth');
 const logger  = require('../utils/logger');
 const { sendWhatsAppAlert } = require('../services/whatsapp.service');
 
-const AI_URL = process.env.AI_ENGINE_URL || 'http://localhost:5001';
+const AI_URL = process.env.AI_ENGINE_URL || 'http://localhost:5050';
 
 async function proxyToAI(method, path, data = null) {
   const res = await axios({

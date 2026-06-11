@@ -7,7 +7,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-const AI_URL = 'http://localhost:5050';  // change to 5001 on server
+const AI_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+  ? 'https://safeguardsiq.com/ai'
+  : 'http://localhost:5050';
 
 export default function useAIMonitoring() {
   const [streams,  setStreams]  = useState({});

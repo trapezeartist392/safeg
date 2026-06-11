@@ -305,9 +305,18 @@ export default function AIMonitorPanel() {
     } else {
       // RTSP stream
       try {
-        const r = await fetch(`${AI_URL}/stream/start`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ camera_id: camId, rtsp_url: effectiveRtspUrl, tenant_id: tenantId, ppe_types: ppeTypes, confidence: 0.1 }),
+        const r = await fetch(`/api/v1/ai/stream/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('safeg_token')}`,
+          },
+          body: JSON.stringify({
+            cameraId: camId,
+            rtspUrl: effectiveRtspUrl,
+            ppeTypes,
+            confidence: 0.1,
+          }),
         });
         const d = await r.json();
         if (d.success) {
@@ -360,9 +369,13 @@ export default function AIMonitorPanel() {
       setStreams(prev => ({ ...prev, [id]: { ...prev[id], status: 'stopped' } }));
     } else {
       try {
-        await fetch(`${AI_URL}/stream/stop`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ camera_id: id }),
+        await fetch(`/api/v1/ai/stream/stop`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('safeg_token')}`,
+          },
+          body: JSON.stringify({ cameraId: id }),
         });
       } catch {}
       // Remove from UI

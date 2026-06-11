@@ -218,20 +218,17 @@ def send_violation(violation: dict, camera_id: str, tenant_id: str,
     try:
         hdrs = {"Authorization":f"Bearer {token}","Content-Type":"application/json"} if token else {}
         req_lib.post(f"{BACKEND_URL}/api/v1/violations", json={
-            "cameraId":       camera_id,
-            "tenantId":       tenant_id,
+            "camLabel":       camera_id,        # label string e.g. "CAM-01"
+            "cameraId":       None,             # UUID — backend will look up from camLabel if needed
             "plantId":        plant_id,
             "areaId":         area_id,
             "violationType":  violation["ppe_type"],
-            "category":       violation.get("category","ppe"),
+            "category":       violation.get("category", "ppe"),
             "confidence":     violation["confidence"],
-            "severity":       violation.get("severity","high"),
-            "description":    violation.get("description",""),
-            "immediateAction":violation.get("immediate_action",""),
-            "location":       violation.get("location",""),
-            "frameImage":     frame_b64,
+            "severity":       violation.get("severity", "high"),
+            "description":    violation.get("description", ""),
+            "frameUrl":       None,             # frame saving not yet implemented
             "detectedAt":     datetime.utcnow().isoformat(),
-            "source":         "claude-vision-agent",
         }, headers=hdrs, timeout=5)
         log.info(f"[{violation.get('category','ppe').upper()}] {violation['ppe_type']} "
                  f"({violation['confidence']}%) on {camera_id}")
