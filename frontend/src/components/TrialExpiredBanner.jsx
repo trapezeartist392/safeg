@@ -27,10 +27,15 @@ export default function TrialExpiredBanner() {
   const { status, daysLeft, isTrialMode } = trialInfo;
 
   if (status === 'expired') {
+    // Don't block payment/subscribe pages — user needs to reach them to subscribe
+    const onPaymentPage = ['/upgrade', '/billing', '/onboarding'].some(p =>
+      window.location.pathname.startsWith(p)
+    );
+
     return (
       <>
-        {/* Full-screen lock overlay — rendered via portal-like fixed positioning */}
-        <div style={{
+        {/* Full-screen lock overlay — only on non-payment pages */}
+        {!onPaymentPage && <div style={{
           position:"fixed", inset:0, zIndex:9998,
           background:"rgba(5,8,15,.88)", backdropFilter:"blur(6px)",
           display:"flex", alignItems:"center", justifyContent:"center",
@@ -72,7 +77,7 @@ export default function TrialExpiredBanner() {
               <span style={{color:"#00D4B4", fontWeight:700}}>+91 96744 08408</span>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Navbar pill (still shows behind overlay for layout) */}
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
