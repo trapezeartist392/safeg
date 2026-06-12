@@ -39,6 +39,8 @@ const getTransporter = () => {
  * @param {Object} opts - { to, subject, html, text }
  */
 const sendEmail = async ({ to, subject, html, text }) => {
+  // Email disabled — WhatsApp only. Return immediately to avoid timeouts.
+  return null;
   try {
     const t = getTransporter();
     const info = await t.sendMail({

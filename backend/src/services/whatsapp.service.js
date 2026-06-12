@@ -16,7 +16,7 @@ async function sendWhatsAppAlert(opts) {
         'https://graph.facebook.com/v18.0/' + phoneId + '/messages',
         {
           messaging_product: 'whatsapp',
-          to: number.trim(),
+          to: number.trim().replace(/\s+/g, '').replace(/^\+?/, '+'),
           type: 'template',
           template: {
             name: template,
@@ -52,7 +52,7 @@ async function sendWhatsAppText(number, message) {
       'https://graph.facebook.com/v18.0/' + phoneId + '/messages',
       {
         messaging_product: 'whatsapp',
-        to: number.trim().replace(/\s+/g, ''),
+        to: number.trim().replace(/\s+/g, '').replace(/^\+?/, '+'),
         type: 'text',
         text: { body: message }
       },
