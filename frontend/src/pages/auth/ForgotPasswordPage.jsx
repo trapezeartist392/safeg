@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
                   FORGOT PASSWORD
                 </div>
                 <div style={{ fontSize:13, color:T.g1, lineHeight:1.6 }}>
-                  Enter your registered email address. We'll send a password reset link to your WhatsApp.
+                  Enter your registered email address. We'll send a password reset link to your WhatsApp number.
                 </div>
               </div>
 
@@ -155,7 +155,7 @@ export default function ForgotPasswordPage() {
                 borderRadius:12, padding:"14px 18px", marginBottom:24,
                 fontSize:12, color:T.teal, lineHeight:1.6 }}>
                 💡 The link expires in <strong>1 hour</strong>.<br/>
-                Didn't receive it? Check that your WhatsApp number is correct in your account settings.
+                Didn't receive it? Make sure your WhatsApp number is saved in your account settings.
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 <button onClick={() => { setSent(false); setEmail(""); }}
