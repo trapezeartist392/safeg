@@ -5,6 +5,8 @@ import ThemeToggle from "./components/ThemeToggle";
 import TrialExpiredBanner from "./components/TrialExpiredBanner";
 const LoginPage         = lazy(() => import("./pages/auth/LoginPage.jsx"));
 const SignupPage        = lazy(() => import("./pages/auth/SignupPage.jsx"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage.jsx"));
+const ResetPasswordPage  = lazy(() => import("./pages/auth/ResetPasswordPage.jsx"));
 const SafetyMonitor     = lazy(() => import("./components/safety-monitor.jsx"));
 const FactoryCompliance = lazy(() => import("./components/factory-compliance.jsx"));
 const BillingDashboard  = lazy(() => import("./pages/payment/BillingDashboard.jsx"));
@@ -104,6 +106,8 @@ export default function App() {
           {/* Public */}
           <Route path="/login"  element={user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />} />
           <Route path="/signup" element={user ? <Navigate to="/dashboard" replace /> : <SignupPage onLogin={handleLogin} />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password"  element={<ResetPasswordPage />} />
 <Route path="/free-trial" element={<Navigate to="/signup" replace />} />
           <Route path="/"       element={user ? <Navigate to="/dashboard" replace /> : <LandingRedirect />} />
 

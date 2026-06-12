@@ -17,7 +17,9 @@ const signRefresh = (payload) =>
 
 // ── REGISTER (called by onboarding wizard on activation)
 exports.register = asyncHandler(async (req, res) => {
-  const { companyName, email, password, fullName, plan = 'growth' } = req.body;
+  const { companyName, email, password, fullName, plan = 'growth',
+    phone, whatsapp, whatsappOptIn, gstin, city, state,
+    trialDays = 14, plants = [], zones = [], cameras = [] } = req.body;
   const db = getDB();
 
   const exists = await db.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -27,16 +29,17 @@ exports.register = asyncHandler(async (req, res) => {
     // 1. Create tenant
     const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60) + '-' + Date.now().toString(36);
     const tenant = await client.query(
-      `INSERT INTO tenants (slug, plan, trial_ends_at, subscription_status) VALUES ($1, $2, NOW() + INTERVAL '14 days', 'trial') RETURNING id`,
-      [slug, plan]
+      `INSERT INTO tenants (slug, plan, trial_ends_at, subscription_status)
+       VALUES ($1, $2, NOW() + ($3::int * INTERVAL '1 day'), 'trial') RETURNING id`,
+      [slug, plan, trialDays]
     );
     const tenantId = tenant.rows[0].id;
 
     // 2. Create customer record
     const customer = await client.query(
-      `INSERT INTO customers (tenant_id, company_name, contact_email, contact_name, plan)
-       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [tenantId, companyName, email, fullName, plan]
+      `INSERT INTO customers (tenant_id, company_name, contact_email, contact_name, plan, city, state)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [tenantId, companyName, email, fullName, plan, city, state]
     );
 
     // 3. Create admin user
@@ -47,7 +50,64 @@ exports.register = asyncHandler(async (req, res) => {
       [tenantId, email, hash, fullName]
     );
 
-    return { tenantId, customerId: customer.rows[0].id, user: user.rows[0] };
+    // 4. Save onboarding plants
+    const plantIds = [];
+    for (const plant of plants) {
+      const savedPlant = await client.query(
+        `INSERT INTO plants (tenant_id, name, city, state, type)
+         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        [
+          tenantId,
+          plant.name,
+          plant.city || city || null,
+          plant.state || state || null,
+          plant.type || 'manufacturing',
+        ]
+      );
+      plantIds.push(savedPlant.rows[0].id);
+    }
+
+    // 5. Save onboarding zones/areas
+    const areaIds = [];
+    for (const zone of zones) {
+      const plantId = plantIds[zone.plantIndex || 0] || plantIds[0] || null;
+      const savedArea = await client.query(
+        `INSERT INTO areas (tenant_id, plant_id, name, type, risk_level)
+         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        [
+          tenantId,
+          plantId,
+          zone.name,
+          zone.type || 'production',
+          zone.riskLevel || 'medium',
+        ]
+      );
+      areaIds.push(savedArea.rows[0].id);
+    }
+
+    // 6. Save onboarding cameras
+    for (const camera of cameras) {
+      const plantId = plantIds[camera.plantIndex || 0] || plantIds[0] || null;
+      const areaId = areaIds[camera.zoneIndex ?? camera.areaIndex ?? 0] || areaIds[0] || null;
+      await client.query(
+        `INSERT INTO cameras (tenant_id, plant_id, area_id, name, rtsp_url, status)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          tenantId,
+          plantId,
+          areaId,
+          camera.name || camera.cameraName || 'Camera',
+          camera.rtspUrl || camera.rtsp_url || camera.url || '',
+          camera.status || 'active',
+        ]
+      );
+    }
+
+    if (plantIds.length) {
+      await client.query('UPDATE users SET plant_ids = $1 WHERE id = $2', [plantIds, user.rows[0].id]);
+    }
+
+    return { tenantId, customerId: customer.rows[0].id, user: user.rows[0], plantIds, areaIds };
   });
 
   const accessToken  = signAccess({ sub: result.user.id, tid: result.tenantId, role: result.user.role });
@@ -65,6 +125,8 @@ exports.register = asyncHandler(async (req, res) => {
       user: { id: result.user.id, email: result.user.email, fullName: result.user.full_name, role: result.user.role },
       tenantId: result.tenantId,
       customerId: result.customerId,
+      plantIds: result.plantIds,
+      areaIds: result.areaIds,
       accessToken,
       refreshToken,
     }
@@ -164,11 +226,35 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
     await db.query('UPDATE users SET password_reset_token=$1, password_reset_expires=$2 WHERE id=$3',
       [token, expires, user.id]);
 
+    const resetUrl = `https://safeguardsiq.com/reset-password?token=${token}`;
+
+    // Send via WhatsApp (email is disabled — WhatsApp is the only working channel)
+    try {
+      const { rows: tenantRows } = await db.query(
+        `SELECT t.whatsapp_number FROM tenants t
+         JOIN users u ON u.tenant_id = t.id
+         WHERE u.id = $1`,
+        [user.id]
+      );
+      const waNumber = tenantRows[0]?.whatsapp_number;
+      if (waNumber) {
+        const { sendWhatsAppText } = require('../services/whatsapp.service');
+        await sendWhatsAppText(
+          waNumber,
+          `Hi ${user.full_name}, here is your SafeguardsIQ password reset link:\n\n${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this message.`
+        );
+      }
+    } catch(waErr) {
+      // Log but don't fail — always return 200
+      require('../utils/logger').warn(`Password reset WhatsApp failed: ${waErr.message}`);
+    }
+
+    // Also try email (currently disabled but ready when enabled)
     await sendEmail({
       to: email,
-      subject: 'SafeG AI — Password Reset',
+      subject: 'SafeguardsIQ — Password Reset',
       html: `<p>Hi ${user.full_name},</p>
-             <p>Click <a href="${process.env.API_BASE_URL}/reset-password?token=${token}">here</a> to reset your password. Link expires in 1 hour.</p>`,
+             <p>Click <a href="${resetUrl}">here</a> to reset your password. Expires in 1 hour.</p>`,
     });
   }
 
