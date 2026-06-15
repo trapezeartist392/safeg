@@ -58,7 +58,7 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
   const F = (k,v) => setForm(f=>({...f,[k]:v}));
 
   const validate = () => {
-    if(!form.companyName||!form.email||!form.password||!form.phone||!form.city||!form.state){
+    if(!form.companyName||!form.fullName||!form.email||!form.password||!form.phone||!form.city||!form.state){
       setError("Please fill all required fields"); return false;
     }
     if(form.password !== form.confirmPass){ setError("Passwords do not match"); return false; }
@@ -76,7 +76,8 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
 
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
         {[
-          {k:"companyName", l:"COMPANY NAME *",           t:"text",     p:"Pune Auto Components Pvt Ltd", full:true},
+          {k:"companyName", l:"COMPANY NAME *",              t:"text",     p:"Pune Auto Components Pvt Ltd", full:true},
+          {k:"fullName",    l:"YOUR FULL NAME *",         t:"text",     p:"Suresh Nair"},
           {k:"email",       l:"WORK EMAIL *",             t:"email",    p:"you@company.com"},
           {k:"password",    l:"PASSWORD *",               t:"password", p:"Min. 8 characters"},
           {k:"confirmPass", l:"CONFIRM PASSWORD *",       t:"password", p:"Re-enter password"},
@@ -372,7 +373,7 @@ function StepChoosePlanAuto({ form, setForm, selectedPlan, setSelectedPlan, bill
 export default function SignupPage({ onLogin }) {
   const [step,         setStep]         = useState(0); // 0=company, 1=plan, 2=success
   const [form,         setForm]         = useState({
-    companyName:"", email:"", password:"", confirmPass:"",
+    companyName:"", fullName:"", email:"", password:"", confirmPass:"",
     phone:"", gstin:"", address:"", city:"", state:"",
     whatsapp:"", agreeTerms:false, agreeWhatsapp:false, cameraCount:4,
   });
@@ -398,7 +399,7 @@ export default function SignupPage({ onLogin }) {
         companyName:   form.companyName,
         email:         form.email,
         password:      form.password,
-        fullName:      form.companyName + " Admin",
+        fullName:      form.fullName,
         phone:         form.phone,
         whatsapp:      form.whatsapp || form.phone,
         whatsappOptIn: form.agreeWhatsapp || false,
@@ -439,7 +440,7 @@ export default function SignupPage({ onLogin }) {
         companyName:   form.companyName,
         email:         form.email,
         password:      form.password,
-        fullName:      form.companyName + " Admin",
+        fullName:      form.fullName,
         phone:         form.phone,
         whatsapp:      form.whatsapp || form.phone,
         whatsappOptIn: form.agreeWhatsapp || false,
@@ -494,10 +495,12 @@ export default function SignupPage({ onLogin }) {
         rzp.open();
       });
 
-      // 4. Success
+      // 4. Success — set cam limit then go to onboarding
+      localStorage.setItem('safeg_cam_limit', String(parseInt(form.cameraCount) || 4));
+      localStorage.setItem('safeg_plan', selectedPlan);
       setStep(2);
       onLogin?.(user);
-      setTimeout(() => navigate("/dashboard"), 2500);
+      setTimeout(() => navigate("/onboarding"), 2500);
 
     } catch(err) {
       if (err.message === "Payment cancelled") {
