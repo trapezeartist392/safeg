@@ -196,7 +196,7 @@ function StepSuccess({ billing, email }) {
         ACCOUNT ACTIVATED!
       </div>
       <div style={{color:T.g1,fontSize:14,marginBottom:8}}>
-        Payment successful! Redirecting to your dashboard...
+        Payment successful! Setting up your account...
       </div>
       <div style={{color:T.g2,fontSize:12,marginBottom:20}}>
         GST invoice will be emailed to <strong style={{color:T.white}}>{email}</strong>
@@ -418,7 +418,7 @@ export default function SignupPage({ onLogin }) {
       localStorage.setItem("safeg_tenant",  tenantId);
       localStorage.setItem("safeg_plan",    "growth");
       onLogin?.(user);
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch(err) {
       setError(err.response?.data?.message || err.message || "Registration failed. Please try again.");
     } finally {
@@ -527,14 +527,22 @@ export default function SignupPage({ onLogin }) {
           backgroundImage:`linear-gradient(${T.border} 1px,transparent 1px),linear-gradient(90deg,${T.border} 1px,transparent 1px)`,
           backgroundSize:"60px 60px",animation:"gridMove 4s linear infinite",opacity:.3,pointerEvents:"none"}}/>
 
-        {/* Logo */}
-        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:28,zIndex:1}}>
-          <div style={{width:38,height:38,borderRadius:10,
-            background:`linear-gradient(135deg,${T.orange},#FF8C52)`,
-            display:"flex",alignItems:"center",justifyContent:"center",
-            fontFamily:"'Bebas Neue'",fontSize:20,color:"#fff"}}>S</div>
-          <div style={{fontFamily:"'Bebas Neue'",fontSize:20,letterSpacing:3,color:T.white}}>Safeguards IQ</div>
+        {/* Logo + sign in row */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+          width:"100%",maxWidth:maxW,marginBottom:28,zIndex:1}}>
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div style={{width:38,height:38,borderRadius:10,
+              background:`linear-gradient(135deg,${T.orange},#FF8C52)`,
+              display:"flex",alignItems:"center",justifyContent:"center",
+              fontFamily:"'Bebas Neue'",fontSize:20,color:"#fff"}}>S</div>
+            <div style={{fontFamily:"'Bebas Neue'",fontSize:20,letterSpacing:3,color:T.white}}>Safeguards IQ</div>
+          </div>
+          <div style={{fontSize:13,color:T.g2}}>
+            Already have an account?{" "}
+            <Link to="/login" style={{color:T.orange,fontWeight:700,textDecoration:"none"}}>Sign in →</Link>
+          </div>
         </div>
+
 
         {/* Step indicator — only show for paid signup flow */}
         {step === 1 && (
@@ -590,10 +598,7 @@ export default function SignupPage({ onLogin }) {
           {step === 2 && <StepSuccess email={form.email} />}
         </div>
 
-        <div style={{marginTop:20,fontSize:13,color:T.g2,zIndex:1}}>
-          Already have an account?{" "}
-          <Link to="/login" style={{color:T.orange,fontWeight:700,textDecoration:"none"}}>Sign in →</Link>
-        </div>
+
       </div>
     </>
   );
