@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SignupPage.jsx — Redesigned
  * SafeguardsIQ — Unified Signup + Free Trial Page
  *
@@ -58,7 +58,7 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
   const [showPass, setShowPass] = useState(false);
 
   const validate = () => {
-    if (!form.companyName || !form.fullName || !form.email || !form.password) {
+    if (!form.companyName || !form.email || !form.password) {
       setError("Please fill all required fields"); return false;
     }
     if (form.password !== form.confirmPass) { setError("Passwords do not match"); return false; }
@@ -108,14 +108,6 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
           <input type="text" value={form.companyName||""}
             onChange={e=>F("companyName",e.target.value)}
             placeholder="Pune Auto Components Pvt Ltd"
-            style={{...inp}}/>
-        </Field>
-
-        {/* Full Name */}
-        <Field label="Your Full Name" required>
-          <input type="text" value={form.fullName||""}
-            onChange={e=>F("fullName",e.target.value)}
-            placeholder="Suresh Nair"
             style={{...inp}}/>
         </Field>
 
@@ -176,40 +168,25 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
           </Field>
         </div>
 
-        {/* WhatsApp — optional */}
-        <div style={{ background:`${T.green}06`, border:`1px solid ${T.green}20`,
-          borderRadius:12, padding:16 }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:12 }}>
-            <div style={{ fontSize:20, flexShrink:0 }}>📱</div>
-            <div>
-              <div style={{ fontSize:13, fontWeight:700, color:T.white, marginBottom:2 }}>
-                Get violation alerts on WhatsApp
-              </div>
-              <div style={{ fontSize:11, color:T.g1 }}>
-                AI detects a violation → WhatsApp alert in under 28 seconds. Optional.
-              </div>
-            </div>
-          </div>
+        {/* Phone — optional */}
+        <Field label={<>Phone <span style={{color:T.g1,fontWeight:500,fontSize:11,letterSpacing:0,textTransform:"none"}}>— (OPTIONAL) · 📱 Enter to get WhatsApp violation alerts</span></>}>
           <input
             type="tel" value={form.whatsapp||""}
             onChange={e=>F("whatsapp",e.target.value)}
-            placeholder="+91 98765 43210 (optional)"
-            style={{...inp,
-              background:`${T.green}08`,
-              border:`1px solid ${form.whatsapp?T.green:T.border}`,
-            }}/>
+            placeholder="+91 98765 43210"
+            style={{...inp}}/>
           {form.whatsapp && (
             <label style={{ display:"flex", alignItems:"center", gap:8,
-              cursor:"pointer", marginTop:10 }}>
+              cursor:"pointer", marginTop:6 }}>
               <input type="checkbox" checked={form.agreeWhatsapp||false}
                 onChange={e=>F("agreeWhatsapp",e.target.checked)}
-                style={{ width:15, height:15, accentColor:T.green }}/>
+                style={{ width:14, height:14, accentColor:T.orange }}/>
               <span style={{ fontSize:11, color:T.g1 }}>
                 I agree to receive safety alerts on this number
               </span>
             </label>
           )}
-        </div>
+        </Field>
 
       </div>
 
@@ -229,88 +206,67 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
         </label>
       </div>
 
+      {/* Primary CTA — Free Trial */}
+      <button onClick={()=>{ if(validate()) onFreeTrial(); }}
+        disabled={loading}
+        style={{ width:"100%", border:"none", borderRadius:12, padding:"15px",
+          color:"#fff", fontSize:15, fontWeight:800, cursor:"pointer",
+          fontFamily:"'Nunito'", marginBottom:16,
+          background:loading==='trial'?T.g2:`linear-gradient(135deg,${T.orange},#FF8C52)`,
+          display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
+        {loading==='trial'
+          ? <><div style={{ width:18, height:18,
+              border:"2px solid rgba(255,255,255,.3)",
+              borderTopColor:"#fff", borderRadius:"50%",
+              animation:"spin .8s linear infinite" }}/>Starting...</>
+          : "🎁 Click here to enjoy 14 days free trial →"}
+      </button>
+
       {/* Divider */}
-      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20 }}>
+      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:16 }}>
         <div style={{ flex:1, height:1, background:T.border }}/>
-        <span style={{ fontSize:11, color:T.g2, letterSpacing:2 }}>CHOOSE HOW TO START</span>
+        <span style={{ fontSize:11, color:T.g2, letterSpacing:2 }}>OR</span>
         <div style={{ flex:1, height:1, background:T.border }}/>
       </div>
 
-      {/* Two CTA buttons */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
-
-        {/* Free Trial */}
-        <div style={{ background:`${T.green}08`, border:`1px solid ${T.green}25`,
-          borderRadius:14, padding:20, display:"flex", flexDirection:"column", gap:12 }}>
-          <div style={{ textAlign:"center" }}>
-            <div style={{ fontSize:28, marginBottom:6 }}>🎁</div>
-            <div style={{ fontFamily:"'Bebas Neue'", fontSize:20,
-              color:T.green, letterSpacing:2 }}>FREE TRIAL</div>
-            <div style={{ fontSize:11, color:T.g1, marginTop:3 }}>
-              14 days · No credit card
-            </div>
-          </div>
-          <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
-            {["14-day full access","All Professional features",
-              "WhatsApp alerts included","Cancel anytime"].map(f=>(
-              <div key={f} style={{ display:"flex", gap:6, alignItems:"center" }}>
-                <span style={{ color:T.green, fontSize:11 }}>✓</span>
-                <span style={{ fontSize:11, color:T.g1 }}>{f}</span>
-              </div>
-            ))}
-          </div>
-          <button onClick={()=>{ if(validate()) onFreeTrial(); }}
-            disabled={loading}
-            style={{ width:"100%", border:`1px solid ${T.green}`, borderRadius:10,
-              padding:"12px", color:T.green, fontSize:14, fontWeight:800,
-              cursor:"pointer", fontFamily:"'Nunito'", background:`${T.green}12`,
-              display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
-            {loading==='trial'
-              ? <><div style={{ width:16, height:16,
-                  border:"2px solid rgba(34,212,104,.3)",
-                  borderTopColor:T.green, borderRadius:"50%",
-                  animation:"spin .8s linear infinite" }}/>Starting...</>
-              : "🚀 Start Free Trial →"}
-          </button>
-        </div>
-
-        {/* Sign Up & Pay */}
-        <div style={{ background:`${T.orange}08`, border:`1px solid ${T.orange}25`,
-          borderRadius:14, padding:20, display:"flex", flexDirection:"column", gap:12 }}>
-          <div style={{ textAlign:"center" }}>
-            <div style={{ fontSize:28, marginBottom:6 }}>💳</div>
-            <div style={{ fontFamily:"'Bebas Neue'", fontSize:20,
+      {/* Secondary option — Sign Up & Pay */}
+      <div style={{ background:`${T.orange}08`, border:`1px solid ${T.orange}25`,
+        borderRadius:14, padding:18, display:"flex",
+        alignItems:"center", justifyContent:"space-between", gap:16,
+        flexWrap:"wrap" }}>
+        <div>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+            <span style={{ fontSize:18 }}>💳</span>
+            <div style={{ fontFamily:"'Bebas Neue'", fontSize:18,
               color:T.orange, letterSpacing:2 }}>SIGN UP & PAY</div>
-            <div style={{ fontSize:11, color:T.g1, marginTop:3 }}>
-              Activate instantly
-            </div>
+            <div style={{ fontSize:10, color:T.g2 }}>Activate instantly</div>
           </div>
-          <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
+          <div style={{ display:"flex", gap:16, flexWrap:"wrap" }}>
             {["From ₹2,500/camera/month","Starter / Pro / Enterprise",
               "15% off annual billing","GST invoice included"].map(f=>(
-              <div key={f} style={{ display:"flex", gap:6, alignItems:"center" }}>
-                <span style={{ color:T.orange, fontSize:11 }}>✓</span>
+              <div key={f} style={{ display:"flex", gap:5, alignItems:"center" }}>
+                <span style={{ color:T.orange, fontSize:10 }}>✓</span>
                 <span style={{ fontSize:11, color:T.g1 }}>{f}</span>
               </div>
             ))}
           </div>
-          <button onClick={()=>{ if(validate()) onSignup(); }}
-            disabled={loading}
-            style={{ width:"100%", border:"none", borderRadius:10, padding:"12px",
-              color:"#fff", fontSize:14, fontWeight:800, cursor:"pointer",
-              fontFamily:"'Nunito'",
-              background:`linear-gradient(135deg,${T.orange},#FF8C52)`,
-              display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
-            {loading==='signup'
-              ? <><div style={{ width:16, height:16,
-                  border:"2px solid rgba(255,255,255,.3)",
-                  borderTopColor:"#fff", borderRadius:"50%",
-                  animation:"spin .8s linear infinite" }}/>Processing...</>
-              : "💳 Choose Plan & Pay →"}
-          </button>
         </div>
-
+        <button onClick={()=>{ if(validate()) onSignup(); }}
+          disabled={loading}
+          style={{ flexShrink:0, border:`1.5px solid ${T.orange}`, borderRadius:10,
+            padding:"10px 20px", color:T.orange, fontSize:13, fontWeight:800,
+            cursor:"pointer", fontFamily:"'Nunito'",
+            background:`${T.orange}12`, whiteSpace:"nowrap",
+            display:"flex", alignItems:"center", gap:6 }}>
+          {loading==='signup'
+            ? <><div style={{ width:14, height:14,
+                border:`2px solid ${T.orange}44`,
+                borderTopColor:T.orange, borderRadius:"50%",
+                animation:"spin .8s linear infinite" }}/>...</>
+            : "💳 Choose Plan & Pay →"}
+        </button>
       </div>
+
     </div>
   );
 }
