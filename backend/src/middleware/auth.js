@@ -16,6 +16,10 @@ const ALLOWED_EXPIRED_PATHS = [
   '/ai/health',
 ];
 
+// Cancelled subscriptions get same access as active until period ends
+// Auth middleware should not block 'cancelled' status
+
+
 function isAllowedWhenExpired(req) {
   const url = req.originalUrl || req.path;
   return ALLOWED_EXPIRED_PATHS.some(prefix => url.startsWith(prefix));
@@ -73,11 +77,13 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
   }
 
   // Block expired tenants from protected routes
-  if (user.subscriptionStatus === 'expired' && !isAllowedWhenExpired(req)) {
+  // cancelled = retain access until period ends, never block
+  if ((user.subscriptionStatus === 'expired') && !isAllowedWhenExpired(req)) {
     throw new AppError('Trial expired — subscribe to continue', 402);
   }
 
   req.user = user;
+
 
   // Cache — shorter TTL for trial users so expiry is detected quickly
   const ttl = user.subscriptionStatus === 'trial' ? 60 : 300;

@@ -232,8 +232,13 @@ function RefundModal({ payment, onConfirm, onClose }) {
    MAIN COMPONENT
    ═══════════════════════════════════════════════════ */
 export default function BillingDashboard({ onUpgrade }) {
-  const [payments, setPayments]   = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason,    setCancelReason]    = useState('');
+  const [cancelling,      setCancelling]      = useState(false);
+  const [cancelDone,      setCancelDone]      = useState(false);
   const [loading,  setLoading]    = useState(true);
+
   const [stats,    setStats]      = useState(null);
   const [tab,      setTab]        = useState("overview");
   const [refundModal, setRefundModal] = useState(null);
@@ -346,6 +351,24 @@ export default function BillingDashboard({ onUpgrade }) {
     setTimeout(() => { win?.print(); }, 500);
   };
 
+  const handleCancel = async () => {
+    setCancelling(true);
+    try {
+      await fetch(`${API}/payments/cancel-subscription`, {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: cancelReason }),
+      });
+      setCancelDone(true);
+      // Update localStorage plan to cancelled
+      localStorage.setItem('safeg_plan', 'cancelled');
+    } catch (e) {
+      alert('Cancellation failed. Please try again or contact support.');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   const handleRefund = async ({ paymentId, reason, amount }) => {
     const res = await fetch(`${API}/payments/refund`, {
       method: "POST",
@@ -359,6 +382,7 @@ export default function BillingDashboard({ onUpgrade }) {
   };
 
   const showToast = (msg, type = "success") => {
+
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3500);
   };
@@ -420,11 +444,13 @@ export default function BillingDashboard({ onUpgrade }) {
             </div>
           </div>
           <div style={{ display: "flex", gap: 10 }}>
-            <button style={{
+            <button onClick={() => setShowCancelModal(true)} style={{
               padding: "9px 18px", background: "transparent",
-              border: `1.5px solid ${T.line}`, borderRadius: 10,
-              color: T.fog, fontSize: 13,
+              border: `1.5px solid ${T.rose}44`, borderRadius: 10,
+              color: T.rose, fontSize: 13, cursor: "pointer",
+              fontFamily: "'Instrument Sans',sans-serif",
             }}>Cancel subscription</button>
+
             {currentPlan !== "enterprise" && (
               <button onClick={onUpgrade} style={{
                 padding: "9px 18px", background: `${plan.color}20`,
@@ -565,7 +591,129 @@ export default function BillingDashboard({ onUpgrade }) {
         />
       )}
 
+      {/* Cancel Subscription Modal */}
+      {showCancelModal && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: "rgba(5,8,15,.88)", backdropFilter: "blur(6px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <div style={{
+            background: T.ink, border: `1.5px solid ${T.line}`,
+            borderRadius: 20, padding: 36, maxWidth: 460, width: "90%",
+            fontFamily: "'Instrument Sans',sans-serif",
+          }}>
+            {!cancelDone ? (
+              <>
+                <div style={{ fontSize: 36, marginBottom: 16, textAlign: "center" }}>⚠️</div>
+                <div style={{
+                  fontSize: 20, fontWeight: 800, color: T.snow,
+                  marginBottom: 8, textAlign: "center"
+                }}>
+                  Cancel Subscription?
+                </div>
+                <div style={{
+                  fontSize: 13, color: T.fog, marginBottom: 20,
+                  textAlign: "center", lineHeight: 1.6,
+                }}>
+                  You will retain full access until the end of your current billing period.
+                  After that, your account will be locked.
+                </div>
+
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{
+                    fontSize: 11, color: T.fog, letterSpacing: 1.5,
+                    fontWeight: 700, display: "block", marginBottom: 6,
+                  }}>
+                    REASON (OPTIONAL)
+                  </label>
+                  <select
+                    value={cancelReason}
+                    onChange={e => setCancelReason(e.target.value)}
+                    style={{
+                      width: "100%", background: T.panel,
+                      border: `1.5px solid ${T.line}`,
+                      borderRadius: 10,
+                      padding: "11px 14px",
+                      color: T.snow,
+                      fontSize: 13,
+                      fontFamily: "'Instrument Sans',sans-serif",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <option value="">Select a reason…</option>
+                    <option value="Too expensive">Too expensive</option>
+                    <option value="Not using it enough">Not using it enough</option>
+                    <option value="Missing features I need">Missing features I need</option>
+                    <option value="Switching to another solution">Switching to another solution</option>
+                    <option value="Technical issues">Technical issues</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div style={{ display: "flex", gap: 10 }}>
+                  <button
+                    onClick={() => setShowCancelModal(false)}
+                    style={{
+                      flex: 1, padding: "12px", background: "transparent",
+                      border: `1.5px solid ${T.line}`,
+                      borderRadius: 10,
+                      color: T.fog, fontSize: 14, fontWeight: 600,
+                      cursor: "pointer",
+                      fontFamily: "'Instrument Sans',sans-serif",
+                    }}
+                  >
+                    Keep Subscription
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={cancelling}
+                    style={{
+                      flex: 1, padding: "12px",
+                      background: cancelling ? T.ghost : T.rose,
+                      border: "none", borderRadius: 10, color: "#fff",
+                      fontSize: 14, fontWeight: 700,
+                      cursor: cancelling ? "not-allowed" : "pointer",
+                      fontFamily: "'Instrument Sans',sans-serif",
+                    }}
+                  >
+                    {cancelling ? "Cancelling…" : "Yes, Cancel"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: T.snow, marginBottom: 10 }}>
+                  Subscription Cancelled
+                </div>
+                <div style={{ fontSize: 13, color: T.fog, lineHeight: 1.7, marginBottom: 24 }}>
+                  Your subscription has been cancelled. You'll retain full access
+                  until the end of your current billing period.
+                </div>
+                <div style={{ fontSize: 12, color: T.ghost, marginBottom: 20 }}>
+                  Changed your mind? Contact us at{" "}
+                  <span style={{ color: T.ember }}>mazhar.imam@syyaim.com</span>
+                </div>
+                <button
+                  onClick={() => { setShowCancelModal(false); setCancelDone(false); }}
+                  style={{
+                    padding: "12px 32px", background: T.ember,
+                    border: "none", borderRadius: 10, color: "#fff",
+                    fontSize: 14, fontWeight: 700, cursor: "pointer",
+                    fontFamily: "'Instrument Sans',sans-serif",
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Toast */}
+
       {toast && (
         <div style={{
           position: "fixed", bottom: 24, right: 24, zIndex: 9999,
@@ -582,3 +730,4 @@ export default function BillingDashboard({ onUpgrade }) {
     </>
   );
 }
+

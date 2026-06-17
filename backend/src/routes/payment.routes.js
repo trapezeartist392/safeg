@@ -570,11 +570,55 @@ router.post("/refund", authenticate, asyncHandler(async (req, res) => {
 }));
 
 /* ═══════════════════════════════════════════════════
+   POST /payments/cancel-subscription
+   Access continues until end of billing period
+   ═══════════════════════════════════════════════════ */
+router.post('/cancel-subscription', authenticate, asyncHandler(async (req, res) => {
+  const db = getDB();
+  const { reason } = req.body;
+  const tenantId = req.user.tenantId;
+
+  // Get current subscription
+  const { rows } = await db.query(
+    `SELECT subscription_status, plan_id, company_name FROM tenants WHERE id = $1`,
+    [tenantId]
+  );
+  if (!rows.length) throw new AppError('Tenant not found', 404);
+
+  const tenant = rows[0];
+  if (tenant.subscription_status !== 'active') {
+    throw new AppError('No active subscription to cancel', 400);
+  }
+
+  // Set to cancelled — access continues until end of billing period
+  await db.query(
+    `UPDATE tenants
+     SET subscription_status = 'cancelled',
+         cancelled_at = NOW(),
+         cancellation_reason = $1
+     WHERE id = $2`,
+    [reason || 'User requested cancellation', tenantId]
+  );
+
+  // Invalidate session cache so auth middleware picks up new status
+  const { cache } = require('../config/redis');
+  await cache.del(`session:${req.user.id}`);
+
+  logger.info(`[BILLING] Subscription cancelled: ${tenant.company_name} (${tenantId})`);
+
+  res.json({
+    success: true,
+    message: 'Subscription cancelled. You will retain access until the end of your current billing period.',
+  });
+}));
+
+/* ═══════════════════════════════════════════════════
    POST /payments/webhook
    Raw body required — add BEFORE express.json() in app.js:
    app.use('/api/v1/payments/webhook', express.raw({type:'application/json'}), webhookRouter);
    ═══════════════════════════════════════════════════ */
 const webhookRouter = express.Router();
+
 
 webhookRouter.post("/", asyncHandler(async (req, res) => {
   const signature = req.headers["x-razorpay-signature"];
