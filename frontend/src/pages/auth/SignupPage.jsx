@@ -484,6 +484,9 @@ export default function SignupPage({ onLogin }) {
   });
   const [loading,      setLoading]      = useState(false);
   const [error,        setError]        = useState("");
+
+  // Clear any stale errors on mount
+  useEffect(() => { setError(""); }, []);
   const [billing,      setBilling]      = useState("monthly");
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const navigate = useNavigate();
@@ -522,7 +525,15 @@ export default function SignupPage({ onLogin }) {
       onLogin?.(user);
       navigate("/onboarding");
     } catch(err) {
-      setError(err.response?.data?.message || err.message || "Registration failed. Please try again.");
+      const msg = err.response?.data?.message || err.message || "Registration failed";
+      const errors = err.response?.data?.errors;
+      if (errors && errors.length > 0) {
+        setError(errors.map(e => e.msg || e.message).join(", "));
+      } else if (msg === "Validation failed") {
+        setError("Please check all fields are filled correctly");
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -602,7 +613,15 @@ export default function SignupPage({ onLogin }) {
       if (err.message === "Payment cancelled") {
         setError("Payment cancelled. You can try again.");
       } else {
-        setError(err.response?.data?.message || err.message || "Registration failed. Please try again.");
+        const msg3 = err.response?.data?.message || err.message || "Registration failed";
+      const errors3 = err.response?.data?.errors;
+      if (errors3 && errors3.length > 0) {
+        setError(errors3.map(e => e.msg || e.message).join(", "));
+      } else if (msg3 === "Validation failed") {
+        setError("Please check all fields are filled correctly");
+      } else {
+        setError(msg3);
+      }
       }
     } finally {
       setLoading(false);
