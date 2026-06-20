@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SignupPage.jsx — Redesigned
  * SafeguardsIQ — Unified Signup + Free Trial Page
  *
@@ -52,6 +52,19 @@ const PLANS = [
   },
 ];
 
+/* ── Reusable Field component (must be outside StepCompany to avoid re-render focus loss) ── */
+function Field({ label, required, children }) {
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+      <label style={{ fontSize:11, color:T.g1, letterSpacing:1.5,
+        fontWeight:700, fontFamily:"'Nunito'" }}>
+        {label}{required && <span style={{ color:T.orange, marginLeft:3 }}>*</span>}
+      </label>
+      {children}
+    </div>
+  );
+}
+
 /* ── STEP 1: Company Details (5 fields only) ─────────────────── */
 function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, setError }) {
   const F = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -76,15 +89,7 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
                                   ? { label:"Good",     color:T.teal,  w:"70%" }
                                   : { label:"Fair",     color:T.amber, w:"50%" };
 
-  const Field = ({ label, required, children }) => (
-    <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-      <label style={{ fontSize:11, color:T.g1, letterSpacing:1.5,
-        fontWeight:700, fontFamily:"'Nunito'" }}>
-        {label}{required && <span style={{ color:T.orange, marginLeft:3 }}>*</span>}
-      </label>
-      {children}
-    </div>
-  );
+
 
   return (
     <div style={{ animation:"fadeUp .5s ease both" }}>
@@ -169,7 +174,7 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
         </div>
 
         {/* Phone — optional */}
-        <Field label={<>Phone <span style={{color:T.g1,fontWeight:500,fontSize:11,letterSpacing:0,textTransform:"none"}}>— (OPTIONAL) · 📱 Enter to get WhatsApp violation alerts</span></>}>
+        <Field label={<>Phone <span style={{color:T.g1,fontWeight:500,fontSize:11,letterSpacing:0,textTransform:"none"}}>— optional · 📱 Enter to get WhatsApp violation alerts</span></>}>
           <input
             type="tel" value={form.whatsapp||""}
             onChange={e=>F("whatsapp",e.target.value)}
