@@ -523,7 +523,7 @@ export default function SignupPage({ onLogin }) {
       localStorage.setItem("safeg_tenant",  tenantId);
       localStorage.setItem("safeg_plan",    "growth");
       onLogin?.(user);
-      navigate("/onboarding");
+      navigate("/dashboard");
     } catch(err) {
       const msg = err.response?.data?.message || err.message || "Registration failed";
       const errors = err.response?.data?.errors;
