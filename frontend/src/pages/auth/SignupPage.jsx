@@ -67,7 +67,7 @@ function Field({ label, required, children }) {
 
 /* ── STEP 1: Company Details (5 fields only) ─────────────────── */
 function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, setError }) {
-  const F = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const F = (k, v) => { setForm(f => ({ ...f, [k]: v })); setError(""); };
   const [showPass, setShowPass] = useState(false);
 
   const validate = (requireConfirm = true) => {
