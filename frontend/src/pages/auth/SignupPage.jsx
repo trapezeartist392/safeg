@@ -70,12 +70,14 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
   const F = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const [showPass, setShowPass] = useState(false);
 
-  const validate = () => {
+  const validate = (requireConfirm = true) => {
     if (!form.companyName || !form.email || !form.password) {
       setError("Please fill all required fields"); return false;
     }
-    if (form.password !== form.confirmPass) { setError("Passwords do not match"); return false; }
     if (form.password.length < 8) { setError("Password must be at least 8 characters"); return false; }
+    if (requireConfirm && form.password !== form.confirmPass) {
+      setError("Passwords do not match"); return false;
+    }
     if (!form.agreeTerms) { setError("Please agree to the Terms of Service"); return false; }
     setError(""); return true;
   };
@@ -212,7 +214,7 @@ function StepCompany({ form, setForm, onFreeTrial, onSignup, loading, error, set
       </div>
 
       {/* Primary CTA — Free Trial */}
-      <button onClick={()=>{ if(validate()) onFreeTrial(); }}
+      <button onClick={()=>{ if(validate(false)) onFreeTrial(); }}
         disabled={loading}
         style={{ width:"100%", border:"none", borderRadius:12, padding:"15px",
           color:"#fff", fontSize:15, fontWeight:800, cursor:"pointer",
