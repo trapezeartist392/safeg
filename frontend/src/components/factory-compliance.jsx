@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useComplianceData } from "../hooks/useComplianceData";
 
 // ─── PALETTE ───────────────────────────────────────────────────
@@ -181,6 +181,32 @@ const CHECK_ITEMS = {
   ],
 };
 
+// ─── CSV HELPER ──────────────────────────────────────────────────
+function violationsToCSV(violations) {
+  const headers = [
+    "Violation No","Date & Time","Type","Category","Camera",
+    "Area / Zone","Severity","Confidence %","Description","Status"
+  ];
+  const escape = (v) => {
+    if (v === null || v === undefined) return "";
+    const s = String(v).replace(/"/g, '""');
+    return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s}"` : s;
+  };
+  const rows = violations.map(v => [
+    v.violation_no || v.id || "",
+    v.occurred_at ? new Date(v.occurred_at).toLocaleString("en-IN") : (v.date || ""),
+    v.violation_type || v.type || "",
+    v.category || "ppe",
+    v.violation_cam || v.camera_id || v.zone || "",
+    v.area_name || v.zone || "",
+    v.severity || v.sev || "",
+    v.confidence || "",
+    v.description || v.action || "",
+    v.status || "",
+  ].map(escape).join(","));
+  return [headers.join(","), ...rows].join("\n");
+}
+
 // ─── TINY COMPONENTS ────────────────────────────────────────────
 
 function Dot({color=C.orange,size=6,blink=false}) {
@@ -192,12 +218,13 @@ function Badge({text,type="med"}) {
   const Open={bg:"rgba(255,59,59,.1)",color:C.red,border:"rgba(255,59,59,.25)"};
   const Closed={bg:"rgba(34,212,106,.1)",color:C.green,border:"rgba(34,212,106,.25)"};
   const Pending={bg:"rgba(255,184,0,.1)",color:C.amber,border:"rgba(255,184,0,.25)"};
-  const style=map[text]||({Open,Closed,Pending}[text])||{bg:C.card2,color:C.g1,border:C.border};
+  const ComingSoon={bg:"rgba(92,110,154,.1)",color:C.g2,border:"rgba(92,110,154,.25)"};
+  const style=map[text]||({Open,Closed,Pending,"Coming Soon":ComingSoon}[text])||{bg:C.card2,color:C.g1,border:C.border};
   return <span style={{display:"inline-block",padding:"2px 9px",borderRadius:10,fontSize:10,fontWeight:700,letterSpacing:.5,background:style.bg,color:style.color,border:`1px solid ${style.border}`}}>{text}</span>;
 }
 
-function Card({children,style={}}) {
-  return <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:20,...style}}>{children}</div>;
+function Card({children,style={},onClick}) {
+  return <div onClick={onClick} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:20,...style}}>{children}</div>;
 }
 
 function CardTitle({children,color=C.orange}) {
@@ -267,17 +294,12 @@ function CamFeed({cam}) {
   const isMonitorCam = cam.id === "laptop-webcam" || cam.cam_label === "laptop-webcam";
 
   useEffect(() => {
-    if (!isMonitorCam) {
-      setMonitorStream(null);
-      return;
-    }
-
+    if (!isMonitorCam) { setMonitorStream(null); return; }
     const syncMonitorStream = () => {
       const video = document.querySelector('video[data-safeg="monitor"]');
       const nextStream = video?.srcObject || null;
       setMonitorStream(prev => prev === nextStream ? prev : nextStream);
     };
-
     syncMonitorStream();
     const intervalId = setInterval(syncMonitorStream, 1000);
     return () => clearInterval(intervalId);
@@ -304,14 +326,11 @@ function CamFeed({cam}) {
       ctx.lineWidth=1;
       for(let x=0;x<w;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
       for(let y=0;y<h;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
-      // floor
       ctx.fillStyle="rgba(255,255,255,.02)";
       ctx.fillRect(0,h*.62,w,h*.38);
-      // machinery
       ctx.fillStyle="rgba(255,255,255,.05)";
       ctx.fillRect(w*.6,h*.28,w*.35,h*.52);
       ctx.fillRect(w*.65,h*.14,w*.06,h*.18);
-      // workers
       const count=cam.alert?3:2;
       for(let i=0;i<count;i++){
         const wx=w*(.18+i*.3), wy=h*.52;
@@ -323,7 +342,6 @@ function CamFeed({cam}) {
         ctx.fillStyle=`rgba(255,59,59,${.025+Math.sin(Date.now()/400)*.015})`;
         ctx.fillRect(0,0,w,h);
       }
-      // timestamp
       ctx.fillStyle="rgba(0,0,0,.6)";
       ctx.fillRect(0,h-18,w,18);
       ctx.fillStyle="rgba(255,255,255,.45)";
@@ -339,15 +357,8 @@ function CamFeed({cam}) {
   },[cam,isMonitorCam,monitorStream]);
 
   if (isMonitorCam && monitorStream) {
-    return <video
-      ref={videoRef}
-      autoPlay
-      muted
-      playsInline
-      style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
-    />;
+    return <video ref={videoRef} autoPlay muted playsInline style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} />;
   }
-
   return <canvas ref={ref} width={320} height={180} style={{width:"100%",height:"100%",display:"block"}} />;
 }
 
@@ -377,9 +388,7 @@ function Form18({toast, lastViolation}) {
     inspector:"Office of Inspector of Factories, Pune District",
   });
   const [injured,setInjured]=useState([{name:"Ramesh Kumar Singh",sex:"Male",age:34,empType:"Permanent – Factory Worker",dept:"Welding",injuryType:"Minor Injury",bodyPart:"Left knee — abrasion",days:2}]);
-  const [capa,setCapa]=useState([
-    {action:"",resp:"",date:today,status:"Pending"},
-  ]);
+  const [capa,setCapa]=useState([{action:"",resp:"",date:today,status:"Pending"}]);
 
   const upd=(k,v)=>{
     setF(prev=>({...prev,[k]:v}));
@@ -397,19 +406,12 @@ function Form18({toast, lastViolation}) {
   };
 
   const inp=(k,type="text",style={})=><input type={type} value={f[k]} onChange={e=>upd(k,e.target.value)} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.white,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%",...style}} />;
-  const sel=(k,opts)=><select value={f[k]} onChange={e=>upd(k,e.target.value)} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.white,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%",cursor:"pointer"}}>
-    {opts.map(o=><option key={o}>{o}</option>)}
-  </select>;
-  const autoInp=(val,key)=><input readOnly value={val} style={{background:"rgba(0,212,184,.05)",border:`1px solid rgba(0,212,184,.3)`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.teal,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%"}} />;
+  const sel=(k,opts)=><select value={f[k]} onChange={e=>upd(k,e.target.value)} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.white,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%",cursor:"pointer"}}>{opts.map(o=><option key={o}>{o}</option>)}</select>;
+  const autoInp=(val)=><input readOnly value={val} style={{background:"rgba(0,212,184,.05)",border:`1px solid rgba(0,212,184,.3)`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.teal,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%"}} />;
   const lbl=(text)=><div style={{fontSize:10,color:C.g2,textTransform:"uppercase",letterSpacing:1.5,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:600,marginBottom:5}}>{text}</div>;
   const field=(label,children)=><div style={{display:"flex",flexDirection:"column"}}>{lbl(label)}{children}</div>;
-
-  const secTitle=(t,badge)=><div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:17,color:C.orange,letterSpacing:2,fontWeight:700,marginBottom:16,paddingBottom:10,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:10}}>
-    {t}{badge&&<span style={{fontSize:11,color:C.teal,letterSpacing:1}}>● {badge}</span>}
-  </div>;
-
+  const secTitle=(t,badge)=><div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:17,color:C.orange,letterSpacing:2,fontWeight:700,marginBottom:16,paddingBottom:10,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:10}}>{t}{badge&&<span style={{fontSize:11,color:C.teal,letterSpacing:1}}>● {badge}</span>}</div>;
   const row=(...children)=><div style={{display:"grid",gridTemplateColumns:`repeat(${children.length},1fr)`,gap:14,marginBottom:14}}>{children}</div>;
-
   const thStyle={background:C.card2,padding:"10px 14px",textAlign:"left",fontSize:10,color:C.g2,textTransform:"uppercase",letterSpacing:1.5,fontFamily:"'Barlow Condensed',sans-serif",border:`1px solid ${C.border}`,fontWeight:600};
   const tdStyle={padding:"10px 14px",fontSize:12,color:C.g1,border:`1px solid ${C.border}`,verticalAlign:"top"};
   const tdInp=(val,onChange,w="100%")=><input value={val} onChange={e=>onChange(e.target.value)} style={{background:"transparent",border:"none",color:C.white,fontSize:12,width:w,outline:"none",fontFamily:"'Syne',sans-serif"}} />;
@@ -417,7 +419,6 @@ function Form18({toast, lastViolation}) {
 
   return (
     <div style={{animation:"slideIn .3s ease"}}>
-      {/* Page Header */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24}}>
         <div>
           <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>FORM 18 — ACCIDENT REPORT</div>
@@ -428,11 +429,7 @@ function Form18({toast, lastViolation}) {
           <button onClick={()=>toast("Draft saved","success")} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 18px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>💾 Save Draft</button>
         </div>
       </div>
-
-      {/* Form Container */}
       <div style={{background:C.bg3,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden"}}>
-
-        {/* Header Banner */}
         <div style={{background:C.card,padding:"22px 32px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:30,fontWeight:800,letterSpacing:3}}>FORM NO. 18</div>
@@ -450,58 +447,26 @@ function Form18({toast, lastViolation}) {
             </div>
           </div>
         </div>
-
         <div style={{padding:"28px 32px"}}>
-
-          {/* PART A */}
           <div style={{marginBottom:28}}>
             {secTitle("PART A — FACTORY & REGISTRATION DETAILS")}
-            {row(
-              field("Name of Factory", autoInp(f.factoryName,"factoryName")),
-              field("Factory Registration No.", inp("regNo")),
-              field("Type of Industry", autoInp(f.industry,"industry")),
-            )}
-            {row(
-              field("Factory Address", autoInp(f.address,"address")),
-              field("District", autoInp(f.district,"district")),
-              field("State", autoInp(f.state,"state")),
-            )}
-            {row(
-              field("Occupier / Owner Name", inp("occupier")),
-              field("Manager Name", inp("manager")),
-              field("Contact Number", inp("contact")),
-            )}
+            {row(field("Name of Factory",autoInp(f.factoryName)),field("Factory Registration No.",inp("regNo")),field("Type of Industry",autoInp(f.industry)))}
+            {row(field("Factory Address",autoInp(f.address)),field("District",autoInp(f.district)),field("State",autoInp(f.state)))}
+            {row(field("Occupier / Owner Name",inp("occupier")),field("Manager Name",inp("manager")),field("Contact Number",inp("contact")))}
           </div>
-
-          {/* PART B */}
           <div style={{marginBottom:28}}>
             {secTitle("PART B — ACCIDENT / DANGEROUS OCCURRENCE DETAILS")}
-            {row(
-              field("Date of Accident", inp("accDate","date")),
-              field("Time of Accident", autoInp(f.accTime,"accTime")),
-              field("Department / Section", autoInp(f.department,"department")),
-            )}
-            {row(
-              field("Nature of Accident", sel("nature",["Fall from height","Struck by moving object","Caught in machinery","Burns/Scalds","Electrical shock","Chemical exposure","Dangerous occurrence"])),
-              field("Operation / Process Being Performed", autoInp(f.operation,"operation")),
-            )}
-            <div style={{marginBottom:14}}>
-              {field("Description of Accident / Occurrence",
-                <textarea value={f.description} onChange={e=>upd("description",e.target.value)} rows={4} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.white,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%",resize:"vertical"}} />
-              )}
-            </div>
-            <div style={{marginBottom:14}}>{field("Immediate Cause of Accident", inp("immCause"))}</div>
-            <div style={{marginBottom:0}}>{field("Root Cause / Underlying Factor", inp("rootCause"))}</div>
+            {row(field("Date of Accident",inp("accDate","date")),field("Time of Accident",autoInp(f.accTime)),field("Department / Section",autoInp(f.department)))}
+            {row(field("Nature of Accident",sel("nature",["Fall from height","Struck by moving object","Caught in machinery","Burns/Scalds","Electrical shock","Chemical exposure","Dangerous occurrence"])),field("Operation / Process Being Performed",autoInp(f.operation)))}
+            <div style={{marginBottom:14}}>{field("Description of Accident / Occurrence",<textarea value={f.description} onChange={e=>upd("description",e.target.value)} rows={4} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"9px 13px",fontSize:13,color:C.white,fontFamily:"'Syne',sans-serif",outline:"none",width:"100%",resize:"vertical"}} />)}</div>
+            <div style={{marginBottom:14}}>{field("Immediate Cause of Accident",inp("immCause"))}</div>
+            <div style={{marginBottom:0}}>{field("Root Cause / Underlying Factor",inp("rootCause"))}</div>
           </div>
-
-          {/* PART C */}
           <div style={{marginBottom:28}}>
             {secTitle("PART C — INJURED PERSON(S) DETAILS")}
             <div style={{overflowX:"auto"}}>
               <table style={{width:"100%",borderCollapse:"collapse"}}>
-                <thead>
-                  <tr>{["Sr.","Name","Sex","Age","Employment Status","Dept.","Nature of Injury","Body Part","Days Absent"].map(h=><th key={h} style={thStyle}>{h}</th>)}</tr>
-                </thead>
+                <thead><tr>{["Sr.","Name","Sex","Age","Employment Status","Dept.","Nature of Injury","Body Part","Days Absent"].map(h=><th key={h} style={thStyle}>{h}</th>)}</tr></thead>
                 <tbody>
                   {injured.map((row,i)=>(
                     <tr key={i}>
@@ -519,44 +484,27 @@ function Form18({toast, lastViolation}) {
                 </tbody>
               </table>
             </div>
-            <button onClick={()=>setInjured(p=>[...p,{name:"",sex:"Male",age:"",empType:"Permanent – Factory Worker",dept:"",injuryType:"Minor Injury",bodyPart:"",days:""}])}
-              style={{marginTop:10,padding:"6px 14px",borderRadius:7,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:12,fontFamily:"'Syne',sans-serif"}}>
-              + Add Person
-            </button>
+            <button onClick={()=>setInjured(p=>[...p,{name:"",sex:"Male",age:"",empType:"Permanent – Factory Worker",dept:"",injuryType:"Minor Injury",bodyPart:"",days:""}])} style={{marginTop:10,padding:"6px 14px",borderRadius:7,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:12,fontFamily:"'Syne',sans-serif"}}>+ Add Person</button>
           </div>
-
-          {/* PART D */}
           <div style={{marginBottom:28}}>
             {secTitle("PART D — MEDICAL TREATMENT & FIRST AID")}
-            {row(
-              field("First Aid Given?", sel("firstAid",["Yes — On-site first aid","No"])),
-              field("Referred to Hospital?", sel("hospital",["No — Treated on-site","Yes — Government Hospital","Yes — Private Hospital"])),
-              field("ESIC Member?", sel("esic",["Yes — ESIC IP No. MH48920234","No — Not covered"])),
-            )}
-            {row(
-              field("Medical Officer Name", inp("doctor")),
-              field("Date of Medical Examination", inp("medDate","date")),
-            )}
+            {row(field("First Aid Given?",sel("firstAid",["Yes — On-site first aid","No"])),field("Referred to Hospital?",sel("hospital",["No — Treated on-site","Yes — Government Hospital","Yes — Private Hospital"])),field("ESIC Member?",sel("esic",["Yes — ESIC IP No. MH48920234","No — Not covered"])))}
+            {row(field("Medical Officer Name",inp("doctor")),field("Date of Medical Examination",inp("medDate","date")))}
           </div>
-
-          {/* PART E: Safeguards IQ Evidence */}
           <div style={{marginBottom:28}}>
             {secTitle("PART E — Safeguards IQ EVIDENCE LOG","Auto-captured")}
             <div style={{background:"rgba(0,212,184,.04)",border:`1px solid rgba(0,212,184,.2)`,borderRadius:10,padding:20}}>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:14}}>
-                {(() => {
-                  const lastViol = lastViolation;
-                  return [
-                    ["Camera ID", lastViol?.camera || "No recent detection"],
-                    ["Detection Timestamp", lastViol?.time || "—"],
-                    ["AI Confidence Score", lastViol?.confidence ? `${lastViol.confidence}%` : "—"],
-                    ["Alert Sent To", "Zone Supervisor · Plant Manager"],
-                    ["Response Time", "< 28 seconds"],
-                    ["Violation Type", lastViol?.type || "—"],
-                  ];
-                })().map(([k,v])=><div key={k}>
+                {[
+                  ["Camera ID", lastViolation?.camera || "No recent detection"],
+                  ["Detection Timestamp", lastViolation?.time || "—"],
+                  ["AI Confidence Score", lastViolation?.confidence ? `${lastViolation.confidence}%` : "—"],
+                  ["Alert Sent To", "Zone Supervisor · Plant Manager"],
+                  ["Response Time", "< 28 seconds"],
+                  ["Violation Type", lastViolation?.type || "—"],
+                ].map(([k,v])=><div key={k}>
                   <div style={{fontSize:10,color:C.teal,textTransform:"uppercase",letterSpacing:1.5,fontFamily:"'Barlow Condensed',sans-serif",marginBottom:4}}>{k}</div>
-                  <div style={{fontSize:13,fontFamily:k.includes("Timestamp")||k.includes("Score")?"'Barlow Condensed',sans-serif":"'Syne',sans-serif",cursor:k.includes("Video")?"pointer":"default",color:k.includes("Video")?C.teal:C.white}}>{v}</div>
+                  <div style={{fontSize:13,color:C.white}}>{v}</div>
                 </div>)}
               </div>
               <div style={{background:"rgba(0,212,184,.06)",borderRadius:8,border:`1px solid rgba(0,212,184,.15)`,padding:"12px 16px",fontSize:12,color:C.g1,lineHeight:1.7}}>
@@ -565,15 +513,11 @@ function Form18({toast, lastViolation}) {
               </div>
             </div>
           </div>
-
-          {/* PART F: CAPA */}
           <div style={{marginBottom:28}}>
             {secTitle("PART F — CORRECTIVE & PREVENTIVE ACTIONS (CAPA)")}
             <div style={{overflowX:"auto"}}>
               <table style={{width:"100%",borderCollapse:"collapse"}}>
-                <thead>
-                  <tr>{["No.","Corrective Action","Responsible Person","Target Date","Status"].map(h=><th key={h} style={thStyle}>{h}</th>)}</tr>
-                </thead>
+                <thead><tr>{["No.","Corrective Action","Responsible Person","Target Date","Status"].map(h=><th key={h} style={thStyle}>{h}</th>)}</tr></thead>
                 <tbody>
                   {capa.map((r,i)=>(
                     <tr key={i}>
@@ -587,31 +531,17 @@ function Form18({toast, lastViolation}) {
                 </tbody>
               </table>
             </div>
-            <button onClick={()=>setCapa(p=>[...p,{action:"",resp:"",date:today,status:"Pending"}])}
-              style={{marginTop:10,padding:"6px 14px",borderRadius:7,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:12,fontFamily:"'Syne',sans-serif"}}>
-              + Add Action
-            </button>
+            <button onClick={()=>setCapa(p=>[...p,{action:"",resp:"",date:today,status:"Pending"}])} style={{marginTop:10,padding:"6px 14px",borderRadius:7,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:12,fontFamily:"'Syne',sans-serif"}}>+ Add Action</button>
           </div>
-
-          {/* PART G: Declaration */}
           <div style={{marginBottom:0}}>
             {secTitle("PART G — DECLARATION BY MANAGER / OCCUPIER")}
-            {row(
-              field("Name of Declarant", inp("declarant")),
-              field("Designation", inp("designation")),
-            )}
-            {row(
-              field("Date of Filing", inp("filingDate","date")),
-              field("Submitted To (Inspector of Factories)", inp("inspector")),
-            )}
+            {row(field("Name of Declarant",inp("declarant")),field("Designation",inp("designation")))}
+            {row(field("Date of Filing",inp("filingDate","date")),field("Submitted To (Inspector of Factories)",inp("inspector")))}
             <div style={{background:"rgba(255,184,0,.06)",border:`1px solid rgba(255,184,0,.2)`,borderRadius:8,padding:"12px 16px",fontSize:12,color:C.g1,lineHeight:1.6,marginTop:8}}>
               ⚠️ <strong style={{color:C.amber}}>Statutory Deadline:</strong> File with Inspector of Factories within <strong style={{color:C.white}}>24 hours</strong> of accident (Section 88, Factories Act 1948). For dangerous occurrences, report immediately by phone and follow up in writing within 12 hours.
             </div>
           </div>
-
         </div>
-
-        {/* Action Bar */}
         <div style={{display:"flex",gap:12,justifyContent:"flex-end",padding:"18px 32px",borderTop:`1px solid ${C.border}`,background:C.card}}>
           <button onClick={()=>toast("Draft saved","success")} style={{padding:"10px 22px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>💾 Save Draft</button>
           <button onClick={()=>toast("Form sent for print","info")} style={{padding:"10px 22px",borderRadius:8,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif"}}>🖨️ Print</button>
@@ -627,23 +557,18 @@ function Form18({toast, lastViolation}) {
 function InspectionPage({toast}) {
   const [checks, setChecks] = useState(() => {
     const init = {};
-    Object.entries(CHECK_ITEMS).forEach(([cat, items]) => {
-      init[cat] = items.map(() => null); // null=unchecked, true=pass, false=fail
-    });
+    Object.entries(CHECK_ITEMS).forEach(([cat, items]) => { init[cat] = items.map(() => null); });
     return init;
   });
   const total = Object.values(checks).flat().length;
   const passed = Object.values(checks).flat().filter(v=>v===true).length;
   const failed = Object.values(checks).flat().filter(v=>v===false).length;
-
   const toggle = (cat, i) => setChecks(prev => {
     const n = {...prev,[cat]:[...prev[cat]]};
     n[cat][i] = n[cat][i]===true ? false : n[cat][i]===false ? null : true;
     return n;
   });
-
   const catColors = [C.orange, C.teal, C.red, C.green];
-
   return (
     <div style={{animation:"slideIn .3s ease"}}>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24}}>
@@ -684,18 +609,125 @@ function InspectionPage({toast}) {
   );
 }
 
+// ─── ACCIDENT SUMMARY REPORT CARD ────────────────────────────────
+function AccidentSummaryCard({ stats, toast }) {
+  const today     = new Date().toISOString().split("T")[0];
+  const yearStart = `${new Date().getFullYear()}-01-01`;
+  const [downloading, setDownloading] = useState(false);
+
+  const downloadReport = async () => {
+    setDownloading(true);
+    toast("Fetching violation data…", "info");
+    try {
+      const token = localStorage.getItem("safeg_token") || "";
+      const res = await fetch(
+        `/api/v1/violations/archive?limit=1000&dateFrom=${yearStart}&dateTo=${today}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (!res.ok) throw new Error("API error");
+      const json = await res.json();
+      const violations = json?.data?.violations || json?.violations || [];
+      if (violations.length === 0) {
+        toast("No violations found for this year", "warning");
+        setDownloading(false);
+        return;
+      }
+      const csv = violationsToCSV(violations);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = `Accident-Summary-Report-${new Date().getFullYear()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast(`Accident Summary downloaded — ${violations.length} incidents ✓`, "success");
+    } catch (e) {
+      toast("Download failed — check your connection", "error");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <Card
+      onClick={downloading ? undefined : downloadReport}
+      style={{
+        cursor: downloading ? "wait" : "pointer",
+        border: `1px solid rgba(255,92,26,.4)`,
+        background: `rgba(255,92,26,.06)`,
+        position: "relative",
+        overflow: "hidden",
+        transition: "transform .15s, box-shadow .15s",
+      }}
+    >
+      {/* LIVE badge */}
+      <div style={{
+        position:"absolute", top:12, right:12,
+        background:"rgba(34,212,106,.15)", border:"1px solid rgba(34,212,106,.4)",
+        borderRadius:20, padding:"2px 10px",
+        fontSize:9, color:C.green, fontFamily:"'Barlow Condensed',sans-serif",
+        letterSpacing:1, fontWeight:700,
+        display:"flex", alignItems:"center", gap:5,
+      }}>
+        <div style={{width:5,height:5,borderRadius:"50%",background:C.green,animation:"blink 1.2s infinite"}}/>
+        LIVE
+      </div>
+
+      <div style={{fontSize:32,marginBottom:12}}>⚠️</div>
+      <div style={{fontSize:16,fontWeight:700,color:C.white,marginBottom:6}}>
+        Accident Summary Report
+      </div>
+      <div style={{fontSize:12,color:C.g2,marginBottom:6}}>
+        Form 18 &amp; 19 Register — {new Date().getFullYear()}
+      </div>
+      <div style={{fontSize:12,color:C.g1,marginBottom:14}}>
+        {stats.totalMonth || 0} incidents recorded · Year to date
+      </div>
+
+      {/* Stats row */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}}>
+        {[
+          {label:"Open",    val:stats.openCount    || 0, color:C.red},
+          {label:"Pending", val:stats.pendingCount || 0, color:C.amber},
+          {label:"Closed",  val:stats.closedToday  || 0, color:C.green},
+        ].map(s=>(
+          <div key={s.label} style={{background:C.card2,borderRadius:8,padding:"8px 10px",textAlign:"center",border:`1px solid ${C.border}`}}>
+            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,color:s.color}}>{s.val}</div>
+            <div style={{fontSize:9,color:C.g2,letterSpacing:1,fontFamily:"'Barlow Condensed',sans-serif"}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Download bar */}
+      <div style={{
+        display:"flex", alignItems:"center", justifyContent:"space-between",
+        padding:"10px 14px", background:`rgba(255,92,26,.08)`,
+        border:`1px solid rgba(255,92,26,.2)`, borderRadius:8,
+      }}>
+        <span style={{fontSize:12,color:C.orange,fontWeight:600}}>
+          {downloading
+            ? "⏳ Generating CSV…"
+            : `⬇ Download CSV — ${new Date().getFullYear()} full year`}
+        </span>
+        <span style={{fontSize:11,color:C.g2}}>{yearStart} → {today}</span>
+      </div>
+    </Card>
+  );
+}
+
 // ─── MAIN APP ────────────────────────────────────────────────────
 export default function App() {
   const { violations: realViols, ppeTypes: realPpe, zones: realZones,
           timeline: realTimeline, zoneBars: realZoneBars,
           lastViolation, stats } = useComplianceData();
   const [liveCameras, setLiveCameras] = useState([]);
-  const [livePlants, setLivePlants] = useState([]);
-  const [page, setPage] = useState("dashboard");
-  const [toasts, setToasts] = useState([]);
-  const displayViols = realViols?.length > 0 ? realViols : VIOLATIONS;
-  const displayPpe = realPpe?.length > 0 ? realPpe : PPE_TYPES;
-  const displayZones = realZones?.length > 0 ? realZones : ZONES;
+  const [livePlants,  setLivePlants]  = useState([]);
+  const [page,        setPage]        = useState("dashboard");
+  const [toasts,      setToasts]      = useState([]);
+
+  const displayViols    = realViols?.length    > 0 ? realViols    : VIOLATIONS;
+  const displayPpe      = realPpe?.length      > 0 ? realPpe      : PPE_TYPES;
+  const displayZones    = realZones?.length    > 0 ? realZones    : ZONES;
   const displayTimeline = realTimeline?.length > 0 ? realTimeline : TIMELINE;
   const displayZoneBars = realZoneBars?.length > 0 ? realZoneBars : ZONE_BARS;
   const maxZ = Math.max(...displayZoneBars.map(d=>d.val));
@@ -704,9 +736,7 @@ export default function App() {
     const fetchCameras = async () => {
       try {
         const token = localStorage.getItem("safeg_token") || "";
-        const res = await fetch("/api/v1/cameras", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res  = await fetch("/api/v1/cameras", { headers: { Authorization: `Bearer ${token}` } });
         const data = await res.json();
         const cams = data.data || [];
         try {
@@ -715,29 +745,19 @@ export default function App() {
           const sr = await fetch(`${AI_URL}/stream/status`);
           const sd = await sr.json();
           const streams = sd.streams || {};
-          const merged = cams.map(c => ({
+          setLiveCameras(cams.map(c => ({
             ...c,
             alert: (streams[c.cam_label]?.violations_today || 0) > 0,
             violations_today: streams[c.cam_label]?.violations_today || 0,
             status: streams[c.cam_label]?.status === "running" ? "online" : c.status || "offline",
-          }));
-          setLiveCameras(merged);
-          try {
-            const pr = await fetch('/api/v1/plants', { headers: { Authorization: `Bearer ${token}` } });
-            const pd = await pr.json();
-            setLivePlants(pd.data || []);
-          } catch {}
-        } catch {
-          setLiveCameras(cams);
-          try {
-            const pr = await fetch('/api/v1/plants', { headers: { Authorization: `Bearer ${token}` } });
-            const pd = await pr.json();
-            setLivePlants(pd.data || []);
-          } catch {}
-        }
-      } catch (e) {
-        console.error("Camera fetch error:", e);
-      }
+          })));
+        } catch { setLiveCameras(cams); }
+        try {
+          const pr = await fetch('/api/v1/plants', { headers: { Authorization: `Bearer ${token}` } });
+          const pd = await pr.json();
+          setLivePlants(pd.data || []);
+        } catch {}
+      } catch (e) { console.error("Camera fetch error:", e); }
     };
     fetchCameras();
     const interval = setInterval(fetchCameras, 10000);
@@ -751,13 +771,13 @@ export default function App() {
   const removeToast = id => setToasts(p=>p.filter(t=>t.id!==id));
 
   const navItems = [
-    {id:"dashboard",label:"Dashboard",icon:"📊"},
-    {id:"cameras",label:"Live Cameras",icon:"📹"},
-    {id:"ppe",label:"PPE Compliance",icon:"🦺"},
-    {id:"violations",label:"Violations",icon:"⚠️",badge:stats.openCount||0},
-    {id:"form18",label:"Form 18",icon:"📋",badge:stats.pendingCount||0},
-    {id:"inspection",label:"Inspection",icon:"✅"},
-    {id:"reports",label:"Reports",icon:"📄"},
+    {id:"dashboard", label:"Dashboard",    icon:"📊"},
+    {id:"cameras",   label:"Live Cameras", icon:"📹"},
+    {id:"ppe",       label:"PPE Compliance",icon:"🦺"},
+    {id:"violations",label:"Violations",   icon:"⚠️", badge:stats.openCount||0},
+    {id:"form18",    label:"Form 18",      icon:"📋", badge:stats.pendingCount||0},
+    {id:"inspection",label:"Inspection",   icon:"✅"},
+    {id:"reports",   label:"Reports",      icon:"📄"},
   ];
 
   const sideNav = [
@@ -766,12 +786,12 @@ export default function App() {
       : [{icon:"🏭", name:"Loading...", active:true}]
     },
     {label:"Compliance",items:[
-      {icon:"📊",name:"Overview",pg:"dashboard"},
-      {icon:"📹",name:"Camera Feeds",pg:"cameras"},
-      {icon:"🦺",name:"PPE Tracking",pg:"ppe"},
-      {icon:"⚠️",name:"Violations",pg:"violations",badge:stats.openCount||0},
-      {icon:"📋",name:"Form 18",pg:"form18",badge:stats.pendingCount||0},
-      {icon:"✅",name:"Inspection",pg:"inspection"},
+      {icon:"📊",name:"Overview",      pg:"dashboard"},
+      {icon:"📹",name:"Camera Feeds",  pg:"cameras"},
+      {icon:"🦺",name:"PPE Tracking",  pg:"ppe"},
+      {icon:"⚠️",name:"Violations",    pg:"violations", badge:stats.openCount||0},
+      {icon:"📋",name:"Form 18",       pg:"form18",     badge:stats.pendingCount||0},
+      {icon:"✅",name:"Inspection",    pg:"inspection"},
     ]},
     {label:"Reports",items:[
       {icon:"📄",name:"ISO 45001",    pg:"reports"},
@@ -802,7 +822,7 @@ export default function App() {
           {navItems.map(n=>(
             <button key={n.id} onClick={()=>setPage(n.id)} style={{position:"relative",padding:"5px 14px",borderRadius:7,fontSize:12,fontWeight:600,color:page===n.id?C.orange:C.g2,cursor:"pointer",border:`1px solid ${page===n.id?C.orange:"transparent"}`,background:page===n.id?"rgba(255,92,26,.08)":"transparent",fontFamily:"'Syne',sans-serif",transition:"all .2s"}}>
               {n.label}
-              {n.badge && <span style={{position:"absolute",top:-4,right:-4,background:C.red,color:"#fff",fontSize:9,padding:"1px 5px",borderRadius:10,fontFamily:"'Barlow Condensed',sans-serif"}}>{n.badge}</span>}
+              {n.badge>0 && <span style={{position:"absolute",top:-4,right:-4,background:C.red,color:"#fff",fontSize:9,padding:"1px 5px",borderRadius:10,fontFamily:"'Barlow Condensed',sans-serif"}}>{n.badge}</span>}
             </button>
           ))}
         </div>
@@ -813,14 +833,12 @@ export default function App() {
         <div id="compliance-nav" style={{width:210,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"16px 0",position:"sticky",top:56,height:"calc(100vh - 56px)",overflowY:"auto"}}>
           {sideNav.map(sec=>(
             <div key={sec.label} style={{padding:"0 12px 8px"}}>
-              <div style={{fontSize:9,color:C.g3,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif",padding:"8px 4px 4px",textTransform:"uppercase"}}>
-                {sec.label}
-              </div>
+              <div style={{fontSize:9,color:C.g3,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif",padding:"8px 4px 4px",textTransform:"uppercase"}}>{sec.label}</div>
               {sec.items.map(item=>(
                 <div key={item.name} onClick={()=>item.pg&&setPage(item.pg)} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 10px",borderRadius:8,cursor:item.pg?"pointer":"default",fontSize:12,color:item.active||page===item.pg?C.orange:C.g1,background:item.active||page===item.pg?"rgba(255,92,26,.08)":"transparent",border:`1px solid ${item.active||page===item.pg?"rgba(255,92,26,.2)":"transparent"}`,marginBottom:2,transition:"all .2s",position:"relative"}}>
                   <span style={{fontSize:14}}>{item.icon}</span>
                   <span style={{flex:1}}>{item.name}</span>
-                  {item.badge && <span style={{background:C.red,color:"#fff",fontSize:9,padding:"1px 6px",borderRadius:10,fontFamily:"'Barlow Condensed',sans-serif"}}>{item.badge}</span>}
+                  {item.badge>0 && <span style={{background:C.red,color:"#fff",fontSize:9,padding:"1px 6px",borderRadius:10,fontFamily:"'Barlow Condensed',sans-serif"}}>{item.badge}</span>}
                 </div>
               ))}
             </div>
@@ -834,58 +852,46 @@ export default function App() {
           {/* ── DASHBOARD ── */}
           {page==="dashboard" && (
             <div style={{animation:"slideIn .3s ease"}}>
-              {/* Alert Ticker */}
               <div style={{overflow:"hidden",background:"rgba(255,59,59,.07)",border:`1px solid rgba(255,59,59,.18)`,borderRadius:8,padding:"7px 0",marginBottom:20}}>
                 <div style={{display:"flex",gap:48,animation:"ticker 28s linear infinite",whiteSpace:"nowrap"}}>
                   {[...Array(2)].map((_,ri)=>
                     displayViols.slice(0,6).map((v,i)=>(
-                      <span key={`${ri}-${i}`} style={{fontSize:11,
-                        color: v.sev==="High"||v.status==="Open" ? C.red : C.green,
-                        fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,
-                        display:"inline-flex",alignItems:"center",gap:16}}>
-                        {v.sev==="High"||v.status==="Open" ? "🔴" : "✅"} {v.type||v.violation_type} — {v.zone||v.camera_id||'Zone'} · {v.date||v.occurred_at?.slice(11,16)||'Now'}
+                      <span key={`${ri}-${i}`} style={{fontSize:11,color:v.sev==="High"||v.status==="Open"?C.red:C.green,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1,display:"inline-flex",alignItems:"center",gap:16}}>
+                        {v.sev==="High"||v.status==="Open"?"🔴":"✅"} {v.type||v.violation_type} — {v.zone||v.camera_id||'Zone'} · {v.date||v.occurred_at?.slice(11,16)||'Now'}
                         <span style={{color:C.g3}}>///</span>
                       </span>
                     ))
                   )}
                 </div>
               </div>
-
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>COMPLIANCE COMMAND CENTRE</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>{(livePlants[0]?.plant_name || 'YOUR PLANT')?.toUpperCase()} · {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase()}</div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>{(livePlants[0]?.plant_name||'YOUR PLANT').toUpperCase()} · {new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase()}</div>
                 </div>
                 <button onClick={()=>setPage("form18")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>📋 File Form 18</button>
               </div>
-
-              {/* KPIs */}
               <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="PPE Compliance" value={`${stats.compliance||97}%`} unit="Today" trend="↑ vs last week" trendUp={true} color={C.green}/>
-                <KpiCard label="Active Violations" value={stats.openCount||0} unit="Open cases" trend="↑ new today" trendUp={false} color={C.red}/>
-                <KpiCard label="Cameras Online" value={`${liveCameras.filter(c=>c.status==='online').length||0}/${liveCameras.length||0}`} unit="All operational" trend="● systems normal" trendUp={true} color={C.teal}/>
-                <KpiCard label="Near-Miss Events" value={stats.nearMissCount||0} unit="This month" trend="↓ vs last week" trendUp={true} color={C.amber}/>
-                <KpiCard label="Compliance Score" value={stats.compliance||92} unit="/ 100 · Grade A" trend="↑ Factories Act" trendUp={true} color={C.blue}/>
+                <KpiCard label="PPE Compliance"   value={`${stats.compliance||97}%`} unit="Today"           trend="↑ vs last week" trendUp={true}  color={C.green}/>
+                <KpiCard label="Active Violations" value={stats.openCount||0}         unit="Open cases"      trend="↑ new today"    trendUp={false} color={C.red}/>
+                <KpiCard label="Cameras Online"    value={`${liveCameras.filter(c=>c.status==='online').length||0}/${liveCameras.length||0}`} unit="All operational" trend="● systems normal" trendUp={true} color={C.teal}/>
+                <KpiCard label="Near-Miss Events"  value={stats.nearMissCount||0}     unit="This month"      trend="↓ vs last week" trendUp={true}  color={C.amber}/>
+                <KpiCard label="Compliance Score"  value={stats.compliance||92}       unit="/ 100 · Grade A" trend="↑ Factories Act" trendUp={true} color={C.blue}/>
               </div>
-
-              {/* Row 2 */}
               <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr 1.1fr",gap:16,marginBottom:16}}>
-                {/* Bar Chart */}
                 <Card>
                   <CardTitle>Violations by Zone — This Week</CardTitle>
                   <div style={{display:"flex",alignItems:"flex-end",gap:8,height:130,padding:"0 4px"}}>
                     {displayZoneBars.map((d,i)=>(
                       <div key={d.label} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
                         <div style={{flex:1,width:"100%",display:"flex",alignItems:"flex-end"}}>
-                          <div style={{width:"100%",height:`${d.val/maxZ*100}%`,background:d.c,borderRadius:"4px 4px 0 0",minHeight:4,transition:"height 1s",animation:"barUp 1s ease",animationDelay:`${i*0.08}s`,transformOrigin:"bottom",cursor:"pointer",position:"relative"}}
-                            title={`${d.val} violations`}/>
+                          <div style={{width:"100%",height:`${d.val/maxZ*100}%`,background:d.c,borderRadius:"4px 4px 0 0",minHeight:4,transition:"height 1s",animation:"barUp 1s ease",animationDelay:`${i*0.08}s`,transformOrigin:"bottom",cursor:"pointer"}} title={`${d.val} violations`}/>
                         </div>
                         <div style={{fontSize:9,color:C.g2,fontFamily:"'Barlow Condensed',sans-serif",textAlign:"center"}}>{d.label}</div>
                       </div>
                     ))}
                   </div>
                 </Card>
-                {/* Ring */}
                 <Card style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
                   <CardTitle color={C.green}>PPE Compliance Today</CardTitle>
                   <Ring pct={stats.compliance||97}/>
@@ -894,7 +900,6 @@ export default function App() {
                     <span style={{color:C.red}}>● Fail: {stats.openCount||0}</span>
                   </div>
                 </Card>
-                {/* Timeline */}
                 <Card style={{overflowY:"auto",maxHeight:260}}>
                   <CardTitle color={C.teal}>Today's Events</CardTitle>
                   <div style={{display:"flex",flexDirection:"column",gap:0}}>
@@ -911,8 +916,6 @@ export default function App() {
                   </div>
                 </Card>
               </div>
-
-              {/* Row 3 */}
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
                 <Card>
                   <CardTitle color={C.orange}>PPE Compliance by Type</CardTitle>
@@ -927,9 +930,7 @@ export default function App() {
                         <div style={{flex:1}}>
                           <div style={{fontSize:12,color:C.g1,fontWeight:600,marginBottom:3}}>{z.name}</div>
                           <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,color:z.c}}>{z.pct}%</div>
-                          <div style={{height:3,background:C.border,borderRadius:3,marginTop:4,overflow:"hidden"}}>
-                            <div style={{height:"100%",width:z.pct+"%",background:z.c,borderRadius:3}}/>
-                          </div>
+                          <div style={{height:3,background:C.border,borderRadius:3,marginTop:4,overflow:"hidden"}}><div style={{height:"100%",width:z.pct+"%",background:z.c,borderRadius:3}}/></div>
                         </div>
                       </div>
                     ))}
@@ -945,9 +946,7 @@ export default function App() {
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20}}>
                 <div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3}}>LIVE CAMERA FEEDS</div>
-                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>
-                    {liveCameras.length} CAMERAS · AI DETECTION ACTIVE
-                  </div>
+                  <div style={{fontSize:12,color:C.g2,marginTop:3,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>{liveCameras.length} CAMERAS · AI DETECTION ACTIVE</div>
                 </div>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
@@ -957,38 +956,19 @@ export default function App() {
                   {id:"CAM-03",loc:"Welding B — Entry",alert:false},
                   {id:"CAM-04",loc:"Welding B — Bay 3",alert:true},
                 ]).map(cam=>(
-                  <div key={cam.id} style={{background:"#000",borderRadius:8,overflow:"hidden",
-                    border:`1px solid ${cam.alert||cam.violations_today>0?C.red:C.border}`,
-                    position:"relative",aspectRatio:"16/9",cursor:"pointer",
-                    animation:cam.alert||cam.violations_today>0?"alertPulse 1.2s infinite":"none"}}>
+                  <div key={cam.id} style={{background:"#000",borderRadius:8,overflow:"hidden",border:`1px solid ${cam.alert||cam.violations_today>0?C.red:C.border}`,position:"relative",aspectRatio:"16/9",cursor:"pointer",animation:cam.alert||cam.violations_today>0?"alertPulse 1.2s infinite":"none"}}>
                     <CamFeed cam={cam}/>
-                    <div style={{position:"absolute",inset:0,padding:7,display:"flex",
-                      flexDirection:"column",justifyContent:"space-between",pointerEvents:"none"}}>
+                    <div style={{position:"absolute",inset:0,padding:7,display:"flex",flexDirection:"column",justifyContent:"space-between",pointerEvents:"none"}}>
                       <div style={{display:"flex",justifyContent:"space-between"}}>
-                        <div style={{background:"rgba(0,0,0,.7)",color:C.white,fontSize:9,
-                          padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>
-                          {cam.cam_label || cam.id}
-                        </div>
-                        <div style={{display:"flex",alignItems:"center",gap:4,
-                          background:"rgba(0,0,0,.7)",padding:"2px 6px",borderRadius:4,
-                          fontSize:9,color:cam.status==='online'?C.green:C.red,
-                          fontFamily:"'Barlow Condensed',sans-serif"}}>
+                        <div style={{background:"rgba(0,0,0,.7)",color:C.white,fontSize:9,padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>{cam.cam_label||cam.id}</div>
+                        <div style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,.7)",padding:"2px 6px",borderRadius:4,fontSize:9,color:cam.status==='online'?C.green:C.red,fontFamily:"'Barlow Condensed',sans-serif"}}>
                           <Dot color={cam.status==='online'?C.green:C.red} blink={cam.status==='online'} size={5}/>
                           {cam.status==='online'?'LIVE':'OFFLINE'}
                         </div>
                       </div>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
-                        <div style={{background:"rgba(0,0,0,.7)",color:C.g1,fontSize:9,
-                          padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>
-                          {cam.area_name || cam.loc || "Zone"}
-                        </div>
-                        {(cam.alert||cam.violations_today>0) && (
-                          <div style={{background:"rgba(255,59,59,.85)",color:"#fff",fontSize:9,
-                            padding:"3px 8px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",
-                            fontWeight:700,animation:"blink .7s infinite"}}>
-                            ⚠ {cam.violations_today||""} VIOLATION{cam.violations_today>1?"S":""}
-                          </div>
-                        )}
+                        <div style={{background:"rgba(0,0,0,.7)",color:C.g1,fontSize:9,padding:"2px 6px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif"}}>{cam.area_name||cam.loc||"Zone"}</div>
+                        {(cam.alert||cam.violations_today>0) && <div style={{background:"rgba(255,59,59,.85)",color:"#fff",fontSize:9,padding:"3px 8px",borderRadius:4,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,animation:"blink .7s infinite"}}>⚠ {cam.violations_today||""} VIOLATION{cam.violations_today>1?"S":""}</div>}
                       </div>
                     </div>
                   </div>
@@ -1011,9 +991,7 @@ export default function App() {
                       <div style={{flex:1}}>
                         <div style={{fontSize:12,color:C.g1,fontWeight:600,marginBottom:4}}>{p.name}</div>
                         <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:32,color:p.c}}>{p.pct}%</div>
-                        <div style={{height:4,background:C.border,borderRadius:4,marginTop:6,overflow:"hidden"}}>
-                          <div style={{height:"100%",width:p.pct+"%",background:p.c,borderRadius:4,transition:"width 1.2s"}}/>
-                        </div>
+                        <div style={{height:4,background:C.border,borderRadius:4,marginTop:6,overflow:"hidden"}}><div style={{height:"100%",width:p.pct+"%",background:p.c,borderRadius:4,transition:"width 1.2s"}}/></div>
                       </div>
                       <Badge text={p.pct>=95?"Low":p.pct>=90?"Medium":"High"}/>
                     </div>
@@ -1058,10 +1036,10 @@ export default function App() {
                 <button onClick={()=>toast("VIO-236 created and assigned","success")} style={{padding:"9px 20px",borderRadius:8,background:C.orange,color:"#fff",border:"none",cursor:"pointer",fontSize:13,fontFamily:"'Syne',sans-serif",fontWeight:700}}>+ Log Violation</button>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:20}}>
-                <KpiCard label="Open" value={stats.openCount||0} unit="Require action" trend="↑ 2 new today" trendUp={false} color={C.red}/>
-                <KpiCard label="Pending Review" value={stats.pendingCount||0} unit="Awaiting sign-off" trend="→ Same as yesterday" color={C.amber}/>
-                <KpiCard label="Closed Today" value={stats.closedToday||0} unit="Resolved" trend="↑ +3 vs yesterday" trendUp={true} color={C.green}/>
-                <KpiCard label="This Month" value={stats.totalMonth||0} unit="Total" trend="↓ −23% vs last month" trendUp={true} color={C.blue}/>
+                <KpiCard label="Open"          value={stats.openCount||0}    unit="Require action"      trend="↑ 2 new today"          trendUp={false} color={C.red}/>
+                <KpiCard label="Pending Review" value={stats.pendingCount||0} unit="Awaiting sign-off"   trend="→ Same as yesterday"    color={C.amber}/>
+                <KpiCard label="Closed Today"   value={stats.closedToday||0}  unit="Resolved"            trend="↑ +3 vs yesterday"      trendUp={true}  color={C.green}/>
+                <KpiCard label="This Month"     value={stats.totalMonth||0}   unit="Total"               trend="↓ −23% vs last month"   trendUp={true}  color={C.blue}/>
               </div>
               <Card>
                 <CardTitle>All Violations</CardTitle>
@@ -1100,31 +1078,41 @@ export default function App() {
             <div style={{animation:"slideIn .3s ease"}}>
               <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:38,fontWeight:800,letterSpacing:3,marginBottom:4}}>COMPLIANCE REPORTS</div>
               <div style={{fontSize:12,color:C.g2,marginBottom:24,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2}}>AUTO-GENERATED STATUTORY REPORTS — ISO 45001 · ESIC · BRSR · FACTORIES ACT</div>
+
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:20}}>
+
+                {/* 5 placeholder cards */}
                 {[
-                  {icon:"📋",title:"ISO 45001 Monthly Report",desc:`OHS Management System — ${new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})}`,status:"Closed",badge:"Ready to export"},
-                  {icon:"🏥",title:"ESIC Half-Yearly Return",desc:`Employee State Insurance — H${new Date().getMonth()<6?1:2} ${new Date().getFullYear()}`,status:stats.totalMonth>0?"Closed":"Pending",badge:stats.totalMonth>0?"Ready to export":"No data yet"},
-                  {icon:"📊",title:"SEBI BRSR Safety Data",desc:"Business Responsibility & Sustainability",status:"Closed",badge:"Ready to export"},
-                  {icon:"⚠️",title:"Accident Summary Report",desc:`Form 18 & 19 Register — ${new Date().getFullYear()}`,status:stats.openCount>0?"Pending":"Closed",badge:`${stats.totalMonth||0} incidents filed`},
-                  {icon:"🏛️",title:"Shram Suvidha Portal Sync",desc:"Labour compliance — Ministry of Labour",status:"Pending",badge:"Sync pending"},
-                  {icon:"📜",title:"OSH Code 2020 Compliance",desc:"Occupational Safety Health — Quarterly",status:stats.compliance>=90?"Closed":"Pending",badge:stats.compliance>=90?"Compliant":`${stats.compliance||0}% — Review needed`},
+                  {icon:"📋",title:"ISO 45001 Monthly Report",  desc:`OHS Management System — ${new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})}`},
+                  {icon:"🏥",title:"ESIC Half-Yearly Return",    desc:`Employee State Insurance — H${new Date().getMonth()<6?1:2} ${new Date().getFullYear()}`},
+                  {icon:"📊",title:"SEBI BRSR Safety Data",      desc:"Business Responsibility & Sustainability"},
+                  {icon:"🏛️",title:"Shram Suvidha Portal Sync", desc:"Labour compliance — Ministry of Labour"},
+                  {icon:"📜",title:"OSH Code 2020 Compliance",   desc:"Occupational Safety Health — Quarterly"},
                 ].map((r,i)=>(
-                  <Card key={i} style={{cursor:"pointer"}} onClick={()=>toast(`${r.title} — ${r.badge}`,"success")}>
+                  <Card key={i} style={{opacity:.65,cursor:"default"}}>
                     <div style={{fontSize:32,marginBottom:12}}>{r.icon}</div>
                     <div style={{fontSize:16,fontWeight:700,color:C.white,marginBottom:6}}>{r.title}</div>
                     <div style={{fontSize:12,color:C.g2,marginBottom:14}}>{r.desc}</div>
-                    <Badge text={r.status}/><span style={{marginLeft:8,fontSize:11,color:C.g2}}>{r.badge}</span>
+                    <div style={{display:"flex",alignItems:"center",gap:8}}>
+                      <Badge text="Coming Soon"/>
+                      <span style={{fontSize:11,color:C.g2}}>Feature in development</span>
+                    </div>
                   </Card>
                 ))}
+
+                {/* Accident Summary — LIVE */}
+                <AccidentSummaryCard stats={stats} toast={toast}/>
+
               </div>
+
               <Card>
-                <CardTitle>Annual Compliance Summary — FY 2024</CardTitle>
+                <CardTitle>Annual Compliance Summary — FY {new Date().getFullYear()}</CardTitle>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14}}>
-                  <KpiCard label="Total Violations" value={stats.totalMonth||0} trend="↓ vs last year" trendUp={true} color={C.green}/>
-                  <KpiCard label="Near-Misses" value={stats.openCount||0} trend="↓ YoY" trendUp={true} color={C.green}/>
-                  <KpiCard label="Lost Work Days" value={stats.pendingCount||0} trend="→ No change" color={C.amber}/>
-                  <KpiCard label="Fatalities" value="0" trend="● Zero record maintained" trendUp={true} color={C.green}/>
-                  <KpiCard label="Compliance Rate" value={`${stats.compliance||97}%`} trend="↑ YoY" trendUp={true} color={C.green}/>
+                  <KpiCard label="Total Violations" value={stats.totalMonth||0} trend="↓ vs last year"           trendUp={true}  color={C.green}/>
+                  <KpiCard label="Near-Misses"       value={stats.nearMissCount||0} trend="↓ YoY"                trendUp={true}  color={C.green}/>
+                  <KpiCard label="Lost Work Days"    value={stats.pendingCount||0} trend="→ No change"           color={C.amber}/>
+                  <KpiCard label="Fatalities"        value="0" trend="● Zero record maintained"                  trendUp={true}  color={C.green}/>
+                  <KpiCard label="Compliance Rate"   value={`${stats.compliance||97}%`} trend="↑ YoY"            trendUp={true}  color={C.green}/>
                 </div>
               </Card>
             </div>
