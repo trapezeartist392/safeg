@@ -783,7 +783,7 @@ export default function App() {
   const sideNav = [
     {label:"Factory", items: livePlants.length > 0
       ? livePlants.map((p,i) => ({icon:"🏭", name:p.plant_name||p.name, pg:undefined, active:i===0}))
-      : [{icon:"🏭", name:"Loading...", active:true}]
+      : [{icon:"🏭", name:"No plant set up", active:true}]
     },
     {label:"Compliance",items:[
       {icon:"📊",name:"Overview",      pg:"dashboard"},
@@ -1108,7 +1108,7 @@ export default function App() {
               <Card>
                 <CardTitle>Annual Compliance Summary — FY {new Date().getFullYear()}</CardTitle>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:14}}>
-                  <KpiCard label="Total Violations" value={stats.totalMonth||0} trend="↓ vs last year"           trendUp={true}  color={C.green}/>
+                  <KpiCard label="Total Violations" value={stats.totalMonth||0} unit="This month" trend="↓ vs last year" trendUp={true} color={C.green}/>
                   <KpiCard label="Near-Misses"       value={stats.nearMissCount||0} trend="↓ YoY"                trendUp={true}  color={C.green}/>
                   <KpiCard label="Lost Work Days"    value={stats.pendingCount||0} trend="→ No change"           color={C.amber}/>
                   <KpiCard label="Fatalities"        value="0" trend="● Zero record maintained"                  trendUp={true}  color={C.green}/>
