@@ -9,7 +9,7 @@
  * All 9 issues from audit fixed. Field names match DB exactly.
  */
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 // ─── PPE exact match map (matches DB violation_type values exactly) ──
 // Exact strings first, then fallback includes() for future AI variations
@@ -66,18 +66,16 @@ export function useComplianceData() {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Token read inside fetch — avoids stale closure on refresh
-      const token = localStorage.getItem('safeg_token') || '';
-      if (!token) { setLoading(false); return; }
+      // Token is attached by the shared API client
+      if (!localStorage.getItem('safeg_token')) { setLoading(false); return; }
 
       setLoading(true);
       try {
         const today = new Date().toISOString().split('T')[0];
         const month = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
 
-        const res = await axios.get(
-          `/api/v1/violations/archive?dateFrom=${month}&dateTo=${today}&limit=200`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const res = await api.get(
+          `/violations/archive?dateFrom=${month}&dateTo=${today}&limit=200`
         );
         const viols = res.data.data?.violations || [];
 

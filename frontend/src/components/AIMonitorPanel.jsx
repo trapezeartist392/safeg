@@ -38,6 +38,39 @@ const PPE_LABELS_HI = {
   "Working at Height":"ऊंचाई पर काम","Housekeeping":"साफ-सफाई",
 };
 
+// Auto-refresh token on 401
+const authFetch = async (url, options = {}) => {
+  const token = localStorage.getItem('safeg_token') || '';
+  const res = await fetch(url, {
+    ...options,
+    headers: { ...options.headers, Authorization: `Bearer ${token}` },
+  });
+  if (res.status === 401) {
+    // Try refresh
+    const refresh = localStorage.getItem('safeg_refresh');
+    if (refresh) {
+      const rRes = await fetch('/api/v1/auth/refresh-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: refresh }),
+      });
+      const rData = await rRes.json();
+      if (rData?.data?.accessToken) {
+        localStorage.setItem('safeg_token', rData.data.accessToken);
+        if (rData.data.refreshToken) localStorage.setItem('safeg_refresh', rData.data.refreshToken);
+        // Retry original request with new token
+        return fetch(url, {
+          ...options,
+          headers: { ...options.headers, Authorization: `Bearer ${rData.data.accessToken}` },
+        });
+      }
+    }
+    // Refresh failed — redirect to login
+    window.location.href = '/login';
+  }
+  return res;
+};
+
 export default function AIMonitorPanel() {
   const { t, lang } = useLang();
   const [aiOnline,  setAiOnline]  = useState(false);
@@ -136,11 +169,10 @@ export default function AIMonitorPanel() {
     try {
       canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
       const b64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-      const res = await fetch(`/api/v1/ai/detect`, {
+      const res = await authFetch(`/api/v1/ai/detect`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('safeg_token')}`,
         },
         body: JSON.stringify({
           imageBase64: b64,
@@ -305,11 +337,10 @@ export default function AIMonitorPanel() {
     } else {
       // RTSP stream
       try {
-        const r = await fetch(`/api/v1/ai/stream/start`, {
+        const r = await authFetch(`/api/v1/ai/stream/start`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('safeg_token')}`,
           },
           body: JSON.stringify({
             cameraId: camId,
@@ -369,11 +400,10 @@ export default function AIMonitorPanel() {
       setStreams(prev => ({ ...prev, [id]: { ...prev[id], status: 'stopped' } }));
     } else {
       try {
-        await fetch(`/api/v1/ai/stream/stop`, {
+        await authFetch(`/api/v1/ai/stream/stop`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('safeg_token')}`,
           },
           body: JSON.stringify({ cameraId: id }),
         });

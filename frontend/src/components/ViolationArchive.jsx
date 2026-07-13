@@ -2,7 +2,7 @@
  * ViolationArchive.jsx — with Hindi/English support
  */
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useLang } from '../i18n/LanguageContext';
 
 const T = {
@@ -27,7 +27,7 @@ const iStyle = {
 };
 
 
-function ExpandedViolation({ v, cc, lang, token }) {
+function ExpandedViolation({ v, cc, lang }) {
   const [photo, setPhoto]   = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPhoto, setShowPhoto] = useState(false);
@@ -36,9 +36,7 @@ function ExpandedViolation({ v, cc, lang, token }) {
     if (photo) { setShowPhoto(s => !s); return; }
     setLoading(true);
     try {
-      const res = await axios.get(`/api/v1/violations/archive/photo/${v.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/violations/archive/photo/${v.id}`);
       setPhoto(res.data.image);
       setShowPhoto(true);
     } catch { setPhoto('none'); }
@@ -113,7 +111,6 @@ export default function ViolationArchive() {
 
   const plan    = localStorage.getItem('safeg_plan') || 'starter';
   const maxDays = plan === 'professional' || plan === 'enterprise' ? 90 : 30;
-  const token   = localStorage.getItem('safeg_token') || '';
   const PER_PAGE = 20;
   const minDate = new Date(Date.now() - maxDays * 86400000).toISOString().split('T')[0];
 
@@ -136,9 +133,7 @@ export default function ViolationArchive() {
         ...(filters.severity && { severity: filters.severity }),
         ...(filters.camera   && { cameraId: filters.camera }),
       });
-      const res = await axios.get(`/api/v1/violations/archive?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/violations/archive?${params}`);
       setViolations(res.data.data?.violations || []);
       setTotal(res.data.data?.total || 0);
     } catch(e) {
@@ -157,8 +152,8 @@ export default function ViolationArchive() {
         ...(filters.category && { category: filters.category }),
         ...(filters.severity && { severity: filters.severity }),
       });
-      const res = await axios.get(`/api/v1/violations/archive?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }, responseType: 'blob',
+      const res = await api.get(`/violations/archive?${params}`, {
+        responseType: 'blob',
       });
       const url  = URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
@@ -363,7 +358,7 @@ export default function ViolationArchive() {
                       <div style={{ color:T.g2, fontSize:14 }}>{isExp ? "▲" : "▼"}</div>
                     </div>
                     {isExp && (
-                      <ExpandedViolation v={v} cc={cc} lang={lang} token={token} />
+                      <ExpandedViolation v={v} cc={cc} lang={lang} />
                     )}
                   </div>
                 );

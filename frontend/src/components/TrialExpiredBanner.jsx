@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const DEMO_TENANT = 'ca5b55f4-bcac-4744-b07a-370503414ff1';
 
@@ -9,13 +9,10 @@ export default function TrialExpiredBanner() {
   useEffect(() => {
     const check = async () => {
       try {
-        const token    = localStorage.getItem('safeg_token') || '';
         const tenantId = localStorage.getItem('safeg_tenant') || '';
         // Never show trial banner on demo account
         if (tenantId === DEMO_TENANT) return;
-        const res = await axios.get('/api/v1/trial/status', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await api.get('/trial/status');
         setTrialInfo(res.data.data);
       } catch(e) {}
     };
