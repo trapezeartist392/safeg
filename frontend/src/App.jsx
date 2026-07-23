@@ -12,6 +12,7 @@ const FactoryCompliance = lazy(() => import("./components/factory-compliance.jsx
 const BillingDashboard  = lazy(() => import("./pages/payment/BillingDashboard.jsx"));
 const UpgradePage       = lazy(() => import("./pages/payment/UpgradePage.jsx"));
 const PostPaymentOnboarding = lazy(() => import("./pages/onboarding/PostPaymentOnboarding.jsx"));
+const CameraSettingsPage = lazy(() => import("./pages/settings/CameraSettingsPage.jsx"));
 const AdminDashboard    = lazy(() => import("./pages/admin/AdminDashboard.jsx"));
 
 const T = {
@@ -114,6 +115,11 @@ export default function App() {
           {/* Main app - protected */}
           <Route path="/dashboard"  element={<PrivateRoute user={user}><div /></PrivateRoute>} />
           <Route path="/compliance" element={<PrivateRoute user={user}><FactoryCompliance /></PrivateRoute>} />
+          <Route path="/settings/cameras" element={
+            <PrivateRoute user={user}>
+              <CameraSettingsPage />
+            </PrivateRoute>
+          } />
           <Route path="/billing" element={
           <PrivateRoute user={user}>
             <BillingDashboard onUpgrade={() => {
