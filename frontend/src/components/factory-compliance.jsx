@@ -965,6 +965,9 @@ export default function App() {
       {icon:"📄",name:"BRSR Safety",  pg:"reports"},
       {icon:"📄",name:"OSH Code",     pg:"reports"},
     ]},
+    {label:"Settings",items:[
+      {icon:"📹",name:"Cameras", pg:undefined, onClick:() => window.location.href="/settings/cameras"},
+    ]},
   ];
 
   return (
@@ -1002,7 +1005,7 @@ export default function App() {
             <div key={sec.label} style={{padding:"0 12px 8px"}}>
               <div style={{fontSize:9,color:C.g3,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif",padding:"8px 4px 4px",textTransform:"uppercase"}}>{sec.label}</div>
               {sec.items.map(item=>(
-                <div key={item.name} onClick={()=>item.pg&&setPage(item.pg)} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 10px",borderRadius:8,cursor:item.pg?"pointer":"default",fontSize:12,color:item.active||page===item.pg?C.orange:C.g1,background:item.active||page===item.pg?"rgba(255,92,26,.08)":"transparent",border:`1px solid ${item.active||page===item.pg?"rgba(255,92,26,.2)":"transparent"}`,marginBottom:2,transition:"all .2s",position:"relative"}}>
+              <div key={item.name} onClick={()=>item.onClick?item.onClick():item.pg&&setPage(item.pg)} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 10px",borderRadius:8,cursor:item.pg||item.onClick?"pointer":"default",fontSize:12,color:item.active||page===item.pg?C.orange:C.g1,background:item.active||page===item.pg?"rgba(255,92,26,.08)":"transparent",border:`1px solid ${item.active||page===item.pg?"rgba(255,92,26,.2)":"transparent"}`,marginBottom:2,transition:"all .2s",position:"relative"}}>
                   <span style={{fontSize:14}}>{item.icon}</span>
                   <span style={{flex:1}}>{item.name}</span>
                   {item.badge>0 && <span style={{background:C.red,color:"#fff",fontSize:9,padding:"1px 6px",borderRadius:10,fontFamily:"'Barlow Condensed',sans-serif"}}>{item.badge}</span>}
