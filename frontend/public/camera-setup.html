@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SafeguardsIQ — Camera Setup Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #05060E;
+    --bg2:      #090B18;
+    --card:     #0D1120;
+    --card2:    #131728;
+    --border:   #1C2238;
+    --orange:   #FF5C1A;
+    --orange2:  #FF8C50;
+    --teal:     #00D4B8;
+    --green:    #22D46A;
+    --red:      #FF3B3B;
+    --amber:    #FFB800;
+    --white:    #EEF2FF;
+    --g1:       #C0CDF0;
+    --g2:       #5C6E9A;
+    --g3:       #1A2240;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 0 0 80px;
+  }
+
+  /* ── HEADER ── */
+  .doc-header {
+    background: linear-gradient(160deg, #0D1120 0%, #05060E 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 64px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: .25;
+    pointer-events: none;
+  }
+  .doc-header::after {
+    content: "";
+    position: absolute;
+    top: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse at center, rgba(255,92,26,.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: var(--orange);
+    clip-path: polygon(50% 0%,100% 20%,100% 60%,50% 100%,0% 60%,0% 20%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #fff; font-weight: 700;
+  }
+  .brand-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 3px; color: var(--white);
+  }
+  .brand-sub {
+    font-size: 10px; color: var(--g2);
+    letter-spacing: 3px; margin-top: 1px;
+  }
+  .doc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 56px; font-weight: 900;
+    letter-spacing: 3px; line-height: 1;
+    color: var(--white);
+    position: relative; z-index: 1;
+    margin-bottom: 10px;
+  }
+  .doc-title span { color: var(--orange); }
+  .doc-subtitle {
+    font-size: 15px; color: var(--g2);
+    position: relative; z-index: 1;
+    margin-bottom: 28px;
+  }
+  .doc-badges {
+    display: flex; gap: 10px;
+    position: relative; z-index: 1;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+  .badge-orange { background: rgba(255,92,26,.12); border: 1px solid rgba(255,92,26,.3); color: var(--orange); }
+  .badge-teal   { background: rgba(0,212,184,.12); border: 1px solid rgba(0,212,184,.3); color: var(--teal); }
+  .badge-green  { background: rgba(34,212,106,.12); border: 1px solid rgba(34,212,106,.3); color: var(--green); }
+
+  /* ── LAYOUT ── */
+  .doc-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 40px 0 48px;
+  }
+  .toc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 3px; color: var(--g2);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .toc-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+  }
+  .toc-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--g1);
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color .15s;
+  }
+  .toc-item:hover { color: var(--orange); }
+  .toc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--orange);
+    background: rgba(255,92,26,.1);
+    border-radius: 4px; padding: 1px 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 56px;
+    scroll-margin-top: 24px;
+  }
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--orange);
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 34px; font-weight: 800;
+    letter-spacing: 2px; color: var(--white);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .section-title .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+    border-radius: 10px;
+    font-size: 20px; font-weight: 900;
+    color: #fff; flex-shrink: 0;
+  }
+  .section-desc {
+    font-size: 14px; color: var(--g2);
+    margin-bottom: 24px;
+    padding-left: 54px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 1px; color: var(--white);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card p { font-size: 13px; color: var(--g1); line-height: 1.65; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: #060810;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 14px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--teal);
+    overflow-x: auto;
+    line-height: 1.8;
+    position: relative;
+  }
+  .code-block .comment { color: var(--g3); }
+  .code-label {
+    position: absolute; top: 10px; right: 14px;
+    font-size: 9px; color: var(--g3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── STEP ROWS ── */
+  .step-row {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .step-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,92,26,.12);
+    border: 1.5px solid rgba(255,92,26,.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 800;
+    color: var(--orange); flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--white); margin-bottom: 4px; letter-spacing: .5px;
+  }
+  .step-content p {
+    font-size: 13px; color: var(--g1); line-height: 1.6;
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  th {
+    background: var(--card2);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--g2);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    color: var(--g1);
+    vertical-align: top;
+  }
+  td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--teal);
+  }
+  tr:hover td { background: rgba(255,255,255,.02); }
+
+  /* ── ALERT BOXES ── */
+  .alert {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .alert-teal  { background: rgba(0,212,184,.07); border: 1px solid rgba(0,212,184,.25); color: var(--g1); }
+  .alert-amber { background: rgba(255,184,0,.07);  border: 1px solid rgba(255,184,0,.25);  color: var(--g1); }
+  .alert-red   { background: rgba(255,59,59,.07);  border: 1px solid rgba(255,59,59,.25);  color: var(--g1); }
+  .alert-green { background: rgba(34,212,106,.07); border: 1px solid rgba(34,212,106,.25); color: var(--g1); }
+  .alert strong { color: var(--white); }
+
+  /* ── RTSP BUILDER ── */
+  .rtsp-builder {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 14px 0;
+  }
+  .rtsp-parts {
+    display: flex; align-items: center;
+    gap: 0; flex-wrap: wrap;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; margin-bottom: 16px;
+    background: #060810;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    line-height: 2;
+  }
+  .rtsp-part {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .p-proto  { color: var(--orange);  background: rgba(255,92,26,.12); }
+  .p-user   { color: var(--teal);    background: rgba(0,212,184,.12); }
+  .p-sep    { color: var(--g3); }
+  .p-pass   { color: var(--amber);   background: rgba(255,184,0,.12); }
+  .p-at     { color: var(--g2); }
+  .p-ip     { color: var(--green);   background: rgba(34,212,106,.12); }
+  .p-port   { color: var(--g1);      background: rgba(255,255,255,.06); }
+  .p-path   { color: var(--g2); }
+  .rtsp-legend {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    font-size: 11px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 5px;
+    color: var(--g2);
+  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── BRAND TABLE ── */
+  .brand-row { display: grid; grid-template-columns: 140px 1fr; gap: 0; }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display: flex; flex-direction: column;
+    gap: 0; margin: 20px 0;
+  }
+  .flow-item {
+    display: flex; gap: 16px;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: 20px;
+  }
+  .flow-item:last-child { padding-bottom: 0; }
+  .flow-line {
+    display: flex; flex-direction: column;
+    align-items: center; flex-shrink: 0;
+    width: 36px;
+  }
+  .flow-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .flow-connector {
+    width: 2px; flex: 1;
+    background: linear-gradient(var(--border), var(--border));
+    min-height: 24px;
+    margin-top: 4px;
+  }
+  .flow-text h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--white); margin-bottom: 3px;
+    padding-top: 6px;
+  }
+  .flow-text p { font-size: 12px; color: var(--g2); }
+
+  /* ── CHECKLIST ── */
+  .checklist { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+  .check-item {
+    display: flex; gap: 12px; align-items: center;
+    padding: 10px 14px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px; color: var(--g1);
+  }
+  .check-box {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--g3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── SUPPORT ── */
+  .support-box {
+    background: linear-gradient(135deg, rgba(255,92,26,.08), rgba(0,212,184,.06));
+    border: 1px solid rgba(255,92,26,.25);
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex; align-items: center;
+    gap: 24px;
+  }
+  .support-icon { font-size: 40px; flex-shrink: 0; }
+  .support-text h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 800;
+    letter-spacing: 1px; color: var(--white);
+    margin-bottom: 4px;
+  }
+  .support-text p { font-size: 13px; color: var(--g2); }
+  .support-text a { color: var(--teal); text-decoration: none; font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .doc-header { padding: 32px 24px; }
+    .doc-title { font-size: 38px; }
+    .doc-body { padding: 0 16px; }
+    .toc-items { grid-template-columns: 1fr; }
+    .rtsp-parts { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="brand">
+    <div class="brand-icon">✓</div>
+    <div>
+      <div class="brand-name">SAFEGUARDSIQ</div>
+      <div class="brand-sub">AI FACTORY SAFETY MONITORING</div>
+    </div>
+  </div>
+  <div class="doc-title">CAMERA SETUP<br/><span>COMPLETE GUIDE</span></div>
+  <div class="doc-subtitle">From unboxing your camera to live AI violation detection — step by step</div>
+  <div class="doc-badges">
+    <span class="badge badge-orange">📹 RTSP Cameras</span>
+    <span class="badge badge-teal">🤖 AI Detection</span>
+    <span class="badge badge-green">⚡ No IT Required</span>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="doc-body">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <div class="toc-items">
+      <a href="#overview"    class="toc-item"><span class="toc-num">00</span> How it works — overview</a>
+      <a href="#step1"       class="toc-item"><span class="toc-num">01</span> Add your plant & zones</a>
+      <a href="#step2"       class="toc-item"><span class="toc-num">02</span> Add cameras in dashboard</a>
+      <a href="#step3"       class="toc-item"><span class="toc-num">03</span> Find your RTSP URL</a>
+      <a href="#step4"       class="toc-item"><span class="toc-num">04</span> Install the relay agent</a>
+      <a href="#step5"       class="toc-item"><span class="toc-num">05</span> Run the agent</a>
+      <a href="#step6"       class="toc-item"><span class="toc-num">06</span> Verify detection</a>
+      <a href="#autostart"   class="toc-item"><span class="toc-num">07</span> Auto-start on PC boot</a>
+      <a href="#trouble"     class="toc-item"><span class="toc-num">08</span> Troubleshooting</a>
+      <a href="#support"     class="toc-item"><span class="toc-num">09</span> Support</a>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-eyebrow">Before you start</div>
+    <div class="section-title">How it works</div>
+
+    <div class="alert alert-teal">
+      <span class="alert-icon">💡</span>
+      <div>Your CCTV cameras are on your <strong>local factory network</strong>. SafeguardsIQ runs on the <strong>cloud</strong>. To connect them, you run a small program called the <strong>SafeguardsIQ Agent</strong> on any Windows PC inside your factory. It acts as the bridge — reading camera frames and sending them to the AI.</div>
+    </div>
+
+    <div class="flow" style="margin-top: 24px;">
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-dot" style="background:rgba(0,212,184,.15);border:2px solid var(--teal)">📹</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-text">
+          <h4>Your CCTV camera</h4>
+          <p>Any IP camera with RTSP support — Hikvision, Dahua, CP Plus, etc.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-dot" style="background:rgba(255,92,26,.15);border:2px solid var(--orange)">💻</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-text">
+          <h4>SafeguardsIQ Agent (runs on factory PC)</h4>
+          <p>Connects to camera on local network, captures a frame every 15 seconds, sends to cloud AI</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-dot" style="background:rgba(168,85,247,.15);border:2px solid #A855F7">🤖</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-text">
+          <h4>SafeguardsIQ AI (cloud)</h4>
+          <p>Claude Vision analyses the frame for PPE violations, pathway breaches, unsafe acts</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-dot" style="background:rgba(34,212,106,.15);border:2px solid var(--green)">📱</div>
+        </div>
+        <div class="flow-text">
+          <h4>Alert sent within 28 seconds</h4>
+          <p>WhatsApp alert to supervisor + violation saved to your compliance dashboard</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 1 -->
+  <div class="section" id="step1">
+    <div class="section-eyebrow">Step 01</div>
+    <div class="section-title">
+      <span class="step-num">1</span>
+      Add your plant &amp; zones in SafeguardsIQ
+    </div>
+    <div class="section-desc">Do this once when you first set up your account.</div>
+
+    <div class="step-row">
+      <div class="step-circle">1</div>
+      <div class="step-content">
+        <h4>Log in to safeguardsiq.com</h4>
+        <p>Use your registered email and password.</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-circle">2</div>
+      <div class="step-content">
+        <h4>Go to Settings → Cameras</h4>
+        <p>Click your name in the top right → Settings → Cameras, or go directly to <strong style="color:var(--teal)">safeguardsiq.com/settings/cameras</strong></p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-circle">3</div>
+      <div class="step-content">
+        <h4>Your zones appear on the left</h4>
+        <p>Zones are areas like "Welding Bay A", "Assembly Line 1", "Forklift Zone". If you haven't set up zones yet, go to Settings → Plant first.</p>
+      </div>
+    </div>
+
+    <div class="alert alert-amber">
+      <span class="alert-icon">⚠️</span>
+      <div><strong>If you just subscribed</strong> — the setup wizard opens automatically after payment and walks you through Plant → Zones → Cameras in one flow. You can skip this step if you completed the wizard.</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 2 -->
+  <div class="section" id="step2">
+    <div class="section-eyebrow">Step 02</div>
+    <div class="section-title">
+      <span class="step-num">2</span>
+      Add your cameras in the dashboard
+    </div>
+    <div class="section-desc">Register each camera with its label, IP address, and RTSP URL.</div>
+
+    <div class="step-row">
+      <div class="step-circle">1</div>
+      <div class="step-content">
+        <h4>Click "+ Add Camera"</h4>
+        <p>On the Settings → Cameras page, click the orange button. A new camera form opens under the zone you select.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">2</div>
+      <div class="step-content">
+        <h4>Fill in the camera details</h4>
+        <p>These are the fields you need to fill:</p>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>What to enter</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Camera ID / Label</td>
+          <td>A short name for this camera. Must be unique. This label links the camera to AI detections.</td>
+          <td>CAM-01</td>
+        </tr>
+        <tr>
+          <td>Location Description</td>
+          <td>Where the camera is mounted — for your own records.</td>
+          <td>North wall, Welding Bay, 4m height</td>
+        </tr>
+        <tr>
+          <td>IP Address</td>
+          <td>The camera's IP address on your local network.</td>
+          <td>192.168.1.101</td>
+        </tr>
+        <tr>
+          <td>Port</td>
+          <td>Almost always 554 for RTSP. Leave as default unless your camera uses a different port.</td>
+          <td>554</td>
+        </tr>
+        <tr>
+          <td>Username</td>
+          <td>Camera login username. Default is usually "admin".</td>
+          <td>admin</td>
+        </tr>
+        <tr>
+          <td>Password</td>
+          <td>Camera login password. Set this when you first configured your camera.</td>
+          <td>camera123</td>
+        </tr>
+        <tr>
+          <td>RTSP URL</td>
+          <td>Auto-filled from IP/port/username/password. You can also paste it directly if you know it.</td>
+          <td>rtsp://admin:camera123@192.168.1.101:554/stream1</td>
+        </tr>
+        <tr>
+          <td>PPE Detection Rules</td>
+          <td>Toggle which items to detect — Hard Hat, Safety Vest, Gloves, etc. Only selected items trigger alerts.</td>
+          <td>Hard Hat ✓, Safety Vest ✓</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="step-row" style="margin-top: 16px;">
+      <div class="step-circle">3</div>
+      <div class="step-content">
+        <h4>Click "Add Camera"</h4>
+        <p>The camera is saved to your account. Repeat for each camera.</p>
+      </div>
+    </div>
+
+    <div class="alert alert-teal">
+      <span class="alert-icon">💡</span>
+      <div><strong>Important:</strong> The Camera ID you enter here (e.g. <strong>CAM-01</strong>) must exactly match what you enter in the relay agent in Step 5. This is how the system links AI detections to the right camera and zone.</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 3 -->
+  <div class="section" id="step3">
+    <div class="section-eyebrow">Step 03</div>
+    <div class="section-title">
+      <span class="step-num">3</span>
+      Find your camera's RTSP URL
+    </div>
+    <div class="section-desc">The RTSP URL is your camera's stream address. Here's how to find it.</div>
+
+    <div class="rtsp-builder">
+      <div style="font-size:11px;color:var(--g2);letter-spacing:2px;font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:12px;">RTSP URL Format</div>
+      <div class="rtsp-parts">
+        <span class="rtsp-part p-proto">rtsp://</span>
+        <span class="rtsp-part p-user">admin</span>
+        <span class="rtsp-part p-sep">:</span>
+        <span class="rtsp-part p-pass">your_password</span>
+        <span class="rtsp-part p-at">@</span>
+        <span class="rtsp-part p-ip">192.168.1.101</span>
+        <span class="rtsp-part p-sep">:</span>
+        <span class="rtsp-part p-port">554</span>
+        <span class="rtsp-part p-path">/stream1</span>
+      </div>
+      <div class="rtsp-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Protocol</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span> Username</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span> Password</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Camera IP</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--g1)"></span> Port</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--g2)"></span> Stream path</span>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--g2);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">RTSP URLs by brand</div>
+    <table>
+      <thead>
+        <tr><th>Brand</th><th>RTSP URL</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hikvision</td><td style="font-family:'DM Mono',monospace;font-size:11px">rtsp://admin:PASSWORD@IP:554/Streaming/Channels/101</td></tr>
+        <tr><td>Dahua</td><td style="font-family:'DM Mono',monospace;font-size:11px">rtsp://admin:PASSWORD@IP:554/cam/realmonitor?channel=1&subtype=0</td></tr>
+        <tr><td>CP Plus</td><td style="font-family:'DM Mono',monospace;font-size:11px">rtsp://admin:PASSWORD@IP:554/stream1</td></tr>
+        <tr><td>Bosch / Axis</td><td style="font-family:'DM Mono',monospace;font-size:11px">rtsp://admin:PASSWORD@IP:554/axis-media/media.amp</td></tr>
+        <tr><td>Generic / ONVIF</td><td style="font-family:'DM Mono',monospace;font-size:11px">rtsp://admin:PASSWORD@IP:554/stream1</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-green" style="margin-top:16px;">
+      <span class="alert-icon">✅</span>
+      <div><strong>Test your RTSP URL first</strong> — open VLC on any PC → Media → Open Network Stream → paste the URL. If video plays in VLC, it will work with SafeguardsIQ.</div>
+    </div>
+
+    <div class="alert alert-amber">
+      <span class="alert-icon">🔍</span>
+      <div><strong>How to find your camera's IP address:</strong> Log in to your router and look at connected devices. Or check the sticker on the camera body. Most cameras default to 192.168.1.x. You can also use the camera's own setup software (e.g. Hikvision iVMS-4200, Dahua ConfigTool) to find it.</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 4 -->
+  <div class="section" id="step4">
+    <div class="section-eyebrow">Step 04</div>
+    <div class="section-title">
+      <span class="step-num">4</span>
+      Install the SafeguardsIQ Agent
+    </div>
+    <div class="section-desc">
+      Install this once on any Windows PC that is connected to the same network as your cameras.
+      The PC can be a spare desktop, a laptop, or any always-on machine.
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">1</div>
+      <div class="step-content">
+        <h4>Install Python 3.11 (if not already installed)</h4>
+        <p>Go to <strong style="color:var(--teal)">python.org/downloads</strong> → Download Python 3.11 or newer → Run installer</p>
+        <div class="alert alert-red" style="margin-top:8px;">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>Important:</strong> During installation, tick the checkbox <strong>"Add Python to PATH"</strong> before clicking Install. Without this, the agent will not run.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">2</div>
+      <div class="step-content">
+        <h4>Download the SafeguardsIQ Agent</h4>
+        <p>Download <strong style="color:var(--orange)">safeguardsiq_agent.py</strong> from your SafeguardsIQ dashboard under Settings → Cameras → Download Agent, and save it to your Desktop.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">3</div>
+      <div class="step-content">
+        <h4>Install required packages</h4>
+        <p>Open <strong>Command Prompt</strong> (search "cmd" in Start menu) and run:</p>
+        <div class="code-block">
+          <span class="comment"># Install required Python packages (one time only)</span><br/>
+          pip install opencv-python requests
+        </div>
+        <p style="font-size:12px;color:var(--g2);margin-top:6px;">This takes 2-3 minutes to download and install. You only need to do this once.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 5 -->
+  <div class="section" id="step5">
+    <div class="section-eyebrow">Step 05</div>
+    <div class="section-title">
+      <span class="step-num">5</span>
+      Run the agent
+    </div>
+    <div class="section-desc">Start the agent and enter your camera details. It will begin sending frames to the AI immediately.</div>
+
+    <div class="step-row">
+      <div class="step-circle">1</div>
+      <div class="step-content">
+        <h4>Open Command Prompt in the folder where you saved the agent</h4>
+        <p>Right-click the Desktop folder → Open in Terminal, or type <span style="font-family:'DM Mono',monospace;color:var(--teal);font-size:12px">cd Desktop</span> in Command Prompt.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">2</div>
+      <div class="step-content">
+        <h4>Run the agent</h4>
+        <div class="code-block">
+          python safeguardsiq_agent.py
+        </div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">3</div>
+      <div class="step-content">
+        <h4>Enter your SafeguardsIQ login</h4>
+        <div class="code-block">
+          <span class="comment">========================================</span><br/>
+          <span class="comment">   SafeguardsIQ Camera Relay Agent</span><br/>
+          <span class="comment">========================================</span><br/><br/>
+          Step 1 — Login to SafeguardsIQ<br/>
+          ─────────────────────────────<br/>
+          &nbsp;&nbsp;Email address: <span style="color:var(--orange)">suresh@yourfactory.com</span><br/>
+          &nbsp;&nbsp;Password: <span style="color:var(--g3)">••••••••</span><br/>
+          &nbsp;&nbsp;<span style="color:var(--green)">✅ Logged in as suresh@yourfactory.com</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">4</div>
+      <div class="step-content">
+        <h4>Enter your camera details</h4>
+        <div class="code-block">
+          Step 2 — Add your cameras<br/>
+          ─────────────────────────<br/>
+          &nbsp;&nbsp;Camera label (e.g. CAM-01): <span style="color:var(--orange)">CAM-01</span><br/>
+          &nbsp;&nbsp;RTSP URL for CAM-01: <span style="color:var(--teal)">rtsp://admin:pass@192.168.1.101:554/stream1</span><br/>
+          &nbsp;&nbsp;<span style="color:var(--green)">✓ Added CAM-01</span><br/><br/>
+          &nbsp;&nbsp;Camera label (e.g. CAM-01): <span style="color:var(--orange)">CAM-02</span><br/>
+          &nbsp;&nbsp;RTSP URL for CAM-02: <span style="color:var(--teal)">rtsp://admin:pass@192.168.1.102:554/stream1</span><br/>
+          &nbsp;&nbsp;<span style="color:var(--green)">✓ Added CAM-02</span><br/><br/>
+          &nbsp;&nbsp;Camera label (press Enter to finish): <span style="color:var(--g3)">[Enter]</span>
+        </div>
+        <div class="alert alert-teal" style="margin-top:8px;">
+          <span class="alert-icon">💡</span>
+          <div><strong>Camera label must match exactly</strong> — use the same label you entered in the SafeguardsIQ dashboard (e.g. <strong>CAM-01</strong>). This is how violations are linked to the correct camera and zone.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">5</div>
+      <div class="step-content">
+        <h4>Agent starts monitoring</h4>
+        <div class="code-block">
+          <span style="color:var(--green)">✅ Token verified — SafeguardsIQ connected</span><br/><br/>
+          <span style="color:var(--g2)">Starting AI monitoring on 2 camera(s)</span><br/>
+          <span style="color:var(--g2)">Frame check interval: every 15 seconds</span><br/>
+          <span style="color:var(--g2)">Press Ctrl+C to stop</span><br/><br/>
+          [CAM-01] <span style="color:var(--green)">✅ Connected — AI checking every 15s</span><br/>
+          [CAM-02] <span style="color:var(--green)">✅ Connected — AI checking every 15s</span><br/><br/>
+          [14:23:07] [CAM-01] <span style="color:var(--green)">✅ Clear | persons=2 | risk=safe</span><br/>
+          [14:23:22] [CAM-01] <span style="color:var(--red)">🚨 VIOLATION — No Helmet | persons=3 | risk=high</span><br/>
+          [14:23:22] [CAM-02] <span style="color:var(--green)">✅ Clear | persons=1 | risk=safe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 6 -->
+  <div class="section" id="step6">
+    <div class="section-eyebrow">Step 06</div>
+    <div class="section-title">
+      <span class="step-num">6</span>
+      Verify detection is working
+    </div>
+    <div class="section-desc">Confirm violations are appearing in your dashboard and WhatsApp alerts are being sent.</div>
+
+    <div class="checklist">
+      <div class="check-item">
+        <div class="check-box" style="border-color:var(--teal);background:rgba(0,212,184,.1);color:var(--teal)">✓</div>
+        Agent shows "✅ Connected" for each camera in the terminal
+      </div>
+      <div class="check-item">
+        <div class="check-box" style="border-color:var(--teal);background:rgba(0,212,184,.1);color:var(--teal)">✓</div>
+        Log lines appear every 15 seconds showing "Clear" or "VIOLATION"
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        Do a test — walk in front of the camera <strong style="color:var(--white)">without a helmet</strong>
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        Within 30 seconds, terminal shows 🚨 VIOLATION — No Helmet
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        Open safeguardsiq.com → Violations — new entry appears with your camera name and zone
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        WhatsApp alert received on your registered number within 30 seconds
+      </div>
+    </div>
+
+    <div class="alert alert-green" style="margin-top:16px;">
+      <span class="alert-icon">✅</span>
+      <div>If all 6 boxes are checked, your camera is fully set up and AI monitoring is live.</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- STEP 7 -->
+  <div class="section" id="autostart">
+    <div class="section-eyebrow">Step 07 — Optional but recommended</div>
+    <div class="section-title">
+      <span class="step-num">7</span>
+      Auto-start on PC boot
+    </div>
+    <div class="section-desc">Make the agent start automatically every time the PC turns on so monitoring never stops.</div>
+
+    <div class="step-row">
+      <div class="step-circle">1</div>
+      <div class="step-content">
+        <h4>Open the Windows Startup folder</h4>
+        <p>Press <strong style="color:var(--white)">Win + R</strong>, type <span style="font-family:'DM Mono',monospace;color:var(--teal);font-size:12px">shell:startup</span>, press Enter. A folder opens.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">2</div>
+      <div class="step-content">
+        <h4>Create a new file called <span style="font-family:'DM Mono',monospace;color:var(--teal)">safeguardsiq.bat</span></h4>
+        <p>Right-click in the folder → New → Text Document → rename to <strong>safeguardsiq.bat</strong></p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-circle">3</div>
+      <div class="step-content">
+        <h4>Paste this content and save</h4>
+        <div class="code-block">
+          <span class="comment">@echo off</span><br/>
+          <span class="comment">rem SafeguardsIQ Auto-Start — edit the lines below with your details</span><br/><br/>
+          set SAFEGUARDSIQ_EMAIL=<span style="color:var(--orange)">suresh@yourfactory.com</span><br/>
+          set SAFEGUARDSIQ_PASSWORD=<span style="color:var(--amber)">yourpassword</span><br/>
+          set CAMERA_1_LABEL=<span style="color:var(--teal)">CAM-01</span><br/>
+          set CAMERA_1=<span style="color:var(--teal)">rtsp://admin:pass@192.168.1.101:554/stream1</span><br/>
+          set CAMERA_2_LABEL=<span style="color:var(--teal)">CAM-02</span><br/>
+          set CAMERA_2=<span style="color:var(--teal)">rtsp://admin:pass@192.168.1.102:554/stream1</span><br/><br/>
+          python C:\Users\YourName\Desktop\safeguardsiq_agent.py
+          <span class="code-label">safeguardsiq.bat</span>
+        </div>
+        <p style="font-size:12px;color:var(--g2);margin-top:6px;">Replace the email, password, camera labels, RTSP URLs, and file path with your actual details.</p>
+      </div>
+    </div>
+
+    <div class="alert alert-teal">
+      <span class="alert-icon">💡</span>
+      <div>The agent will now start automatically every time this PC boots — no manual action needed. Monitoring is always on.</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- TROUBLESHOOTING -->
+  <div class="section" id="trouble">
+    <div class="section-eyebrow">Step 08</div>
+    <div class="section-title">Troubleshooting</div>
+
+    <div class="card">
+      <div class="card-title">❌ "Cannot connect" — retrying</div>
+      <p>The agent cannot reach the camera's RTSP stream. Check:<br/>
+      1. Is the camera's IP address correct? Try pinging it: <span style="font-family:'DM Mono',monospace;color:var(--teal);font-size:12px">ping 192.168.1.101</span> in Command Prompt<br/>
+      2. Is the camera on the same network as the PC running the agent?<br/>
+      3. Is the RTSP URL correct? Test it in VLC first.<br/>
+      4. Is the camera's password correct? Check username/password in camera settings.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">❌ Login failed — Invalid email or password</div>
+      <p>Double-check your SafeguardsIQ email and password. Make sure you're using the same credentials as safeguardsiq.com. If you forgot your password, use Forgot Password on the login page — a reset link will be sent to your WhatsApp.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">❌ Violations not appearing in dashboard</div>
+      <p>1. Check the camera label in the agent matches exactly what's in Settings → Cameras (e.g. both must be <strong style="color:var(--teal)">CAM-01</strong> — not CAM-1 or cam-01)<br/>
+      2. Check the agent terminal — are violations being detected? (🚨 lines)<br/>
+      3. Check your internet connection on the factory PC</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">❌ No WhatsApp alerts</div>
+      <p>1. Go to safeguardsiq.com → Settings → Profile and verify your WhatsApp number is saved (with country code, e.g. +91 98765 43210)<br/>
+      2. Make sure WhatsApp alerts are enabled in Settings → Notifications<br/>
+      3. The first alert requires you to have messaged our WhatsApp number at least once. Send "Hi" to +91 96744 08408 on WhatsApp to activate.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">❌ "pip is not recognized" error</div>
+      <p>Python was not added to PATH during installation. Uninstall Python, reinstall it, and tick "Add Python to PATH" on the first screen before clicking Install.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚠️ Camera shows "error" status in dashboard</div>
+      <p>This usually means the RTSP URL or password in Settings → Cameras is wrong. Go to Settings → Cameras → edit the camera → fix the IP, username, password, or RTSP URL → save → restart the agent.</p>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- SUPPORT -->
+  <div class="section" id="support">
+    <div class="support-box">
+      <div class="support-icon">📱</div>
+      <div class="support-text">
+        <h3>NEED HELP? WE'RE HERE.</h3>
+        <p>
+          WhatsApp us at <a href="https://wa.me/919674408408">+91 96744 08408</a> — we'll help you get your cameras connected, usually within the hour.<br/>
+          Email: <a href="mailto:mazhar.imam@syyaim.com">mazhar.imam@syyaim.com</a> &nbsp;·&nbsp;
+          Website: <a href="https://safeguardsiq.com">safeguardsiq.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end doc-body -->
+
+</body>
+</html>
