@@ -107,7 +107,6 @@ app.use(`${v1}/dashboard`,       dashboardRoutes);
 app.use(`${v1}/webhooks`,        webhookRoutes);
 app.use(`${v1}/onboarding`,     onboardingRoutes);
 app.use(`${v1}/payments`,        paymentRoutes);
-const complianceRoutes = require('./routes/compliance.routes');
 app.use(`${v1}/compliance`, complianceRoutes);
 app.use(`${v1}/roi`, roiRoutes);
 app.use(`${v1}/trial`, trialRoutes);
