@@ -965,9 +965,6 @@ export default function App() {
       {icon:"📄",name:"BRSR Safety",  pg:"reports"},
       {icon:"📄",name:"OSH Code",     pg:"reports"},
     ]},
-    {label:"Settings",items:[
-      {icon:"📹",name:"Cameras", pg:undefined, onClick:() => window.location.href="/settings/cameras"},
-    ]},
   ];
 
   return (
@@ -1005,7 +1002,7 @@ export default function App() {
             <div key={sec.label} style={{padding:"0 12px 8px"}}>
               <div style={{fontSize:9,color:C.g3,letterSpacing:3,fontFamily:"'Barlow Condensed',sans-serif",padding:"8px 4px 4px",textTransform:"uppercase"}}>{sec.label}</div>
               {sec.items.map(item=>(
-              <div key={item.name} onClick={()=>item.onClick?item.onClick():item.pg&&setPage(item.pg)} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 10px",borderRadius:8,cursor:item.pg||item.onClick?"pointer":"default",fontSize:12,color:item.active||page===item.pg?C.orange:C.g1,background:item.active||page===item.pg?"rgba(255,92,26,.08)":"transparent",border:`1px solid ${item.active||page===item.pg?"rgba(255,92,26,.2)":"transparent"}`,marginBottom:2,transition:"all .2s",position:"relative"}}>
+                <div key={item.name} onClick={()=>item.pg&&setPage(item.pg)} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 10px",borderRadius:8,cursor:item.pg?"pointer":"default",fontSize:12,color:item.active||page===item.pg?C.orange:C.g1,background:item.active||page===item.pg?"rgba(255,92,26,.08)":"transparent",border:`1px solid ${item.active||page===item.pg?"rgba(255,92,26,.2)":"transparent"}`,marginBottom:2,transition:"all .2s",position:"relative"}}>
                   <span style={{fontSize:14}}>{item.icon}</span>
                   <span style={{flex:1}}>{item.name}</span>
                   {item.badge>0 && <span style={{background:C.red,color:"#fff",fontSize:9,padding:"1px 6px",borderRadius:10,fontFamily:"'Barlow Condensed',sans-serif"}}>{item.badge}</span>}
@@ -1215,19 +1212,42 @@ export default function App() {
                 <CardTitle>All Violations</CardTitle>
                 <div style={{overflowX:"auto"}}>
                   <table style={{width:"100%",borderCollapse:"collapse"}}>
-                    <thead><tr>{["ID","Date/Time","Type","Zone","Worker","Severity","Corrective Action","Status",""].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 12px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
+                    <thead><tr>{["","ID","Date/Time","Type","Zone","Severity","Status",""].map(h=><th key={h} style={{fontSize:9,color:C.g2,textTransform:"uppercase",letterSpacing:2,padding:"8px 12px",textAlign:"left",borderBottom:`1px solid ${C.border}`,fontFamily:"'Barlow Condensed',sans-serif"}}>{h}</th>)}</tr></thead>
                     <tbody>
                       {displayViols.map((v,i)=>(
                         <tr key={i} style={{borderBottom:`1px solid ${C.border}44`}}>
-                          <td style={{padding:"11px 12px",fontSize:12,color:C.orange,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:600}}>{v.id}</td>
-                          <td style={{padding:"11px 12px",fontSize:12,color:C.g1}}>{v.date}</td>
-                          <td style={{padding:"11px 12px",fontSize:12,color:C.white,fontWeight:600}}>{v.type}</td>
-                          <td style={{padding:"11px 12px",fontSize:12,color:C.g1}}>{v.zone}</td>
-                          <td style={{padding:"11px 12px",fontSize:11,color:C.g2,fontFamily:"'Barlow Condensed',sans-serif"}}>{v.worker}</td>
-                          <td style={{padding:"11px 12px"}}><Badge text={v.sev}/></td>
-                          <td style={{padding:"11px 12px",fontSize:11,color:C.g2,maxWidth:200}}>{v.action}</td>
-                          <td style={{padding:"11px 12px"}}><Badge text={v.status}/></td>
-                          <td style={{padding:"11px 12px"}}><button onClick={()=>toast(`${v.id} updated`,"success")} style={{padding:"4px 12px",borderRadius:6,background:C.card2,color:C.g1,border:`1px solid ${C.border}`,cursor:"pointer",fontSize:11,fontFamily:"'Syne',sans-serif"}}>Update</button></td>
+                          <td style={{padding:"6px 8px",width:56}}>
+                            {v.frame_url ? (
+                              <a href={v.frame_url} target="_blank" rel="noopener noreferrer"
+                                style={{display:"block",width:48,height:36,borderRadius:6,overflow:"hidden",
+                                  border:`1px solid ${C.border}`,cursor:"pointer"}}>
+                                <img src={v.frame_url} alt="frame"
+                                  style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
+                                  onError={e=>{e.target.style.display="none"}}/>
+                              </a>
+                            ) : (
+                              <div style={{width:48,height:36,borderRadius:6,background:C.card2,
+                                border:`1px solid ${C.border}`,display:"flex",alignItems:"center",
+                                justifyContent:"center",fontSize:14,color:C.g3}}>📷</div>
+                            )}
+                          </td>
+                          <td style={{padding:"11px 12px",fontSize:12,color:C.orange,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:600}}>{v.id || v.violation_no}</td>
+                          <td style={{padding:"11px 12px",fontSize:12,color:C.g1}}>{v.date || (v.occurred_at ? new Date(v.occurred_at).toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}) : "—")}</td>
+                          <td style={{padding:"11px 12px",fontSize:12,color:C.white,fontWeight:600}}>{v.type || v.violation_type}</td>
+                          <td style={{padding:"11px 12px",fontSize:12,color:C.g1}}>{v.zone || v.area_name || v.violation_cam || "—"}</td>
+                          <td style={{padding:"11px 12px"}}><Badge text={v.sev || v.severity || "Medium"}/></td>
+                          <td style={{padding:"11px 12px"}}><Badge text={v.status || "Open"}/></td>
+                          <td style={{padding:"11px 12px"}}>
+                            {v.frame_url && (
+                              <a href={v.frame_url} target="_blank" rel="noopener noreferrer"
+                                style={{padding:"4px 12px",borderRadius:6,background:"rgba(0,212,184,.1)",
+                                  color:C.teal,border:`1px solid rgba(0,212,184,.3)`,
+                                  cursor:"pointer",fontSize:11,fontFamily:"'Syne',sans-serif",
+                                  textDecoration:"none",display:"inline-block"}}>
+                                🖼 View
+                              </a>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
